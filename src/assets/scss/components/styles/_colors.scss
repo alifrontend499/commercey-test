@@ -1,0 +1,22 @@
+/* BACKGROUND COLORS */
+.st-bg-primary {
+    background-color: $primary-color !important;
+}
+.st-bg-black {
+    background-color: #000000 !important;
+}
+.st-bg-white {
+    background-color: #ffffff !important;
+}
+.st-bg-light-gray {
+    background-color: $light-gray-color !important;
+}
+.st-bg-footer-main {
+    background-color: $light-gray-color !important;
+}
+
+
+// BORDER COLORS
+.st-border-light {
+    border-color: $borderColor__light !important;
+}

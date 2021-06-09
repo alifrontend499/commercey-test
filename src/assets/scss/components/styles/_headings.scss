@@ -1,0 +1,16 @@
+/* HEADING STYLES */
+.app-header-wrapper {
+    .app-heading {
+        font-size: 30px;
+        font-weight: 600;
+        color: $text__dark-color;
+    }
+
+    /* SIZES */
+    &.heading-sm {
+        .app-heading {
+            font-size: 20px;
+            font-weight: 500;
+        }
+    }
+}

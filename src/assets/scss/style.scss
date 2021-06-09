@@ -1,0 +1,19 @@
+@import "components/reset";
+@import "components/fonts";
+@import "components/variables";
+@import "components/mixins";
+@import "components/common";
+
+body {
+    // font-family: gilory-regular;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: $text__light-color;
+    background: $bg__dashboard;
+}
+
+// .st-wrapper {
+//     $wrapperBorderColor: #ececec;
+//     border-top: 1px solid $wrapperBorderColor;
+// }

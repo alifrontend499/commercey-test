@@ -1,0 +1,120 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// APP LEFT MENU
+.app-left-menu {
+    // font-family: "Source Sans Pro", sans-serif;
+    // font-weight: 400;
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $appLeftBarWidth;
+    z-index: 12;
+
+    @include transition;
+
+    // SCROLLBAR
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    /* width */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    > .inner {
+        overflow: auto;
+    }
+
+    .st-logo {
+        height: $headerHeight;
+        padding: 10px 10px;
+        margin-bottom: 10px;
+        // border-bottom-color: $borderColor__light;
+        img {
+            width: 120px;
+        }
+        button {
+            margin-left: auto;
+        }
+    }
+
+    .alm_nav-item,
+    .alm_sub-nav-item {
+    }
+    .alm_nav-link,
+    .alm_sub-nav-link {
+        font-size: 15px;
+        color: $text__light-color;
+        outline: none !important;
+        @include transition;
+        &:hover {
+            color: $text__dark-color;
+        }
+        &.active {
+            color: $text__dark-color;
+        }
+        &:not(.active).opened {
+            color: $primary-color;
+        }
+    }
+    .alm_nav-item {
+        margin-bottom: 5px;
+        padding: 0 10px;
+    }
+    .alm_nav-link {
+        padding: 10px 0px 10px 10px;
+        border-radius: $common-border-radius;
+        > .lt {
+            .icon {
+                margin-top: 3px;
+                margin-right: 10px;
+            }
+        }
+        > .rt {
+            width: 30px;
+            .icon {
+                @include transition;
+            }
+        }
+
+        &.active {
+            background-color: #f1f3f9;
+            > .rt {
+                .icon {
+                    color: $primary-color;
+                    @include transform_rotate(90deg);
+                }
+            }
+        }
+    }
+
+    .alm_sub-menu {
+        padding: 8px 0 5px;
+    }
+    .alm_sub-nav-item {
+        padding-left: 25px;
+    }
+    .alm_sub-nav-link {
+        padding: 6px 10px;
+    }
+
+    // app menu expanded or shrunk
+    &.shrunk {
+        &:not(:hover) {
+            width: $appLeftBarWidthWhenShrunked;
+            .st-logo > a,
+            .alm_nav-link > .lt > span,
+            .alm_nav-link > .rt > .icon,
+            .alm_sub-menu {
+                display: none !important;
+            }
+            .st-logo > button {
+                margin: 0 auto;
+            }
+        }
+    }
+}

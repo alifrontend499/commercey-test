@@ -1,0 +1,152 @@
+// FONT FAMILY
+.font-family-cinzel-decorative {
+    font-family: "Cinzel Decorative", cursive;
+}
+
+/* TEXT STYLES */
+/* TEXT COLORS CLASSES */
+.st-text-primary {
+    color: $primary-color;
+}
+// on hover if a tag
+a.st-text-primary {
+    @include transition();
+    &:hover {
+        color: darken($color: $primary-color, $amount: 17%);
+    }
+}
+.st-text-dark {
+    color: $text__dark-color !important;
+}
+// on hover if a tag
+a.st-text-dark {
+    @include transition();
+    &:hover {
+        color: $primary-color !important;
+    }
+}
+// on hover if a tag
+.st-text-light {
+    color: $text__light-color !important;
+}
+a.st-text-light {
+    @include transition();
+    &:hover {
+        color: $primary-color !important;
+    }
+}
+
+/* FONT WEIGHT CLASSES */
+.st-fw-normal {
+    font-weight: normal !important;
+}
+.st-fw-100 {
+    font-weight: 100 !important;
+}
+.st-fw-200 {
+    font-weight: 200 !important;
+}
+.st-fw-300 {
+    font-weight: 300 !important;
+}
+.st-fw-400 {
+    font-weight: 400 !important;
+}
+.st-fw-500 {
+    font-weight: 500 !important;
+}
+.st-fw-600 {
+    font-weight: 600 !important;
+}
+.st-fw-700 {
+    font-weight: 700 !important;
+}
+.st-fw-800 {
+    font-weight: 800 !important;
+}
+.st-fw-900 {
+    font-weight: 900 !important;
+}
+
+/* COMMON FONT SIZE CLASSES */
+.st-fs-10 {
+    font-size: 10px !important;
+}
+.st-fs-11 {
+    font-size: 11px !important;
+}
+.st-fs-12 {
+    font-size: 12px !important;
+}
+.st-fs-13 {
+    font-size: 13px !important;
+}
+.st-fs-14 {
+    font-size: 14px !important;
+}
+.st-fs-15 {
+    font-size: 15px !important;
+}
+.st-fs-16 {
+    font-size: 16px !important;
+}
+.st-fs-17 {
+    font-size: 17px !important;
+}
+.st-fs-18 {
+    font-size: 18px !important;
+}
+.st-fs-19 {
+    font-size: 19px !important;
+}
+.st-fs-20 {
+    font-size: 20px !important;
+}
+.st-fs-21 {
+    font-size: 21px !important;
+}
+.st-fs-22 {
+    font-size: 22px !important;
+}
+.st-fs-23 {
+    font-size: 23px !important;
+}
+.st-fs-24 {
+    font-size: 24px !important;
+}
+.st-fs-25 {
+    font-size: 25px !important;
+}
+
+// line height
+.st-line-height-0 {
+    line-height: 0;
+}
+
+// font styles
+.st-fs-ita {
+    font-style: italic;
+}
+.st-fs-obl {
+    font-style: oblique;
+}
+
+
+// alignment
+.st-text-left {
+    text-align: left;
+}
+.st-text-center {
+    text-align: center;
+}
+.st-text-right {
+    text-align: right;
+}
+
+// links
+.hover-underline-link {
+    text-decoration: none !important;
+    &:hover {
+        text-decoration: underline !important;
+    }
+}

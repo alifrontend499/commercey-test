@@ -1,0 +1,52 @@
+// RESPONSIVE BREAKPOINTS
+$sm-min: 576px;
+$sm-max: 575px;
+
+$md-min: 768px;
+$md-max: 767px;
+
+$lg-min: 992px;
+$lg-max: 991px;
+
+$xl-min: 1200px;
+$xl-max: 1199px;
+
+// COMMON COLORS
+$primary-color: #006BFF;
+
+// PROJECT BASED COLORS
+$light-gray-color: #f4f4f4;
+$light-gray-color2: #dee2e6;
+
+// COMMON TEXT COLORS
+// $text__dark-color: #000;
+// $text__light-color: #333;
+$text__dark-color: #272b2f;
+$text__light-color: #4c545d;
+$text__danger-color: #fe4c4c;
+$text__success-color: #65b556;
+
+// BACKGROUNDS COLORS
+$bg__light-gray: #eee;
+$bg__footer-main: #f1f1f1;
+$bg__danger: #fe4c4c;
+$bg__success: #65b556;
+
+$bg__dashboard: #F7F9FA;
+
+// BORDER COLORS
+$borderColor__light: #EAEDF1;
+
+// RADIUS
+$common-border-radius: 5px;
+
+// INPUT
+$input__border-radius: 5px;
+
+// BUTTONS
+$buttons__border-radius: 5px;
+
+// PROJECT BASED VARIABLES
+$appLeftBarWidthWhenShrunked: 59px;
+$appLeftBarWidth: 215px;
+$headerHeight: 60px;

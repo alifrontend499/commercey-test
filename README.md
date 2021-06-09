@@ -1,70 +1,147 @@
-# Getting Started with Create React App
+# SOL TRADING Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## RUN THE PROJECT
 
-## Available Scripts
+After the git clone is done, in the project's root directory, you can run:
 
-In the project directory, you can run:
+### `npm install or npm i`
+to install all the necessorry packages.
+Then,
 
 ### `npm start`
 
-Runs the app in the development mode.\
+It will run the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
+<br/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
+**NOTE**
 
-### `npm run build`
+If used npm install don't need to install all the further packages
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## LIBRARIES USED AFTER THE INITIAL SETUP
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## `1. react-router-dom`
 
-### `npm run eject`
+for routing <br/>
+https://reactrouter.com/web/guides/quick-start
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+npm i react-router-dom
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## `2. feather-icons-react`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+for icons <br/>
+https://www.npmjs.com/package/feather-icons-react <br/>
+https://feathericons.com/
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+npm i feather-icons-react
+```
 
-## Learn More
+## `3. font awesome`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+for icons <br/>
+https://fontawesome.com/how-to-use/on-the-web/using-with/react
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+npm i --save @fortawesome/fontawesome-svg-core
+npm install --save @fortawesome/react-fontawesome
 
-### Code Splitting
+npm i --save @fortawesome/free-solid-svg-icons
+npm i --save @fortawesome/free-brands-svg-icons
+npm i --save @fortawesome/free-regular-svg-icons
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+## `4. react-bootstrap`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+https://react-bootstrap.github.io/getting-started/introduction
 
-### Making a Progressive Web App
+```
+npm install react-bootstrap bootstrap
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+import 'bootstrap/dist/css/bootstrap.min.css';
+```
 
-### Advanced Configuration
+## `5. axios`
+for data fetching get and post
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+https://www.npmjs.com/package/axios/
 
-### Deployment
+```
+npm install axios
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## `6. react redux`
+for state management
 
-### `npm run build` fails to minify
+https://react-redux.js.org/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+npm install react-redux
+```
+
+## `7. react moment`
+for date management
+
+https://www.npmjs.com/package/react-moment
+
+```
+npm install --save moment react-moment
+
+npm install --save moment-timezone (optional)
+```
+
+## `8. formik`
+for forms validation and management
+
+https://formik.org/docs/overview
+
+```
+npm install formik --save
+```
+
+## `9. yup`
+for validations schema
+
+https://www.npmjs.com/package/yup
+
+```
+npm install yup
+```
+
+## `10. SASS`
+for css prepocessor
+
+https://swiperjs.com/react
+
+```
+npm install node-sass --save
+```
+
+## `11. react-loading-skeleton`
+for skeleton loading
+
+https://openbase.com/js/react-loading-skeleton,
+https://www.npmjs.com/package/react-loading-skeleton
+
+```
+npm i react-loading-skeleton 
+```
+
+## `12. react-toastify`
+for toast like message
+
+https://fkhadra.github.io/react-toastify/introduction
+
+```
+npm install --save react-toastify
+```

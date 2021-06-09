@@ -1,0 +1,234 @@
+// BUTTONS VARIABLES
+$btnsSizeXS: 30px;
+$btnsSizeSM: 35px;
+
+$btnsSizeMD: 35px;
+$btnsSizeMDAboveSM: 40px;
+
+$btnsSizeLG: 40px;
+$btnsSizeLGAboveSM: 48px;
+
+/* REMOVING DEFAULT BUTTON STYLE */
+button.no-browser-style {
+    background-color: transparent;
+    padding: initial;
+    line-height: normal;
+    outline: none;
+    border: none;
+}
+
+// BTN ROUNDED
+.st-round-btn {
+    line-height: normal;
+    outline: none;
+    text-decoration: none;
+    box-shadow: none !important;
+    cursor: pointer;
+    overflow: hidden;
+    @include transition;
+
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 50%;
+
+    &:hover,
+    &.active {
+        background-color: #000;
+        color: #fff;
+    }
+    &:active {
+        background-color: #000;
+        color: #fff;
+    }
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    // TYPES
+    // rounded square
+    &.st-btn-rounded-square-btn {
+        border-radius: $buttons__border-radius;
+    }
+
+    // SIZES
+    // normal btn
+    height: $btnsSizeMD;
+    width: $btnsSizeMD;
+    @include min-width($sm-min) {
+        height: $btnsSizeMDAboveSM;
+        width: $btnsSizeMDAboveSM;
+    }
+
+    // small xs
+    &.st-btn-xs {
+        height: $btnsSizeXS;
+        width: $btnsSizeXS;
+    }
+
+    // normal sm
+    &.st-btn-sm {
+        height: $btnsSizeSM;
+        width: $btnsSizeSM;
+    }
+
+    // btn lg
+    &.st-btn-lg {
+        height: $btnsSizeLG;
+        width: $btnsSizeLG;
+        @include min-width($sm-min) {
+            height: $btnsSizeLGAboveSM;
+            width: $btnsSizeLGAboveSM;
+        }
+    }
+
+    // TYPES
+    // btn primary
+    &.st-btn-primary {
+        background-color: $primary-color;
+        color: #fff;
+        &:hover,
+        &.active {
+            background-color: darken($color: $primary-color, $amount: 5);
+        }
+
+        &:active {
+            background-color: darken($color: $primary-color, $amount: 7);
+        }
+    }
+
+    // btn white
+    &.st-btn-white {
+        background-color: #fff;
+        color: $text__light-color;
+        &:hover,
+        &.active {
+            background-color: darken($color: $primary-color, $amount: 5);
+            color: #fff;
+        }
+
+        &:active {
+            background-color: darken($color: $primary-color, $amount: 7);
+            color: #fff;
+        }
+    }
+
+    // btn transparent
+    &.st-btn-transparent {
+        background-color: transparent;
+        color: $text__light-color;
+        &:hover {
+            background-color: transparent;
+            color: $text__dark-color;
+        }
+
+        &:active {
+            background-color: transparent;
+            color: $text__dark-color;
+        }
+    }
+
+    // btn disabled
+    &.disabled {
+        pointer-events: none !important;
+        opacity: 0.9;
+    }
+}
+
+// BTN MAIN
+.st-btn {
+    display: inline-block;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #000;
+    border-radius: $buttons__border-radius;
+    padding: 10px 20px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    line-height: normal;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    @include transition;
+
+    &:hover,
+    &.active {
+        background-color: #000;
+        color: #fff;
+    }
+    &:active {
+        background-color: #000;
+        color: #fff;
+    }
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    // min width
+    &:not(.no-min-width) {
+        // min-width: 130px;
+        min-width: 120px;
+    }
+
+    // SIZES
+    // normal btn
+    min-height: $btnsSizeMD;
+    @include min-width($sm-min) {
+        min-height: $btnsSizeMDAboveSM;
+    }
+
+    // btn sm
+    &.st-btn-sm {
+        min-height: $btnsSizeSM;
+        padding: 6px 15px;
+    }
+
+    // btn lg
+    &.st-btn-lg {
+        min-height: $btnsSizeLG;
+        @include min-width($sm-min) {
+            min-height: $btnsSizeLGAboveSM;
+        }
+    }
+
+    // btn primary
+    &.st-btn-primary {
+        background-color: $primary-color;
+        color: #fff;
+        border-color: $primary-color;
+        &:hover,
+        &.active {
+            background-color: darken($color: $primary-color, $amount: 5);
+        }
+
+        &:active {
+            background-color: darken($color: $primary-color, $amount: 7);
+        }
+    }
+
+    // btn primary outlined
+    &.st-btn-primary-outlined {
+        background-color: #fff;
+        color: $primary-color;
+        border-color: $primary-color;
+        &:hover,
+        &.active {
+            background-color: $primary-color;
+            color: #fff;
+        }
+
+        &:active {
+            background-color: darken($color: $primary-color, $amount: 7);
+            color: #fff;
+        }
+    }
+
+    // btn disabled
+    &.disabled {
+        pointer-events: none !important;
+        opacity: 0.9;
+    }
+}

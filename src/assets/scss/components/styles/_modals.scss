@@ -1,0 +1,41 @@
+/* MODALS RELATED CLASSES */
+.st-modal {
+    .modal-content {
+        border-radius: $common-border-radius;
+    }
+    .modal-body {
+        padding: 0;
+    }
+
+    .app-modal-content {
+        position: relative;
+        padding: 15px;
+        @include min_width($lg-min) {
+            padding: 0px 25px 25px 25px;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 22px;
+            right: 15px;
+        }
+
+        .app-modal-title-wrapper {
+            padding-top: 25px;
+            .app-modal-title {
+                font-size: 30px;
+                color: #272b2f;
+                line-height: 30px;
+                padding-right: 30px;
+            }
+        }
+
+        .app-modal-loading-overlay {
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: 9;
+            color: $primary-color;
+        }
+    }
+}

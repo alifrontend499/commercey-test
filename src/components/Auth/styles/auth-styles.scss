@@ -1,0 +1,37 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// ST AUTH
+.st-auth {
+    height: 100vh;
+    > .inner,
+    > .other-details {
+        @include min_width($md-min) {
+            width: 450px;
+        }
+    }
+    > .inner {
+        padding: 20px;
+        border-color: $borderColor__light !important;
+        @include min_width($md-min) {
+            padding: 40px 40px 60px;
+        }
+    }
+    
+    // top sec
+    .top-sec {
+        margin-bottom: 26px;
+    }
+    .head {
+    }
+
+    // form
+    .form-sec {
+        .btns {
+            button {
+                letter-spacing: 2px;
+            }
+        }
+    }
+}

@@ -1,0 +1,101 @@
+// COMMON MARGIN AND PADDING
+$gutter_default: 15px;
+$gutter_sm: 25px;
+$gutter_lg: 25px;
+$gutter_xl: 25px;
+
+// margin
+.st-def-mar-T,
+.st-def-mar-TB {
+    margin-top: $gutter_default;
+
+    @include min_width($sm-min) {
+        margin-top: $gutter_sm;
+    }
+
+    @include min_width($xl-min) {
+        margin-top: $gutter_xl;
+    }
+}
+
+.st-def-mar-B,
+.st-def-mar-TB {
+    margin-bottom: $gutter_default;
+
+    @include min_width($sm-min) {
+        margin-bottom: $gutter_sm;
+    }
+
+    @include min_width($xl-min) {
+        margin-bottom: $gutter_xl;
+    }
+}
+
+// padding
+.st-def-pad-T,
+.st-def-pad-TB {
+    padding-top: $gutter_default;
+
+    @include min_width($sm-min) {
+        padding-top: $gutter_sm;
+    }
+
+    @include min_width($xl-min) {
+        padding-top: $gutter_xl;
+    }
+}
+
+.st-def-pad-B,
+.st-def-pad-TB {
+    padding-bottom: $gutter_default;
+
+    @include min_width($sm-min) {
+        padding-bottom: $gutter_sm;
+    }
+
+    @include min_width($xl-min) {
+        padding-bottom: $gutter_xl;
+    }
+}
+
+// padding 15
+.pad-15 {
+    padding: 15px;
+}
+.pad-15-T,
+.pad-15-TB {
+    padding-top: 15px;
+}
+.pad-15-B,
+.pad-15-TB {
+    padding-bottom: 15px;
+}
+.pad-15-L,
+.pad-15-LR {
+    padding-left: 15px;
+}
+.pad-15-R,
+.pad-15-LR {
+    padding-right: 15px;
+}
+
+// padding 20
+.pad-20 {
+    padding: 20px;
+}
+.pad-20-T,
+.pad-20-TB {
+    padding-top: 20px;
+}
+.pad-20-B,
+.pad-20-TB {
+    padding-bottom: 20px;
+}
+.pad-20-L,
+.pad-20-LR {
+    padding-left: 20px;
+}
+.pad-20-R,
+.pad-20-LR {
+    padding-right: 20px;
+}

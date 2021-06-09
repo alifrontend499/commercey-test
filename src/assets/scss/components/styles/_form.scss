@@ -1,0 +1,324 @@
+// FORM VARIABLES
+$fieldsHeightSM: 35px;
+
+$fieldsHeightMD: 35px;
+$fieldsHeightMDAboveSM: 40px;
+
+$fieldsHeightLG: 40px;
+$fieldsHeightLGAboveSM: 48px;
+
+$defaultInputBorderColor: #eaedf1;
+$placeholderColor: #8a8a8a;
+
+$bottomGap: 20px;
+
+/* FORM FIELDS STYLES */
+.st-form {
+    position: relative;
+    margin-bottom: $bottomGap;
+    input:not([type="radio"]):not([type="checkbox"]),
+    select,
+    textarea {
+        border-radius: $input__border-radius;
+        border-color: $defaultInputBorderColor;
+        padding: 5px 15px;
+        color: $text__dark-color;
+        font-size: 15px;
+        @include transition;
+
+        &::placeholder {
+            /* CHROME, FIREFOX, OPERA, SAFARI 10.1+ */
+            color: $placeholderColor;
+            opacity: 1;
+            /* FIREFOX */
+        }
+
+        &:-ms-input-placeholder {
+            /* INTERNET EXPLORER 10-11 */
+            color: $placeholderColor;
+        }
+
+        &::-ms-input-placeholder {
+            /* MICROSOFT EDGE */
+            color: $placeholderColor;
+        }
+
+        &:hover {
+            border-color: darken($color: $defaultInputBorderColor, $amount: 10);
+        }
+        &:focus {
+            border-color: $primary-color;
+            @include box-shadow(0, 0, 1px, 1px, $primary-color !important);
+        }
+    }
+
+    // NO BOX SHADOW
+    &.no-shadow {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select,
+        textarea {
+            &:focus {
+                box-shadow: none !important;
+            }
+        }
+    }
+
+    /* FORM HEIGHT */
+    input:not([type="radio"]):not([type="checkbox"]),
+    select {
+        height: $fieldsHeightMD;
+        @include min-width($sm-min) {
+            height: $fieldsHeightMDAboveSM;
+        }
+    }
+
+    /* FORM SIZES */
+    // sm
+    &.form-sm {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select {
+            height: $fieldsHeightSM;
+        }
+    }
+
+    // lg
+    &.form-lg {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select {
+            height: $fieldsHeightLG;
+            @include min-width($sm-min) {
+                height: $fieldsHeightLGAboveSM;
+            }
+        }
+    }
+
+    // FORM MESSAGE
+    .st-form-msg {
+        // top: -13px;
+        bottom: 3px;
+        @include transition;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    // message
+    &.has-msg {
+        margin-bottom: 0;
+        padding-bottom: $bottomGap;
+        .st-form-msg {
+            opacity: 1;
+            visibility: visible;
+        }
+        &.msg-error {
+            // on foucs
+            input:not([type="radio"]):not([type="checkbox"]),
+            select,
+            textarea {
+                // border-color: $bg__danger;
+                // @include box-shadow(0, 0, 1px, 1px, $bg__danger !important);
+                // color: $text__danger-color;
+            }
+            // icon
+            .icon {
+                color: $text__danger-color;
+            }
+            // msg
+            .st-form-msg {
+                p {
+                    color: $text__danger-color;
+                }
+            }
+        }
+        // message success
+        &.msg-success {
+            // on foucs
+            input:not([type="radio"]):not([type="checkbox"]),
+            select,
+            textarea {
+                // border-color: $bg__success;
+                // @include box-shadow(0, 0, 1px, 1px, $bg__success !important);
+                // color: $text__success-color;
+            }
+            // icon
+            .icon {
+                color: $text__success-color;
+            }
+            // msg
+            .st-form-msg {
+                p {
+                    color: $text__success-color;
+                }
+            }
+        }
+    }
+
+    /* SELECT NO ICON */
+    select:not([multiple]) {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        &::-ms-expand {
+            display: none;
+        }
+    }
+    /* SELECT BG */
+    select:not([multiple]):not(.no-select-icon) {
+        background-image: url("../../../images/icons/select-icon.png");
+        background-repeat: no-repeat;
+        background-position: calc(100% - 5px) center;
+        padding-right: 30px !important;
+    }
+
+    /* INLINE FORM FIELDS */
+    &.lt,
+    &.rt {
+        width: 100%;
+    }
+
+    @include min_width($md-min) {
+        &.lt,
+        &.rt {
+            width: 50%;
+        }
+
+        &.lt {
+            padding-right: 7.5px;
+        }
+
+        &.rt {
+            padding-left: 7.5px;
+        }
+    }
+
+    /* ROUNDED FORM FIELDS INPUT AND SELECT ONLY */
+    &.st-form-rounded {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select {
+            border-radius: $fieldsHeightMD;
+            @include min-width($sm-min) {
+                border-radius: $fieldsHeightMDAboveSM;
+            }
+        }
+    }
+    /* FORM FIELDS WITH ICON */
+    &.st-form-with-icon-left,
+    &.st-form-with-icon-right {
+        position: relative;
+        input:not([type="radio"]):not([type="checkbox"]),
+        select,
+        textarea {
+        }
+        > .icon {
+            position: absolute;
+            line-height: 0;
+            top: 50%;
+            @include transform_translatey(-50%);
+            color: $text__light-color;
+            @include transition;
+
+            &:hover {
+                color: $text__dark-color;
+            }
+        }
+    }
+    /* FORM FIELDS WITH ICON ON THE LEFT */
+    &.st-form-with-icon-left {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select,
+        textarea {
+            padding-left: 35px;
+        }
+        > .icon {
+            left: 10px;
+        }
+    }
+    /* FORM FIELDS WITH ICON ON THE RIGHT */
+    &.st-form-with-icon-right {
+        input:not([type="radio"]):not([type="checkbox"]),
+        select,
+        textarea {
+            padding-right: 35px;
+        }
+        > .icon {
+            right: 10px;
+        }
+    }
+
+    /* FORM FIELDS WITH LABEL ON THE LEFT */
+    &.st-form-with-label-left {
+        margin-bottom: 0;
+        // message
+        &.has-msg {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        input:not([type="radio"]):not([type="checkbox"]),
+        select,
+        textarea {
+        }
+        > label,
+        > .st-form-input-container {
+            padding-bottom: $bottomGap;
+            text-align: right;
+            padding-right: 15px;
+        }
+        > label {
+            width: 100%;
+            @include min_width($md-min) {
+                width: 180px;
+            }
+
+
+        }
+        > .st-form-input-container {
+            position: relative;
+        }
+    }
+}
+
+// ST CHECKBOX
+.st-checkbox {
+    .box {
+        height: 20px;
+        width: 20px;
+        border-color: $borderColor__light !important;
+        border-radius: $input__border-radius !important;
+        background-color: $bg__dashboard;
+        @include transition(0.1s);
+        .icon {
+            @include transition(0.1s);
+            opacity: 0;
+        }
+    }
+    // &:active {
+    //     .box {
+    //         border-color: #000 !important;
+    //     }
+    // }
+    > input {
+        &:checked {
+            + {
+                .box {
+                    background-color: #000;
+                    color: #fff;
+                    .icon {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+
+    // primary checkbox
+    &.st-checkbox-primary {
+        > input {
+            &:checked {
+                + {
+                    .box {
+                        background-color: $primary-color;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,116 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// HEADER
+header {
+    margin-top: -1px;
+}
+
+.header {
+    height: $headerHeight;
+    padding: 10px 0;
+
+    .hm_item {
+        position: relative;
+
+        .header-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            padding-top: 10px;
+            min-width: 130px;
+            @include transition;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 12;
+            .hd_inner {
+                background: #fff;
+                box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        &:hover {
+            > a {
+                background-color: $primary-color;
+                color: #fff;
+            }
+            .header-dropdown {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    }
+
+    // user profile dropdown
+    .notifications {
+        .header-dropdown {
+            width: 250px;
+            @include min_width($md-min) {
+                width: 350px;
+            }
+        }
+
+        .top-sec,
+        .bottom-sec {
+            padding: 10px 15px;
+        }
+
+        .link-item {
+            @include transition;
+            padding: 8px 15px;
+            color: $text__light-color;
+            &:hover {
+                color: $text__dark-color;
+                background-color: $bg__dashboard;
+            }
+
+            &:focus,
+            &:active {
+                background-color: darken($color: $bg__dashboard, $amount: 2);
+            }
+
+            .img {
+                height: 35px;
+                width: 35px;
+            }
+            .text {
+                width: calc(100% - 35px);
+            }
+
+            .message {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+    // user profile dropdown
+    .user-profile {
+        .header-dropdown {
+            width: 200px;
+        }
+        .hd_inner {
+            padding: 10px 0;
+        }
+        .link-item {
+            @include transition;
+            padding: 8px 15px;
+            color: $text__light-color;
+            font-size: 14px;
+            &:hover {
+                color: $text__dark-color;
+                background-color: $bg__dashboard;
+            }
+
+            &:focus,
+            &:active {
+                background-color: darken($color: $bg__dashboard, $amount: 2);
+            }
+        }
+
+        .bottom-sec {
+            padding-top: 5px;
+        }
+    }
+}

@@ -1,0 +1,216 @@
+/* SCROLLBAR */
+@import "styles/scrollbar";
+
+/* COLORS STYLES */
+@import "styles/colors";
+
+/* BUTTONS STYLES */
+@import "styles/buttons";
+
+/* TEXT STYLES */
+@import "styles/text";
+
+/* HEADING STYLES */
+@import "styles/headings";
+
+/* FORMS STYLES */
+@import "styles/form";
+
+/* FLEX RELATED CLASSES */
+@import "styles/flex";
+
+/* CURSOR RELATED CLASSES */
+@import "styles/cursor";
+
+/* MENU  STYLES */
+@import "styles/menu";
+
+/* MENU  STYLES */
+@import "styles/st-gutter";
+
+/* IMAGE  STYLES */
+@import "styles/images";
+
+/* MODALS  STYLES */
+@import "styles/modals";
+
+// border radius
+.st-default-rounded-block {
+    border-radius: $common-border-radius !important;
+}
+
+// app main content
+.app-main-content {
+    height: 100vh;
+    margin-left: $appLeftBarWidth;
+    overflow: auto;
+    @include transition;
+}
+.app-left-menu.shrunk + .app-main-content {
+    margin-left: $appLeftBarWidthWhenShrunked;
+}
+
+// st container
+.st-container {
+    @include min_width($sm-min) {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}
+
+// app card
+.app-card {
+    .acc_top-bar {
+        padding: 15px;
+    }
+}
+
+// st listing table
+.st-listing-table {
+    padding: 15px;
+    tbody {
+        tr {
+            @include transition(0.1s);
+            &:hover {
+                background-color: $bg__dashboard;
+            }
+        }
+    }
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid $borderColor__light !important;
+        color: $text__light-color;
+    }
+    th {
+        font-weight: 600;
+        color: $text__dark-color;
+    }
+    td {
+        &.column__actions {
+            padding: 8px 8px 8px 12px;
+        }
+    }
+}
+
+// no data found
+.no-data-found {
+    color: #777;
+}
+
+// st bs dropdown
+.st-bs-dropdown {
+    &.no-down-icon {
+        .dropdown-toggle::after {
+            content: none !important;
+        }
+    }
+
+    .dropdown-menu {
+        background: #fff !important;
+        box-shadow: 0 0px 100px rgba(0, 0, 0, 0.1);
+        border-color: $bg__dashboard;
+        padding: 10px 0;
+        margin-top: 2px !important;
+
+        .dropdown-item {
+            @include transition;
+            padding: 8px 15px;
+            font-size: 15px;
+            color: $text__light-color;
+            &:hover {
+                color: $text__dark-color;
+                background-color: $bg__dashboard;
+            }
+            &:focus,
+            &:active {
+                background-color: darken($color: $bg__dashboard, $amount: 2);
+            }
+        }
+    }
+}
+
+// bootstrap tooltip
+.tooltip {
+    .tooltip-inner {
+        border-radius: $common-border-radius;
+        font-size: 11px;
+        padding: 4px 7px 5px;
+        line-height: normal;
+    }
+}
+
+// toast notifications
+/** Used to define container behavior: width, position: fixed etc... **/
+.Toastify__toast-container {
+}
+
+/** Used to define the position of the ToastContainer **/
+.Toastify__toast-container--top-left {
+}
+.Toastify__toast-container--top-center {
+}
+.Toastify__toast-container--top-right {
+}
+.Toastify__toast-container--bottom-left {
+}
+.Toastify__toast-container--bottom-center {
+}
+.Toastify__toast-container--bottom-right {
+}
+
+/** Classes for the displayed toast **/
+.Toastify__toast {
+    padding: 8px 15px;
+    border-radius: $common-border-radius;
+    min-height: 55px;
+}
+.Toastify__toast--rtl {
+}
+.Toastify__toast--dark {
+}
+.Toastify__toast--default {
+}
+.Toastify__toast--info {
+}
+.Toastify__toast--success {
+    background-color: $bg__success;
+}
+.Toastify__toast--warning {
+}
+.Toastify__toast--error {
+    background-color: $bg__danger;
+}
+.Toastify__toast-body {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    border-radius: $common-border-radius;
+    padding: 0;
+    margin: 9px 0 8px;
+}
+
+/** Classes for the close button. Better use your own closeButton **/
+.Toastify__close-button {
+}
+.Toastify__close-button--default {
+}
+.Toastify__close-button > svg {
+}
+.Toastify__close-button:hover,
+.Toastify__close-button:focus {
+}
+
+/** Classes for the progress bar **/
+.Toastify__progress-bar {
+}
+.Toastify__progress-bar--animated {
+}
+.Toastify__progress-bar--controlled {
+}
+.Toastify__progress-bar--rtl {
+}
+.Toastify__progress-bar--default {
+}
+.Toastify__progress-bar--dark {
+}
