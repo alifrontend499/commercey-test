@@ -9,7 +9,7 @@ import {
 import FeatherIcon from 'feather-icons-react';
 
 // tooltips
-import { renderTooltipClose } from 'helpers/Tooltips/CommonTooltips'
+import { renderTooltipClose } from 'utlis/helpers/Tooltips/CommonTooltips'
 
 export default function EditColumnsModal(props) {
     useEffect(() => {

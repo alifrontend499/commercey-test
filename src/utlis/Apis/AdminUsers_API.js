@@ -1,11 +1,12 @@
 // AXIOS
 import axios from "axios";
 
-import apiUrl from "./constants";
+import { apiUrl } from "./constants";
 
 // get admin users
 export async function getUsers(token, page) {
-    if ((token, page)) {
+    // if ((token, page)) {
+    if ((token)) {
         const users = await axios.get(apiUrl + "list" + page, {
             headers: {
                 Authorization: `Bearer ${token}`,

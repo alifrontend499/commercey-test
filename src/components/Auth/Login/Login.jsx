@@ -31,14 +31,26 @@ import appLogo from 'assets/images/logo.png'
 // redux
 import { connect } from 'react-redux'
 
+// helpers functions
+import { saveToLocalStorage } from 'utlis/helpers/Common/CommonHelperFunctions'
+
+// actions
+import { saveCommonTokenToStore, saveCurrentUserToStore, authenticateUser } from 'redux/actions/actionAuth'
+
+// react toastify
+import { toast, Slide } from 'react-toastify';
+
 function Login(props) {
+    const tempUserEmail = 'admin@gmail.com';
+    const tempUserPass = '12345678';
     const [loginButtonDisable, setLoginButtonDisable] = useState(false)
     const [loginButtonLoading, setLoginButtonLoading] = useState(false)
 
     // initial login form values
     const initialLoginFormValues = {
-        loginEmail: '',
-        loginPassword: ''
+        loginEmail: tempUserEmail,
+        loginPassword: tempUserPass,
+        loginRememberMe: false,
     }
 
     // handle login form validations
@@ -46,8 +58,9 @@ function Login(props) {
         loginEmail: Yup.string().email('Invalid email address').required('This field is required'),
         loginPassword: Yup.string()
             .required('This field is required')
-            .min(8, 'Password must be at least 8 characters long')
-        // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, 'the password must contain atleast one lowercase letter, one uppercase letter and one number.')
+            .min(8, 'Password must be at least 8 characters long'),
+        // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, 'the password must contain atleast one lowercase letter, one uppercase letter and one number.'),
+        loginRememberMe: Yup.bool()
     })
 
     // handle login form submmision
@@ -57,7 +70,71 @@ function Login(props) {
             setLoginButtonLoading(true)
             setLoginButtonDisable(true)
 
+            console.log(values)
+
+            setTimeout(() => {
+                if (values.loginEmail === tempUserEmail && values.loginPassword === tempUserPass) {
+                    // disbling the loading
+                    setLoginButtonLoading(false)
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing success message
+                    toast.success("Login Successfull!! redirecting to the dashboard...", {
+                        className: 'app-toast',
+                        autoClose: 2000,
+                        transition: Slide,
+                        draggable: false,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        onClose: () => {
+                            var tempUser = {
+                                userId: '1',
+                                userToken: 'usertoken.1.kkysakk',
+                                email: tempUserEmail,
+                                firstName: 'super',
+                                lastName: 'admin',
+                                loggedOn: new Date()
+                            }
+
+                            // if user select remember me
+                            if (values.loginRememberMe) {
+                                tempUser = { ...tempUser, canExpire: false }
+                            } else {
+                                tempUser = { ...tempUser, canExpire: true }
+                            }
+
+                            // saving user details to the global store
+                            props.saveCommonTokenToStore(tempUser.userToken)
+                            props.saveCurrentUserToStore(tempUser)
+                            props.authenticateUser(true)
+
+                            // saving user details to the local storage
+                            saveToLocalStorage("__uu_dd", JSON.stringify(tempUser))
+                        }
+                    })
+                } else {
+                    // showing success message
+                    toast.error("Invalid Credentials", {
+                        className: 'app-toast',
+                        autoClose: 3000,
+                        transition: Slide,
+                        draggable: false,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        onClose: () => {
+                            // enabling the login button and disbling loading
+                            setLoginButtonLoading(false)
+                            setLoginButtonDisable(false)
+                        }
+                    })
+                }
+            }, 500);
         } else {
+            // disbling the login button and enabling loading
+            setLoginButtonLoading(true)
+            setLoginButtonDisable(true)
         }
     }
 
@@ -99,7 +176,7 @@ function Login(props) {
                                     autoComplete="off">
                                     {/* form field */}
                                     <div className={`
-                                        st-form position-relative mb-4 
+                                        st-form position-relative 
                                         ${(formik.touched.loginEmail && formik.errors.loginEmail) && "has-msg msg-error"}
                                     `}>
                                         <input
@@ -121,7 +198,7 @@ function Login(props) {
 
                                     {/* form field */}
                                     <div className={`
-                                        st-form position-relative mb-4 
+                                        st-form position-relative 
                                         ${(formik.touched.loginPassword && formik.errors.loginPassword) && "has-msg msg-error"}
                                     `}>
                                         <input
@@ -157,7 +234,12 @@ function Login(props) {
                                         </Button>
 
                                         <label className="st-checkbox d-inline-flex cursor-pointer ms-3">
-                                            <input type="checkbox" className="d-none" />
+                                            <input
+                                                type="checkbox"
+                                                className="d-none"
+                                                id="loginRememberMe"
+                                                name="loginRememberMe"
+                                                {...formik.getFieldProps('loginRememberMe')} />
                                             <span className="box d-flex align-items-center justify-content-center border">
                                                 <FeatherIcon
                                                     icon="check"
@@ -194,4 +276,12 @@ const getDataFromStore = state => {
     };
 }
 
-export default connect(getDataFromStore, null)(Login)
+const dispatchActionsToProps = dispatch => {
+    return {
+        saveCommonTokenToStore: comonToken => dispatch(saveCommonTokenToStore(comonToken)),
+        saveCurrentUserToStore: currentUser => dispatch(saveCurrentUserToStore(currentUser)),
+        authenticateUser: bool => dispatch(authenticateUser(bool)),
+    }
+}
+
+export default connect(getDataFromStore, dispatchActionsToProps)(Login)

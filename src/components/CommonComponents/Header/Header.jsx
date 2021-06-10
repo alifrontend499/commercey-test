@@ -12,7 +12,18 @@ import FeatherIcon from 'feather-icons-react';
 // react router dom
 import { Link } from 'react-router-dom';
 
+import { globalLogout } from 'utlis/helpers/Common/CommonHelperFunctions'
+
 export default function Header() {
+
+    // handle logout
+    const handleLogout = ev => {
+        ev.preventDefault()
+
+        if(confirm('Are you sure you want to logout?')) {
+            globalLogout()
+        }
+    }
     return (
         <header className="border-bottom st-border-light bg-white">
             <Container fluid className="st-container">
@@ -70,7 +81,7 @@ export default function Header() {
                                                 </p>
                                             </div>
                                         </Link>
-                                        
+
                                         {/* link item */}
                                         <Link to="/" className="link-item text-decoration-none d-flex">
                                             <div className="img rounded-circle d-flex align-items-center justify-content-center overflow-hidden">
@@ -211,7 +222,10 @@ export default function Header() {
 
                                     <div className="bottom-sec border-top st-border st-border-light">
                                         {/* link item */}
-                                        <Link to="/" className="link-item text-decoration-none d-flex align-items-center">
+                                        <Link
+                                            to="/"
+                                            className="link-item text-decoration-none d-flex align-items-center"
+                                            onClick={handleLogout}>
                                             <FeatherIcon
                                                 icon="log-out"
                                                 size="15"

@@ -10,7 +10,7 @@ import {
 import FeatherIcon from 'feather-icons-react';
 
 // tooltips
-import { renderTooltipClose } from 'helpers/Tooltips/CommonTooltips'
+import { renderTooltipClose } from 'utlis/helpers/Tooltips/CommonTooltips'
 
 // formik
 import {

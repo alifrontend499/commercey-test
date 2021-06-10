@@ -18,6 +18,9 @@ import EditColumnsModal from './includes/modals/EditColumnsModal'
 import UserTableTopBar from './includes/UserTable/UserTableTopBar'
 import UserTable from './includes/UserTable/UserTable'
 
+// APIs
+import { getUsers } from 'utlis/Apis/AdminUsers_API'
+
 export default function Users() {
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -47,6 +50,16 @@ export default function Users() {
     // useEffect: temprory filling user data
     useEffect(() => {
         setLoading(true)
+
+        // getting users
+        getUsers("7", "").then(res => {
+            console.log(res)
+        }).catch(err => {
+            // console.log('err ', err)
+            console.log('err ', err.message)
+        })
+
+        // getting users
 
         setTimeout(() => {
             const usersData = [

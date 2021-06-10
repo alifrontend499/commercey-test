@@ -23,16 +23,41 @@ import Header from 'components/CommonComponents/Header/Header'
 // react toastify
 import { ToastContainer } from 'react-toastify';
 
+// helpers functions
+import { getCurrentUserFromLocalStorage } from 'utlis/helpers/Common/CommonHelperFunctions'
+
+// actions
+import { saveCommonTokenToStore, saveCurrentUserToStore, authenticateUser } from 'redux/actions/actionAuth'
+
 function AppRoot(props) {
     const [authLoading, setAuthLoading] = useState(true)
 
-    // USE EFFECT
+    // USE EFFECT: USER CHECK
     useEffect(() => {
-        // TEMPRORY LOADING FOR AUTHENTICATION CHECK
-        setTimeout(() => {
-            setAuthLoading(false)
-        }, 500);
+        // CHECKING IF THE USER IS ALREADY LOGGED IN
+        const currentUser = getCurrentUserFromLocalStorage()
+        // if user exists
+        if (currentUser) {
+            // saving user details to the global store
+            props.saveCommonTokenToStore(currentUser.userToken)
+            props.saveCurrentUserToStore(currentUser)
+            props.authenticateUser(true)
 
+            // stop loading
+            setTimeout(() => {
+                setAuthLoading(false)
+            }, 500);
+        } else {
+            // updating user details to the global store
+            props.saveCommonTokenToStore("")
+            props.saveCurrentUserToStore(null)
+            props.authenticateUser(false)
+
+            // stop loading
+            setTimeout(() => {
+                setAuthLoading(false)
+            }, 500);
+        }
     }, [])
 
     return (
@@ -87,4 +112,12 @@ const getDataFromStore = state => {
     };
 }
 
-export default connect(getDataFromStore, null)(AppRoot)
+const dispatchActionsToProps = dispatch => {
+    return {
+        saveCommonTokenToStore: comonToken => dispatch(saveCommonTokenToStore(comonToken)),
+        saveCurrentUserToStore: currentUser => dispatch(saveCurrentUserToStore(currentUser)),
+        authenticateUser: bool => dispatch(authenticateUser(bool)),
+    }
+}
+
+export default connect(getDataFromStore, dispatchActionsToProps)(AppRoot)

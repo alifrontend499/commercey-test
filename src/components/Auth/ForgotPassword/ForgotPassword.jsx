@@ -92,7 +92,7 @@ function ForgotPassword(props) {
                                     autoComplete="off">
                                     {/* form field */}
                                     <div className={`
-                                        st-form position-relative mb-4 
+                                        st-form position-relative 
                                         ${(formik.touched.forgotPasswordEmail && formik.errors.forgotPasswordEmail) && "has-msg msg-error"}
                                     `}>
                                         <input
