@@ -40,16 +40,17 @@ import { saveCommonTokenToStore, saveCurrentUserToStore, authenticateUser } from
 // react toastify
 import { toast, Slide } from 'react-toastify';
 
+// auth api
+import { userLogin } from 'utlis/Apis/AuthUsers_API';
+
 function Login(props) {
-    const tempUserEmail = 'admin@gmail.com';
-    const tempUserPass = '12345678';
     const [loginButtonDisable, setLoginButtonDisable] = useState(false)
     const [loginButtonLoading, setLoginButtonLoading] = useState(false)
 
     // initial login form values
     const initialLoginFormValues = {
-        loginEmail: tempUserEmail,
-        loginPassword: tempUserPass,
+        loginEmail: "",
+        loginPassword: "",
         loginRememberMe: false,
     }
 
@@ -70,68 +71,29 @@ function Login(props) {
             setLoginButtonLoading(true)
             setLoginButtonDisable(true)
 
-            setTimeout(() => {
-                if (values.loginEmail === tempUserEmail && values.loginPassword === tempUserPass) {
-                    // disbling the loading
-                    setLoginButtonLoading(false)
+            console.log(values)
 
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
+            userLogin(values.loginEmail, values.loginPassword).then(res => {
+                console.log(res)
+            }).catch(err => {
+                console.log('err ', err.message)
 
-                    // showing success message
-                    toast.success("Login Successfull!! redirecting to the dashboard...", {
-                        className: 'app-toast',
-                        autoClose: 2000,
-                        transition: Slide,
-                        draggable: false,
-                        hideProgressBar: true,
-                        closeOnClick: false,
-                        onClose: () => {
-                            var tempUser = {
-                                userId: '1',
-                                userToken: 'usertoken.1.kkysakk',
-                                email: tempUserEmail,
-                                firstName: 'super',
-                                lastName: 'admin',
-                                loggedOn: new Date()
-                            }
+                // showing success message
+                toast.error("Error Occured: " + err.message, {
+                    className: 'app-toast',
+                    autoClose: 3000,
+                    transition: Slide,
+                    draggable: false,
+                    hideProgressBar: true,
+                    closeOnClick: false,
+                    onClose: () => {
+                        // enabling the login button and disbling loading
+                        setLoginButtonLoading(false)
+                        setLoginButtonDisable(false)
+                    }
+                })
+            })
 
-                            // if user select remember me
-                            if (values.loginRememberMe) {
-                                tempUser = { ...tempUser, canExpire: false }
-                            } else {
-                                tempUser = { ...tempUser, canExpire: true }
-                            }
-
-                            // saving user details to the global store
-                            props.saveCommonTokenToStore(tempUser.userToken)
-                            props.saveCurrentUserToStore(tempUser)
-                            props.authenticateUser(true)
-
-                            // saving user details to the local storage
-                            saveToLocalStorage("__uu_dd", JSON.stringify(tempUser))
-                        }
-                    })
-                } else {
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-                    
-                    // showing error message
-                    toast.error("Invalid Credentials", {
-                        className: 'app-toast',
-                        autoClose: 3000,
-                        transition: Slide,
-                        draggable: false,
-                        hideProgressBar: true,
-                        closeOnClick: false,
-                        onClose: () => {
-                            // enabling the login button and disbling loading
-                            setLoginButtonLoading(false)
-                            setLoginButtonDisable(false)
-                        }
-                    })
-                }
-            }, 1000);
         } else {
             // disbling the login button and enabling loading
             setLoginButtonLoading(true)

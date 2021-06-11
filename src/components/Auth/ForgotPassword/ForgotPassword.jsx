@@ -28,13 +28,17 @@ import appLogo from 'assets/images/logo.png'
 // redux
 import { connect } from 'react-redux'
 
+// react toastify
+import { toast, Slide } from 'react-toastify';
+
 function ForgotPassword(props) {
+    const tempUserEmail = 'admin@gmail.com';
     const [forgotPasswordButtonDisable, setForgotPasswordButtonDisable] = useState(false)
     const [forgotPasswordButtonLoading, setforgotPasswordButtonLoading] = useState(false)
 
     // initial forgot password form values
     const initialForgotPasswordFormValues = {
-        forgotPasswordEmail: '',
+        forgotPasswordEmail: tempUserEmail,
     }
 
     // handle forgot password form validations
@@ -49,8 +53,50 @@ function ForgotPassword(props) {
             setforgotPasswordButtonLoading(true)
             setForgotPasswordButtonDisable(true)
 
-        } else {
-            
+            console.log(values)
+
+            setTimeout(() => {
+                if (values.forgotPasswordEmail === tempUserEmail) {
+                    // disbling the loading
+                    setforgotPasswordButtonLoading(false)
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing success message
+                    toast.success("Please check your email for further instructions", {
+                        className: 'app-toast',
+                        autoClose: 3000,
+                        transition: Slide,
+                        draggable: false,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        onClose: () => {
+                            // enabling the button
+                            setForgotPasswordButtonDisable(false)
+                        }
+                    })
+
+                } else {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing error message
+                    toast.error("Email address doesn't exists", {
+                        className: 'app-toast',
+                        autoClose: 2000,
+                        transition: Slide,
+                        draggable: false,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        onClose: () => {
+                            // enabling the button and disabling the loading
+                            setforgotPasswordButtonLoading(false)
+                            setForgotPasswordButtonDisable(false)
+                        }
+                    })
+                }
+            }, 1000);
         }
     }
 
