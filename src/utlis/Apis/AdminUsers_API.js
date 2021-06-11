@@ -7,7 +7,7 @@ import { apiUrl } from "./constants";
 export async function getUsers(token, page) {
     // if ((token, page)) {
     if ((token)) {
-        const users = await axios.get(apiUrl + "list" + page, {
+        const users = await axios.get(apiUrl + "list", {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

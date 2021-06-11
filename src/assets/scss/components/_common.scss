@@ -91,6 +91,64 @@
             padding: 8px 8px 8px 12px;
         }
     }
+
+    // PADDING
+    // padding sm
+    &.st-table-padding-sm {
+        th,
+        td {
+            padding: 10px 12px 8px;
+        }
+    }
+
+    // HEADINGS
+    // dashboard color
+    &.st-table-heading-dashboard {
+        thead {
+            > tr {
+                background-color: $bg__dashboard;
+            }
+        }
+    }
+
+    // primary color
+    &.st-table-heading-primary {
+        thead {
+            > tr {
+                background-color: $primary-color;
+                th,
+                td {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    // dark color
+    &.st-table-heading-dark {
+        thead {
+            > tr {
+                background-color: $text__dark-color;
+                th,
+                td {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    // light color
+    &.st-table-heading-light {
+        thead {
+            > tr {
+                background-color: $text__light-color;
+                th,
+                td {
+                    color: #fff;
+                }
+            }
+        }
+    }
 }
 
 // no data found
@@ -215,4 +273,23 @@
 .Toastify__progress-bar--default {
 }
 .Toastify__progress-bar--dark {
+}
+
+
+// app info box
+.app-info-box {
+    background: #fff;
+    padding: 8px 10px;
+    border: 1px solid #f5f5f5;
+    border-left: 5px solid $primary-color;
+
+    // COLORS
+    // dark
+    &.app-info-box-dark {
+        border-left-color: $text__dark-color;
+    }
+    // light
+    &.app-info-box-light {
+        border-left-color: $text__light-color;
+    }
 }

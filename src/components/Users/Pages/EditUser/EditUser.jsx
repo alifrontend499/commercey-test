@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import {
     Container,
     Col,
-    Spinner
+    Spinner,
+    Table
 } from 'react-bootstrap'
 
 // react router
@@ -12,6 +13,9 @@ import { Link } from 'react-router-dom'
 
 // users styles
 import "../../styles/users-styles.scss"
+
+// icons : feather
+import FeatherIcon from 'feather-icons-react';
 
 // formik
 import {
@@ -40,6 +44,8 @@ export default function EditUser(props) {
     const [userEmail, setUserEmail] = useState("")
     const [userType, setUserType] = useState("")
     const [userStatus, setUserStatus] = useState("")
+
+    const [activePermissionTabId, setActivePermissionTabId] = useState("2")
 
     // edit user's values
     useEffect(() => {
@@ -120,6 +126,17 @@ export default function EditUser(props) {
         // triggering click on submit button
         submitButtonRef.current.click()
     }
+
+    // handle user permissions link click
+    const handleUserPermissionsLinkClick = (ev, dataId) => {
+        ev.preventDefault()
+        if(setActivePermissionTabId === dataId) {
+            setActivePermissionTabId("")
+        } else {
+            setActivePermissionTabId(dataId)
+        }
+    }
+
     return (
         <section id="app-users__edit-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -165,11 +182,443 @@ export default function EditUser(props) {
                             {/* card heading */}
                             <div className="app-header-wrapper heading-sm mb-1">
                                 {/* heading */}
-                                <p className="app-heading text-capitalize">Permissions</p>
+                                <p className="app-heading text-capitalize">User Permissions</p>
                             </div>
-                            <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-                                <Col xs={12} md={9} lg={6} className="px-0">
 
+                            {/* info */}
+                            <p className="app-info-box mb-2">Permissions allow you to restrict which areas of the administration area this user can access.</p>
+
+                            {/* content */}
+                            <div className="app-card-content">
+                                <Col xs={12} className="px-0">
+                                    {/* user permissions */}
+                                    <div className="app-user-permissions">
+                                        <div className="aup-inner d-flex align-items-start">
+                                            {/* left sec */}
+                                            <div className="aup_lt position-sticky" style={{ top: 15 }}>
+                                                <div className="inner bg-white border st-border-light st-default-rounded-block pad-15">
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "1") ? "active" : ""}`}
+                                                        data-id="1"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "1")}>
+                                                        <FeatherIcon
+                                                            icon="home"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Dasboard</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "2") ? "active" : ""}`}
+                                                        data-id="2"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "2")}>
+                                                        <FeatherIcon
+                                                            icon="trending-up"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>My Sales</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "3") ? "active" : ""}`}
+                                                        data-id="3"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "3")}>
+                                                        <FeatherIcon
+                                                            icon="book"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Catalog</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "4") ? "active" : ""}`}
+                                                        data-id="4"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "4")}>
+                                                        <FeatherIcon
+                                                            icon="clipboard"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Reports</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "5") ? "active" : ""}`}
+                                                        data-id="5"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "5")}>
+                                                        <FeatherIcon
+                                                            icon="home"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Dasboard</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "6") ? "active" : ""}`}
+                                                        data-id="6"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "6")}>
+                                                        <FeatherIcon
+                                                            icon="trending-up"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>My Sales</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 pad-15-B 
+                                                        ${(activePermissionTabId === "7") ? "active" : ""}`}
+                                                        data-id="7"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "7")}>
+                                                        <FeatherIcon
+                                                            icon="book"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Catalog</span>
+                                                    </a> <br />
+
+                                                    {/* link */}
+                                                    <a href="/"
+                                                        className={`link text-decoration-none st-text-dark d-inline-flex st-fs-15 
+                                                        ${(activePermissionTabId === "8") ? "active" : ""}`}
+                                                        data-id="8"
+                                                        onClick={ev => handleUserPermissionsLinkClick(ev, "8")}>
+                                                        <FeatherIcon
+                                                            icon="clipboard"
+                                                            size="14"
+                                                            className="icon" />
+                                                        <span>Reports</span>
+                                                    </a> <br />
+                                                </div>
+                                            </div>
+
+                                            {/* right sec */}
+                                            <div className="aup_rt media-body pad-15-L">
+                                                <div className="inner bg-white border st-border-light st-default-rounded-block overflow-hidden">
+                                                    <div className="st-listing-table st-table-heading-dark st-table-padding-sm p-0 users-table">
+                                                        <Table responsive className="mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        <p className="text-capitalize">
+                                                                            permissions
+                                                                        </p>
+                                                                    </th>
+                                                                    <th width={75} className="action">
+                                                                        <p className="text-capitalize text-center">
+                                                                            action
+                                                                        </p>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view sales
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            edit orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            delete orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" defaultChecked={true} />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view cart
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" defaultChecked={true} />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            edit customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" defaultChecked={true} />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            delete customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view sales
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" defaultChecked={true} />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            edit orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            delete orders
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view cart
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            view customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            edit customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <p className="text-capitalize">
+                                                                            delete customer
+                                                                        </p>
+                                                                    </td>
+                                                                    <td className="action text-center">
+                                                                        <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
+                                                                            <input type="checkbox" className="d-none" />
+                                                                            <span className="box d-flex align-items-center justify-content-center border">
+                                                                                <FeatherIcon
+                                                                                    icon="check"
+                                                                                    size="15"
+                                                                                    className="icon position-relative" />
+                                                                            </span>
+                                                                        </label>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </Table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </Col>
                             </div>
                         </div>
@@ -177,7 +626,7 @@ export default function EditUser(props) {
                         {/* app card : bottom-bar */}
                         <div className="app-card action-btns">
                             <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
-                                <Link to="/settings/users" className="st-btn st-btn-white no-min-width d-flex align-items-center justify-content-center me-3">
+                                <Link to="/settings/users" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                     Cancel
                                 </Link>
                                 <button
