@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-// header & footer
-// import Header from 'components/CommonComponents/Header/Header'
-// import Footer from 'components/CommonComponents/Footer/Footer'
-
 // routes
 import AllRoutes from 'routes/AllRoutes'
 
@@ -16,8 +12,8 @@ import { connect } from 'react-redux'
 // components
 import AppLeftMenu from 'components/CommonComponents/AppLeftMenu/AppLeftMenu'
 
-// header
-import Header from 'components/CommonComponents/Header/Header'
+// header & footer
+import Header from 'components/CommonComponents/Header'
 // import Footer from 'components/CommonComponents/Footer/Footer'
 
 // react toastify
@@ -58,7 +54,7 @@ function AppRoot(props) {
                 setAuthLoading(false)
             }, 500);
         }
-    }, [])
+    }, [props])
 
     return (
         <div className="app-root">
