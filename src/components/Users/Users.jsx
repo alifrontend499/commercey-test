@@ -52,12 +52,12 @@ export default function Users() {
         setLoading(true)
 
         // getting users
-        // getUsers("7", "").then(res => {
-        //     console.log(res)
-        // }).catch(err => {
-        //     // console.log('err ', err)
-        //     console.log('err ', err.message)
-        // })
+        getUsers("7", "").then(res => {
+            console.log(res)
+        }).catch(err => {
+            // console.log('err ', err)
+            console.log('err ', err.message)
+        })
 
         // getting users
         setTimeout(() => {
