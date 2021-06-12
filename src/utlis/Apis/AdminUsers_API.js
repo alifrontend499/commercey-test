@@ -7,7 +7,7 @@ import { apiUrl } from "./constants";
 export async function getUsers(token, page) {
     // if ((token, page)) {
     if ((token)) {
-        const users = await axios.get(apiUrl + "list", {
+        const users = await axios.get("https://mocki.io/v1/6bc20ba0-0511-4441-b79b-83694e72d73b", {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
