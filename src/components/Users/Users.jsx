@@ -52,15 +52,14 @@ export default function Users() {
         setLoading(true)
 
         // getting users
-        getUsers("7", "").then(res => {
-            console.log(res)
-        }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
-        })
+        // getUsers("7", "").then(res => {
+        //     console.log(res)
+        // }).catch(err => {
+        //     // console.log('err ', err)
+        //     console.log('err ', err.message)
+        // })
 
         // getting users
-
         setTimeout(() => {
             const usersData = [
                 {
@@ -71,7 +70,7 @@ export default function Users() {
                     type: "admin",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "June 21 6:30pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
                 {
                     id: "2",
@@ -81,7 +80,7 @@ export default function Users() {
                     type: "manager",
                     twoFactors: "yes",
                     status: "active",
-                    lastActive: "June 21 6:10pm"
+                    lastActive: new Date(2021, 4, 12)
                 },
                 {
                     id: "3",
@@ -91,7 +90,7 @@ export default function Users() {
                     type: "manager",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "May 21 6:30pm"
+                    lastActive: new Date(2021, 3, 12)
                 },
                 {
                     id: "4",
@@ -101,7 +100,7 @@ export default function Users() {
                     type: "reporter",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "June 12 5:14pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
                 {
                     id: "5",
@@ -111,7 +110,7 @@ export default function Users() {
                     type: "reporter",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "Mar 21 2:11pm"
+                    lastActive: new Date(2021, 3, 12)
                 },
                 {
                     id: "6",
@@ -121,7 +120,7 @@ export default function Users() {
                     type: "admin",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "June 21 6:30pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
                 {
                     id: "7",
@@ -131,7 +130,7 @@ export default function Users() {
                     type: "manager",
                     twoFactors: "yes",
                     status: "active",
-                    lastActive: "June 21 6:10pm"
+                    lastActive: new Date(2021, 2, 12)
                 },
                 {
                     id: "8",
@@ -141,7 +140,7 @@ export default function Users() {
                     type: "manager",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "May 21 6:30pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
                 {
                     id: "9",
@@ -151,7 +150,7 @@ export default function Users() {
                     type: "reporter",
                     twoFactors: "no",
                     status: "active",
-                    lastActive: "June 12 5:14pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
                 {
                     id: "10",
@@ -161,7 +160,7 @@ export default function Users() {
                     type: "reporter",
                     twoFactors: "no",
                     status: "inactive",
-                    lastActive: "Mar 21 2:11pm"
+                    lastActive: new Date(2021, 5, 12)
                 },
             ]
             setLoading(false)

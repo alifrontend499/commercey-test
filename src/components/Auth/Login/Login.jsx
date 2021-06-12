@@ -57,8 +57,7 @@ function Login(props) {
     const loginFormValidationSchema = Yup.object({
         loginEmail: Yup.string().email('Invalid email address').required('This field is required'),
         loginPassword: Yup.string()
-            .required('This field is required')
-            .min(8, 'Password must be at least 8 characters long'),
+            .required('This field is required'),
         // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/, 'the password must contain atleast one lowercase letter, one uppercase letter and one number.'),
         loginRememberMe: Yup.bool()
     })

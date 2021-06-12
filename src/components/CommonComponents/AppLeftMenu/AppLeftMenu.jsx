@@ -350,6 +350,16 @@ export default function AppLeftMenu() {
                                         Users
                                     </NavLink>
                                 </div>
+
+                                {/* SUB NAV ITEM */}
+                                <div className="alm_sub-nav-item">
+                                    <NavLink
+                                        to="/settings/emails"
+                                        activeClassName="opened"
+                                        className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
+                                        Email Templates
+                                    </NavLink>
+                                </div>
                             </div>
                         )
                     }

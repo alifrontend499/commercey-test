@@ -18,6 +18,9 @@ import UsersLodingSkeleton from './users__loadingSkeleton'
 // tooltips
 import { renderTooltipDeleteUser, renderTooltipEditUser } from '../../includes/tooltips/Users__Tooltips'
 
+// react moment
+import Moment from 'react-moment';
+
 export default function UserTable(props) {
 
     return (
@@ -180,7 +183,10 @@ export default function UserTable(props) {
                                 props.column__LastActive && (
                                     <td className="column__last-active">
                                         <p className="">
-                                            {item.lastActive}
+                                            <Moment
+                                                format="MMMM DD, YYYY hh:mm a"
+                                                date={item.lastActive}
+                                            />
                                         </p>
                                     </td>
                                 )

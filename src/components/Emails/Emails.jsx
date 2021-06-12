@@ -2,19 +2,15 @@ import React, { useState, useEffect } from 'react'
 
 // bootstrap
 import {
-    Container,
-    Modal,
+    Container
 } from 'react-bootstrap'
 
-// users styles
-import "./styles/users-styles.scss"
+// emails styles
+import "./styles/emails-styles.scss"
 
-// user table
-import UserTableTopBar from './includes/UserTable/UserTableTopBar'
-import UserTable from './includes/UserTable/UserTable'
-
-// APIs
-import { getUsers } from 'utlis/Apis/AdminUsers_API'
+// email table
+import EmailsTableTopBar from './includes/EmailsTable/EmailsTableTopBar'
+import EmailsTable from './includes/EmailsTable/EmailsTable'
 
 export default function Emails() {
     // consts
@@ -24,190 +20,93 @@ export default function Emails() {
     // refs
 
     // states
-    const [users, setUsers] = useState([])
+    const [emails, setEmails] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const [createUserModalShow, setCreateUserModalShow] = useState(false)
-    const [editUserModalShow, setEditUserModalShow] = useState(false)
-    const [editColumnsModalShow, setEditColumnsModalShow] = useState(false)
+    const [allEmailsSelected, setAllEmailsSelected] = useState(false)
 
-    const [allUsersSelected, setAllUsersSelected] = useState(false)
+    const [column__TemplateName, setColumn__TemplateName] = useState(true)
+    const [column__Subject, setColumn__Subject] = useState(true)
+    const [column__DateAdded, setColumn__DateAdded] = useState(true)
+    const [column__to, setColumn__to] = useState(true)
 
-    const [userToBeEdit, setUserToBeEdit] = useState({})
-
-    const [column__User, setColumn__User] = useState(true)
-    const [column__Email, setColumn__Email] = useState(true)
-    const [column__Type, setColumn__Type] = useState(true)
-    const [column__TwoFactors, setColumn__TwoFactors] = useState(true)
-    const [column__LastActive, setColumn__LastActive] = useState(true)
-    const [column__Status, setColumn__Status] = useState(true)
-
-    // useEffect: temprory filling user data
+    // useEffect: temprory filling email data
     useEffect(() => {
         setLoading(true)
 
-        // getting users
-        getUsers("7", "").then(res => {
-            console.log(res)
-        }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
-        })
-
-        // getting users
-
         setTimeout(() => {
-            const usersData = [
+            const emailsData = [
                 {
                     id: "1",
-                    firstName: "Rick",
-                    lastName: "Grimes",
-                    email: "rickgrimes@gmail.com",
-                    type: "admin",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "June 21 6:30pm"
+                    templateName: "Forgot Password Email",
+                    subject: "Forgot Password?",
+                    to: "user",
+                    dateAdded: new Date(2021, 3, 4),
                 },
                 {
                     id: "2",
-                    firstName: "Ipsa",
-                    lastName: "Grimes",
-                    email: "ipsa@gmail.com",
-                    type: "manager",
-                    twoFactors: "yes",
-                    status: "active",
-                    lastActive: "June 21 6:10pm"
+                    templateName: "New Signup Email",
+                    subject: "Thanx for Joining Commercey",
+                    to: "user",
+                    dateAdded: new Date(2021, 2, 11),
                 },
                 {
                     id: "3",
-                    firstName: "Dolorum",
-                    lastName: "Ran",
-                    email: "doran@gmail.com",
-                    type: "manager",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "May 21 6:30pm"
+                    templateName: "New Order Email",
+                    subject: "Thanx for your order",
+                    to: "user",
+                    dateAdded: new Date(2021, 5, 12),
                 },
                 {
                     id: "4",
-                    firstName: "Qui",
-                    lastName: "Chee",
-                    email: "cheq@gmail.com",
-                    type: "reporter",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "June 12 5:14pm"
+                    templateName: "Account Deleted Email",
+                    subject: "Your account is deleted successfully",
+                    to: "user",
+                    dateAdded: new Date(2021, 5, 12),
                 },
                 {
                     id: "5",
-                    firstName: "Rerum",
-                    lastName: "Nal",
-                    email: "rerumnal@gmail.com",
-                    type: "reporter",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "Mar 21 2:11pm"
+                    templateName: "New Signup Email",
+                    subject: "New user joined the commercey",
+                    to: "admin",
+                    dateAdded: new Date(2020, 7, 1),
                 },
                 {
                     id: "6",
-                    firstName: "Rick",
-                    lastName: "Grimes",
-                    email: "rickgrimes@gmail.com",
-                    type: "admin",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "June 21 6:30pm"
+                    templateName: "New Order Recieved Email",
+                    subject: "New order recieved",
+                    to: "admin",
+                    dateAdded: new Date(2021, 3, 22),
                 },
                 {
                     id: "7",
-                    firstName: "Ipsa",
-                    lastName: "Grimes",
-                    email: "ipsa@gmail.com",
-                    type: "manager",
-                    twoFactors: "yes",
-                    status: "active",
-                    lastActive: "June 21 6:10pm"
-                },
-                {
-                    id: "8",
-                    firstName: "Dolorum",
-                    lastName: "Ran",
-                    email: "doran@gmail.com",
-                    type: "manager",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "May 21 6:30pm"
-                },
-                {
-                    id: "9",
-                    firstName: "Qui",
-                    lastName: "Chee",
-                    email: "cheq@gmail.com",
-                    type: "reporter",
-                    twoFactors: "no",
-                    status: "active",
-                    lastActive: "June 12 5:14pm"
-                },
-                {
-                    id: "10",
-                    firstName: "Rerum",
-                    lastName: "Nal",
-                    email: "rerumnal@gmail.com",
-                    type: "reporter",
-                    twoFactors: "no",
-                    status: "inactive",
-                    lastActive: "Mar 21 2:11pm"
+                    templateName: "Account Deleted Email",
+                    subject: "User deleted the account",
+                    to: "admin",
+                    dateAdded: new Date(2021, 5, 12),
                 },
             ]
             setLoading(false)
-            setUsers([])
-            setUsers(usersData)
+            setEmails([])
+            setEmails(emailsData)
         }, 2000);
 
     }, [])
 
-    // openning create user modal opening
-    const handleCreateUserModalOpen = () => setCreateUserModalShow(true);
-
-    // closing create user modal opening
-    const handleCreateUserModalClose = () => setCreateUserModalShow(false);
-
-    // openning modal edit user opening
-    const handleEditUserModalOpen = (ev, user) => {
-        ev.preventDefault()
-        setUserToBeEdit(user)
-        setEditUserModalShow(true)
-    };
-
-    // closing modal edit user opening
-    const handleEditUserModalClose = () => {
-        setEditUserModalShow(false)
-    };
-
-    // openning modal edit columns opening
-    const handleEditColumnsModalOpen = () => {
-        setEditColumnsModalShow(true)
-    };
-
-    // closing modal edit columns opening
-    const handleEditColumnsModalClose = () => {
-        setEditColumnsModalShow(false)
-    };
-
     // selecting all the columns
     const handleSelectAllChange = (ev) => {
-        const checkboxes = document.getElementsByClassName('user-selector-checkbox')
+        const checkboxes = document.getElementsByClassName('email-selector-checkbox')
 
-        // checking the checkbox and selecting all users
-        setAllUsersSelected(!allUsersSelected)
+        // checking the checkbox and selecting all emails
+        setAllEmailsSelected(!allEmailsSelected)
         setTimeout(() => {
             if (ev.target.checked) {
-                // all users selected
+                // all emails selected
                 checkboxes.length && Array.from(checkboxes).forEach(checkbox => {
                     checkbox.checked = true
                 });
             } else {
-                // all users not selected
+                // all emails not selected
                 checkboxes.length && Array.from(checkboxes).forEach(checkbox => {
                     checkbox.checked = false
                 });
@@ -216,26 +115,26 @@ export default function Emails() {
 
     };
 
-    const handleDeleteUser = (ev, userId) => {
+    const handleDeleteEmail = (ev, emailId) => {
         ev.preventDefault()
 
-        var confirmation = window.confirm('Are you sure you want to delete this user?')
+        var confirmation = window.confirm('Are you sure you want to delete this email?')
 
         if (confirmation) {
-            alert('user width the id' + userId + ' is delete now')
+            alert('email width the id' + emailId + ' is delete now')
         } else {
 
         }
     }
 
     return (
-        <section id="app-users" className="st-def-mar-TB">
+        <section id="app-emails" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-users">
+                <div className="app-emails">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper d-flex mb-2">
                         {/* heading */}
-                        <p className="app-heading text-capitalize">emails</p>
+                        <p className="app-heading text-capitalize">email templates</p>
                     </div>
 
                     {/* CONTENT WRAPPER */}
@@ -245,49 +144,38 @@ export default function Emails() {
                             <div className="app-card-content bg-white border st-border-light st-default-rounded-block">
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
-                                    <UserTableTopBar
+                                    <EmailsTableTopBar
                                         editColumnsType={editColumnsType}
 
-                                        handleCreateUserModalOpen={() => handleCreateUserModalOpen()}
-                                        handleEditColumnsModalOpen={() => handleEditColumnsModalOpen()}
+                                        column__TemplateName={column__TemplateName}
+                                        column__Subject={column__Subject}
+                                        column__to={column__to}
+                                        column__DateAdded={column__DateAdded}
 
-                                        column__User={column__User}
-                                        column__Email={column__Email}
-                                        column__Type={column__Type}
-                                        column__TwoFactors={column__TwoFactors}
-                                        column__LastActive={column__LastActive}
-                                        column__Status={column__Status}
-
-                                        setColumn__User={bool => setColumn__User(bool)}
-                                        setColumn__Email={bool => setColumn__Email(bool)}
-                                        setColumn__Type={bool => setColumn__Type(bool)}
-                                        setColumn__TwoFactors={bool => setColumn__TwoFactors(bool)}
-                                        setColumn__LastActive={bool => setColumn__LastActive(bool)}
-                                        setColumn__Status={bool => setColumn__Status(bool)}
+                                        setColumn__TemplateName={bool => setColumn__TemplateName(bool)}
+                                        setColumn__Subject={bool => setColumn__Subject(bool)}
+                                        setColumn__to={bool => setColumn__to(bool)}
+                                        setColumn__DateAdded={bool => setColumn__DateAdded(bool)}
                                     />
                                 </div>
 
                                 {/* table */}
-                                <div className="st-listing-table users-table">
-                                    <UserTable
-                                        allUsersSelected={allUsersSelected}
+                                <div className="st-listing-table emails-table">
+                                    <EmailsTable
+                                        allEmailsSelected={allEmailsSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
-
-                                        column__User={column__User}
-                                        column__Email={column__Email}
-                                        column__Type={column__Type}
-                                        column__TwoFactors={column__TwoFactors}
-                                        column__LastActive={column__LastActive}
-                                        column__Status={column__Status}
+                                        column__TemplateName={column__TemplateName}
+                                        column__Subject={column__Subject}
+                                        column__to={column__to}
+                                        column__DateAdded={column__DateAdded}
 
                                         loadingCount={loadingCount}
                                         loading={loading}
 
-                                        users={users}
+                                        emails={emails}
 
-                                        handleEditUserModalOpen={(ev, item) => handleEditUserModalOpen(ev, item)}
-                                        handleDeleteUser={(ev, userId) => handleDeleteUser(ev, userId)}
+                                        handleDeleteEmail={(ev, emailId) => handleDeleteEmail(ev, emailId)}
 
                                     />
                                 </div>

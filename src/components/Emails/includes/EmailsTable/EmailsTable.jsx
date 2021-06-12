@@ -13,12 +13,15 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 // skeleton loading
-import UsersLodingSkeleton from './users__loadingSkeleton'
+import EmailsLodingSkeleton from './emails__loadingSkeleton'
 
 // tooltips
-import { renderTooltipDeleteUser, renderTooltipEditUser } from '../tooltips/Users__Tooltips'
+import { renderTooltipDeleteEmail, renderTooltipEditEmail } from '../tooltips/Emails__Tooltips'
 
-export default function UserTable(props) {
+// react moment
+import Moment from 'react-moment';
+
+export default function EmailsTable(props) {
 
     return (
         <Table responsive className="mb-0">
@@ -29,8 +32,7 @@ export default function UserTable(props) {
                             <input
                                 type="checkbox"
                                 className="d-none"
-                                // defaultChecked={allUsersSelected}
-                                checked={props.allUsersSelected}
+                                checked={props.allEmailsSelected}
                                 onChange={ev => props.handleSelectAllChange(ev)} />
                             <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                 <FeatherIcon
@@ -41,60 +43,40 @@ export default function UserTable(props) {
                         </label>
                     </th>
                     {
-                        props.column__User && (
+                        props.column__TemplateName && (
                             <th>
                                 <p className="text-capitalize">
-                                    user
+                                    template name
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__Email && (
+                        props.column__Subject && (
                             <th>
                                 <p className="text-capitalize">
-                                    email
+                                    subject
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__Type && (
+                        props.column__to && (
                             <th>
                                 <p className="text-capitalize">
-                                    type
+                                    to
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__TwoFactors && (
+                        props.column__DateAdded && (
                             <th>
                                 <p className="text-capitalize">
-                                    two factors
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
-                        props.column__LastActive && (
-                            <th>
-                                <p className="text-capitalize">
-                                    last active
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
-                        props.column__Status && (
-                            <th>
-                                <p className="text-capitalize">
-                                    status
+                                    date added
                                 </p>
                             </th>
                         )
@@ -112,7 +94,7 @@ export default function UserTable(props) {
                             {
                                 (props.loadingCount && props.loadingCount.length) && props.loadingCount.map(item => (
                                     <React.Fragment key={item}>
-                                        <UsersLodingSkeleton />
+                                        <EmailsLodingSkeleton />
                                     </React.Fragment>
                                 ))
                             }
@@ -121,12 +103,12 @@ export default function UserTable(props) {
                 }
 
                 {
-                    /* USERS DATA */
-                    (props.users && props.users.length) ? props.users.map(item => (
+                    /* EMAILS DATA */
+                    (props.emails && props.emails.length) ? props.emails.map(item => (
                         <tr key={item.id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
-                                    <input type="checkbox" className="d-none user-selector-checkbox" />
+                                    <input type="checkbox" className="d-none email-selector-checkbox" />
                                     <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                         <FeatherIcon
                                             icon="check"
@@ -137,60 +119,43 @@ export default function UserTable(props) {
                             </td>
 
                             {
-                                props.column__User && (
-                                    <td className="column__username">
-                                        <Link to="/" className="hover-underline-link st-text-primary">
-                                            {item.firstName + " " + item.lastName}
-                                        </Link>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__Email && (
-                                    <td className="column__email">
+                                props.column__TemplateName && (
+                                    <td className="column__TemplateName">
                                         <p className="">
-                                            {item.email}
+                                            {item.templateName}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__Type && (
-                                    <td className="column__type">
-                                        <p className="st-text-primary">
-                                            {item.type}
+                                props.column__Subject && (
+                                    <td className="column__Subject">
+                                        <p className="">
+                                            {item.subject}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__TwoFactors && (
-                                    <td className="column__two-factors">
+                                props.column__to && (
+                                    <td className="column__to">
                                         <p className="">
-                                            {item.twoFactors}
+                                            {item.to}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__LastActive && (
-                                    <td className="column__last-active">
+                                props.column__DateAdded && (
+                                    <td className="column__DateAdded">
                                         <p className="">
-                                            {item.lastActive}
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__Status && (
-                                    <td className="column__status">
-                                        <p className="">
-                                            {item.status}
+                                            <Moment
+                                                format="MMMM DD, YYYY hh:mm a"
+                                                date={item.dateAdded}
+                                            />
                                         </p>
                                     </td>
                                 )
@@ -200,15 +165,14 @@ export default function UserTable(props) {
                                 <div className="d-flex justify-content-end">
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipEditUser}
+                                        overlay={renderTooltipEditEmail}
                                     >
                                         <Link
                                             to={{
-                                                pathname: '/settings/users/edit/' + item.id,
-                                                state: { userDetails: item }
+                                                pathname: '/settings/emails/edit/' + item.id,
+                                                state: { emailDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
-                                        // onClick={ev => props.handleEditUserModalOpen(ev, item)}
                                         >
                                             <FeatherIcon
                                                 icon="edit-2"
@@ -219,11 +183,11 @@ export default function UserTable(props) {
 
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipDeleteUser}
+                                        overlay={renderTooltipDeleteEmail}
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDeleteUser(ev, item.id)}
+                                            onClick={ev => props.handleDeleteEmail(ev, item.id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"
