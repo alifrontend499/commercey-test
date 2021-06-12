@@ -1,0 +1,55 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// USERS
+.app-users__create-details,
+.app-users__edit-details {
+    padding-bottom: 90px;
+    position: relative;
+    .action-btns {
+        position: absolute;
+        bottom: 0;
+        // left: $appLeftBarWidth;
+        // width: calc(100% - #{$appLeftBarWidth});
+        left: 0;
+        width: 100%;
+    }
+}
+.app-users__edit-details {
+    
+}
+
+// app user permissions
+.app-user-permissions {
+    .aup_lt {
+        @include min_width($md-min) {
+            width: 200px
+        }
+        .inner {
+        }
+        .link {
+            &.active {
+                color: $primary-color !important;
+            }
+            .icon {
+                margin-right: 10px;
+                margin-top: 4px;
+            }
+            span {
+
+            }
+        }
+    }
+
+    .aup_rt {
+        table {
+            tbody {
+                .action {
+                    border-left: 2px solid $bg__dashboard;
+                }
+            }
+        }
+    }
+    
+}

@@ -14,6 +14,9 @@ import Users from "components/Users";
 import CreateUser from "components/Users/Pages/CreateUser";
 import EditUser from "components/Users/Pages/EditUser";
 
+
+import Emails from "components/Emails/Emails";
+
 // page not found
 import PageNotFound from "components/PageNotFound";
 
@@ -58,6 +61,14 @@ export default function AllRoutes(props) {
                 authLoading={props.authLoading}
                 path="/settings/users/edit/:id"
                 component={EditUser}
+                exact
+            />
+
+            {/* EMAILS */}
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/settings/emails/"
+                component={Emails}
                 exact
             />
 
