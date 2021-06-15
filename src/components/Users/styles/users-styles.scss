@@ -29,8 +29,15 @@
         .inner {
         }
         .link {
+            padding: 6px 10px;
+            margin-bottom: 5px;
+            border-radius: $common-border-radius;
+            @include transition;
+        
+            &:hover,
             &.active {
                 color: $primary-color !important;
+                background-color: $bg__dashboard;
             }
             .icon {
                 margin-right: 10px;

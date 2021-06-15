@@ -29,7 +29,7 @@ import {
 import * as Yup from 'yup'
 
 // react toastify
-import { toast } from 'react-toastify';
+import { toast, Slide } from 'react-toastify';
 
 // includes
 import UserDetails from './Includes/CreateUser__UserDetails'
@@ -38,10 +38,6 @@ import UserDetails from './Includes/CreateUser__UserDetails'
 import { getAdminGroups, cancelAdminUsersApi, createUser, cancelCreateUserApi } from 'utlis/Apis/AdminUsers_API'
 
 function CreateUser(props) {
-    // messages
-    const USER_CREATED_SUCCESSFULLY = "User has been created succesfully!"
-    const ERROR_WHILE_CREATING_USER = "Unable to create Users. please try again."
-
     // refs
     const submitButtonRef = useRef(null)
 
@@ -115,71 +111,33 @@ function CreateUser(props) {
             setCreateUserButtonDisable(true)
             setCreateUserButtonLoading(true)
 
-            // saving the user in the database
-            const userToBeSaved = {
-                first_name: values.createUserFirstName,
-                last_name: values.createUserLastName,
-                email: values.createUserEmail,
-                group_id: values.createUserType,
-            }
-            createUser(props.currentUser.userToken, userToBeSaved).then(res => {
-
-                console.log("user created ", res)
+            setTimeout(() => {
                 // disbling the button and enabling loading
                 setCreateUserButtonDisable(false)
                 setCreateUserButtonLoading(false)
 
-                const userCreated = res.data
-
-                // if successfully created
-                if (userCreated.success) {
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-
-                    // showing success message
-                    toast.success(USER_CREATED_SUCCESSFULLY, {
-                        autoClose: 2500,
-                        onClose: () => {
-                            // ressetting all the fields to default
-                            setUserFirstName("")
-                            setUserLastName("")
-                            setUserEmail("")
-                            setUserType("")
-                        }
-                    })
-                }
-
-                // if some error
-                if (userCreated.error) {
-                    console.log("error while creating user ", res)
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-
-                    // showing the error message
-                    toast.error(ERROR_WHILE_CREATING_USER, {
-                        autoClose: 3000
-                    })
-                }
-
-            }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
-
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
-                // showing the error message
-                toast.error(ERROR_WHILE_CREATING_USER, {
-                    autoClose: 3000,
-                    onClose: () => {
-                        // disbling the button and enabling loading
-                        setCreateUserButtonDisable(false)
-                        setCreateUserButtonLoading(false)
-                    }
+                // showing success message
+                toast.success("User created succesfully!", {
+                    className: 'app-toast',
+                    autoClose: 2500,
+                    transition: Slide,
+                    draggable: false,
+                    hideProgressBar: true,
+                    closeOnClick: false,
                 })
-            })
 
+                // ressetting all the fields to default
+                setUserFirstName("")
+                setUserLastName("")
+                setUserEmail("")
+                setUserType("")
+                // setUserStatus("")
 
+            }, 1000);
+        } else {
         }
     }
 

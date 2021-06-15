@@ -221,9 +221,11 @@
 
 /** Classes for the displayed toast **/
 .Toastify__toast {
-    padding: 8px 15px;
     border-radius: $common-border-radius;
-    min-height: 55px;
+    // padding: 8px 15px;
+    // min-height: 55px;
+    padding: 4px 8px 4px 15px;
+    min-height: 40px;
 }
 .Toastify__toast--rtl {
 }
@@ -247,7 +249,8 @@
     font-size: 14px;
     border-radius: $common-border-radius;
     padding: 0;
-    margin: 9px 0 8px;
+    // margin: 9px 0 8px;
+    margin: 5.5px 0 0;
 }
 
 /** Classes for the close button. Better use your own closeButton **/
@@ -278,9 +281,9 @@
 
 // app info box
 .app-info-box {
-    background: #fff;
+    background: $bg__dashboard;
     padding: 8px 10px;
-    border: 1px solid #f5f5f5;
+    // border: 1px solid #f5f5f5;
     border-left: 5px solid $primary-color;
 
     // COLORS
@@ -292,4 +295,24 @@
     &.app-info-box-light {
         border-left-color: $text__light-color;
     }
+}
+
+// back button wrapper
+.back-button-wrapper {
+    a,p {
+        &:hover {
+            span {}
+        }
+    }
+}
+
+// global loading
+.global-loading-container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgba(255,255,255, 0.4);
 }

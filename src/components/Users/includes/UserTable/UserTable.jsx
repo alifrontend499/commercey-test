@@ -126,7 +126,7 @@ export default function UserTable(props) {
                 {
                     /* USERS DATA */
                     (props.users && props.users.length) ? props.users.map(item => (
-                        <tr key={item.id}>
+                        <tr key={item.login_id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
                                     <input type="checkbox" className="d-none user-selector-checkbox" />
@@ -143,7 +143,7 @@ export default function UserTable(props) {
                                 props.column__User && (
                                     <td className="column__username">
                                         <Link to="/" className="hover-underline-link st-text-primary">
-                                            {item.firstName + " " + item.lastName}
+                                            {item.first_name + " " + item.last_name}
                                         </Link>
                                     </td>
                                 )
@@ -163,7 +163,7 @@ export default function UserTable(props) {
                                 props.column__Type && (
                                     <td className="column__type">
                                         <p className="st-text-primary">
-                                            {item.type}
+                                            {item.group_name}
                                         </p>
                                     </td>
                                 )
@@ -172,8 +172,8 @@ export default function UserTable(props) {
                             {
                                 props.column__TwoFactors && (
                                     <td className="column__two-factors">
-                                        <p className="">
-                                            {item.twoFactors}
+                                        <p className="text-capitalize">
+                                            {item.enable_two_factor ? 'yes' : 'no'}
                                         </p>
                                     </td>
                                 )
@@ -185,7 +185,7 @@ export default function UserTable(props) {
                                         <p className="">
                                             <Moment
                                                 format="MMMM DD, YYYY hh:mm a"
-                                                date={item.lastActive}
+                                                date={item.last_login_time}
                                             />
                                         </p>
                                     </td>
@@ -195,8 +195,8 @@ export default function UserTable(props) {
                             {
                                 props.column__Status && (
                                     <td className="column__status">
-                                        <p className="">
-                                            {item.status}
+                                        <p className="text-capitalize">
+                                            {item.user_status === 1 ? 'active' : 'inactive'}
                                         </p>
                                     </td>
                                 )
@@ -210,7 +210,7 @@ export default function UserTable(props) {
                                     >
                                         <Link
                                             to={{
-                                                pathname: '/settings/users/edit/' + item.id,
+                                                pathname: '/settings/users/edit/' + item.login_id,
                                                 state: { userDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
@@ -229,7 +229,7 @@ export default function UserTable(props) {
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDeleteUser(ev, item.id)}
+                                            onClick={ev => props.handleDeleteUser(ev, item.login_id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"

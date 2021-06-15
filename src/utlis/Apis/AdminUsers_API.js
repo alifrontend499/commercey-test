@@ -1,9 +1,14 @@
 // AXIOS
 import axios from "axios";
 
+// cancel token
+const CancelToken = axios.CancelToken;
+
+// api url
 import { apiUrl } from "./constants";
 
 // get admin users
+export let cancelGetUsersApi;
 export async function getUsers(token, page) {
     // if ((token, page)) {
     if (token) {
@@ -11,6 +16,10 @@ export async function getUsers(token, page) {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+            cancelToken: new CancelToken(function executor(c) {
+                // An executor function receives a cancel function as a parameter
+                cancelGetUsersApi = c;
+            }),
         });
         return users;
     } else {
@@ -19,12 +28,17 @@ export async function getUsers(token, page) {
 }
 
 // get single user details
+export let cancelGetUserDetailsApi;
 export async function getUserDetails(token, userId) {
-    if ((token, userId)) {
+    if (token, userId) {
         const user = await axios.get(apiUrl + "detail/" + userId, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+            cancelToken: new CancelToken(function executor(c) {
+                // An executor function receives a cancel function as a parameter
+                cancelGetUserDetailsApi = c;
+            }),
         });
         return user;
     } else {
@@ -33,20 +47,27 @@ export async function getUserDetails(token, userId) {
 }
 
 // creating a new user
+export let cancelCreateUserApi;
 export async function createUser(token, userData) {
     if ((token, userData)) {
-        const user = await axios.get(
-            apiUrl + "add/user",
+        const user = await axios.post(
+            apiUrl + "add",
             {
                 first_name: userData.first_name,
                 last_name: userData.last_name,
                 email: userData.email,
-                user_type: userData.user_type,
+                group_id: userData.group_id,
             },
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            },
+            {
+                cancelToken: new CancelToken(function executor(c) {
+                    // An executor function receives a cancel function as a parameter
+                    cancelCreateUserApi = c;
+                }),
             }
         );
         return user;
@@ -56,6 +77,7 @@ export async function createUser(token, userData) {
 }
 
 // editing a new user
+export let cancelEditUserApi;
 export async function editUser(token, userData) {
     if ((token, userData)) {
         const user = await axios.get(
@@ -70,6 +92,12 @@ export async function editUser(token, userData) {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            },
+            {
+                cancelToken: new CancelToken(function executor(c) {
+                    // An executor function receives a cancel function as a parameter
+                    cancelEditUserApi = c;
+                }),
             }
         );
         return user;
@@ -79,6 +107,7 @@ export async function editUser(token, userData) {
 }
 
 // change user's password
+export let cancelChangePasswordApi;
 export async function changePassword(token, userId, newPassword) {
     if ((token, userId, newPassword)) {
         const user = await axios.get(
@@ -90,10 +119,37 @@ export async function changePassword(token, userId, newPassword) {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+            },
+            {
+                cancelToken: new CancelToken(function executor(c) {
+                    // An executor function receives a cancel function as a parameter
+                    cancelChangePasswordApi = c;
+                }),
             }
         );
         return user;
     } else {
         console.log("Please add required parameters");
     }
+}
+
+// get admin users
+export let cancelAdminUsersApi;
+export async function getAdminGroups(token) {
+    // if (token) {
+    const user = await axios.get(
+        apiUrl + "admingroups", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        cancelToken: new CancelToken(function executor(c) {
+            // An executor function receives a cancel function as a parameter
+            cancelAdminUsersApi = c;
+        }),
+    }
+    );
+    return user;
+    // } else {
+    //     console.log("Please add required parameters");
+    // }
 }

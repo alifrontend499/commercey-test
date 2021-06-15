@@ -38,18 +38,21 @@ import { saveToLocalStorage } from 'utlis/helpers/Common/CommonHelperFunctions'
 import { saveCommonTokenToStore, saveCurrentUserToStore, authenticateUser } from 'redux/actions/actionAuth'
 
 // react toastify
-import { toast, Slide } from 'react-toastify';
+import { toast } from 'react-toastify';
+
+// auth api
+import { userLogin } from 'utlis/Apis/AuthUsers_API';
 
 function Login(props) {
-    const tempUserEmail = 'admin@gmail.com';
-    const tempUserPass = '12345678';
+    // const tempUserEmail = 'admin@gmail.com';
+    // const tempUserPass = '12345678';
     const [loginButtonDisable, setLoginButtonDisable] = useState(false)
     const [loginButtonLoading, setLoginButtonLoading] = useState(false)
 
     // initial login form values
     const initialLoginFormValues = {
-        loginEmail: tempUserEmail,
-        loginPassword: tempUserPass,
+        loginEmail: "",
+        loginPassword: "",
         loginRememberMe: false,
     }
 
@@ -69,29 +72,30 @@ function Login(props) {
             setLoginButtonLoading(true)
             setLoginButtonDisable(true)
 
-            setTimeout(() => {
-                if (values.loginEmail === tempUserEmail && values.loginPassword === tempUserPass) {
-                    // disbling the loading
-                    setLoginButtonLoading(false)
+            // validating user details
+            userLogin(values.loginEmail, values.loginPassword).then(res => {
+                const resData = res.data
+                // console.log('res ', res)
 
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
+                // disbling the loading
+                setLoginButtonLoading(false)
 
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // if user is matched with the databse
+                if (resData && resData.success) {
                     // showing success message
-                    toast.success("Login Successfull!! redirecting to the dashboard...", {
+                    toast.success("Success", {
                         className: 'app-toast',
-                        autoClose: 2000,
-                        transition: Slide,
-                        draggable: false,
-                        hideProgressBar: true,
-                        closeOnClick: false,
+                        autoClose: 1500,
                         onClose: () => {
                             var tempUser = {
-                                userId: '1',
-                                userToken: 'usertoken.1.kkysakk',
-                                email: tempUserEmail,
-                                firstName: 'super',
-                                lastName: 'admin',
+                                userId: resData.data.login_id,
+                                userToken: resData.data.login_id,
+                                email: resData.data.email,
+                                firstName: resData.data.first_name,
+                                lastName: resData.data.last_name,
                                 loggedOn: new Date()
                             }
 
@@ -111,30 +115,40 @@ function Login(props) {
                             saveToLocalStorage("__uu_dd", JSON.stringify(tempUser))
                         }
                     })
-                } else {
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-                    
+                }
+
+                // if user is not matched with the databse
+                if (resData && resData.error) {
                     // showing error message
                     toast.error("Invalid Credentials", {
                         className: 'app-toast',
-                        autoClose: 3000,
-                        transition: Slide,
-                        draggable: false,
-                        hideProgressBar: true,
-                        closeOnClick: false,
+                        autoClose: 2000,
                         onClose: () => {
-                            // enabling the login button and disbling loading
-                            setLoginButtonLoading(false)
+                            // enabling the login button
                             setLoginButtonDisable(false)
                         }
                     })
                 }
-            }, 1000);
-        } else {
-            // disbling the login button and enabling loading
-            setLoginButtonLoading(true)
-            setLoginButtonDisable(true)
+
+            }).catch(err => {
+                // loggin the error message
+                console.log("error occured ", err, err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error("Unexpected error occured!! Please try again.", {
+                    className: 'app-toast',
+                    autoClose: 3000,
+                    onClose: () => {
+                        // enabling the login button and disbling loading
+                        setLoginButtonLoading(false)
+                        setLoginButtonDisable(false)
+                    }
+                })
+            })
+
         }
     }
 

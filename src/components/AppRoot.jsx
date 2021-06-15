@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react'
 // routes
 import AllRoutes from 'routes/AllRoutes'
 
+// bootstrap
+import { Spinner } from 'react-bootstrap'
+
 // scroll to top
 import ScrollToTop from './ScrollToTop';
 
@@ -17,7 +20,7 @@ import Header from 'components/CommonComponents/Header'
 // import Footer from 'components/CommonComponents/Footer/Footer'
 
 // react toastify
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Slide } from 'react-toastify';
 
 // helpers functions
 import { getCurrentUserFromLocalStorage } from 'utlis/helpers/Common/CommonHelperFunctions'
@@ -96,15 +99,32 @@ function AppRoot(props) {
             }
 
 
-            {/* toast:- for onscreen notificatoins */}
-            <ToastContainer />
+            {/* GLOBAL TOAST:- FOR ONSCREEN NOTIFICATOINS */}
+            <ToastContainer
+                className="app-toast"
+                position="top-center"
+                hideProgressBar={true}
+                draggable={false}
+                closeOnClick={false}
+                transition={Slide}
+            // pauseOnFocusLoss={false}
+            />
+
+            {
+                // GLOBAL LOADING
+                props.globalLoading &&
+                <div className="global-loading-container d-flex align-items-center justify-content-center">
+                    <Spinner animation="border" className="st-text-primary" />
+                </div>
+            }
         </div>
     )
 }
 
 const getDataFromStore = state => {
     return {
-        isUserAuthenticated: state.auth.isUserAuthenticated
+        isUserAuthenticated: state.auth.isUserAuthenticated,
+        globalLoading: state.common.globalLoading
     };
 }
 

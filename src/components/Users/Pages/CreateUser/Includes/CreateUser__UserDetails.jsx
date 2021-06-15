@@ -68,6 +68,29 @@ export default function CreateUser__UserDetails(props) {
             </div>
 
             {/* form field */}
+            {/* <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserTwoFactor && props.formik.errors.createUserTwoFactor) ? "has-msg msg-error" : ""}`}>
+                <label>Two Factor</label>
+                <div className="media-body st-form-input-container">
+                    <select
+                        className="form-control"
+                        id="createUserTwoFactor"
+                        {...props.formik.getFieldProps('createUserTwoFactor')}>
+                        <option disabled value="">Select Two Factor</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                    {
+                        form message
+                        (props.formik.touched.createUserTwoFactor && props.formik.errors.createUserTwoFactor) && (
+                            <div className="st-form-msg position-absolute">
+                                <p className="st-fs-12">{props.formik.errors.createUserTwoFactor}</p>
+                            </div>
+                        )
+                    }
+                </div>
+            </div> */}
+
+            {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserType && props.formik.errors.createUserType) ? "has-msg msg-error" : ""}`}>
                 <label>Type</label>
                 <div className="media-body st-form-input-container">
@@ -76,10 +99,13 @@ export default function CreateUser__UserDetails(props) {
                         id="createUserType"
                         {...props.formik.getFieldProps('createUserType')}>
                         <option disabled value="">Select Type</option>
-                        <option value="admin">Admin</option>
-                        <option value="manager">Manager</option>
-                        <option value="reporter">Reporter</option>
-                        <option value="tester">Tester</option>
+                        {
+                            (props.adminGroups && props.adminGroups.length) && props.adminGroups.map(item => (
+                                <option
+                                    key={item.group_id.toString()}
+                                    value={item.group_id.toString()}>{item.group_name}</option>
+                            ))
+                        }
                     </select>
                     {
                         /* form message */
@@ -93,7 +119,7 @@ export default function CreateUser__UserDetails(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserStatus && props.formik.errors.createUserStatus) ? "has-msg msg-error" : ""}`}>
+            {/* <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserStatus && props.formik.errors.createUserStatus) ? "has-msg msg-error" : ""}`}>
                 <label>Status</label>
                 <div className="media-body st-form-input-container">
                     <select
@@ -101,12 +127,11 @@ export default function CreateUser__UserDetails(props) {
                         id="createUserStatus"
                         {...props.formik.getFieldProps('createUserStatus')}>
                         <option disabled value="">Select Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="disabled">Disabled</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                     {
-                        /* form message */
+                        form message
                         (props.formik.touched.createUserStatus && props.formik.errors.createUserStatus) && (
                             <div className="st-form-msg position-absolute">
                                 <p className="st-fs-12">{props.formik.errors.createUserStatus}</p>
@@ -114,7 +139,7 @@ export default function CreateUser__UserDetails(props) {
                         )
                     }
                 </div>
-            </div>
+            </div> */}
         </React.Fragment>
     )
 }

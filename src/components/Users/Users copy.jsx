@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-// redux
-import { connect } from 'react-redux'
-
 // bootstrap
 import {
     Container,
@@ -24,10 +21,7 @@ import UserTable from './includes/UserTable/UserTable'
 // APIs
 import { getUsers } from 'utlis/Apis/AdminUsers_API'
 
-// react toastify
-import { toast } from 'react-toastify';
-
-function Users(props) {
+export default function Users() {
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const editColumnsType = "dropdown"  // dropdown or modal
@@ -55,58 +49,124 @@ function Users(props) {
 
     // useEffect: temprory filling user data
     useEffect(() => {
-        // enabling loading
         setLoading(true)
 
-        // getting admin users data
-        getUsers(props.currentUser.userId, "").then(res => {
-            const resData = res.data
-
-            // disabling loading
-            setLoading(false)
-
-            // if request succesfull
-            if (resData && resData.success) {
-                // settings users
-                if (users.length) {
-                    // if users already exists
-                } else {
-                    // if no user already exists
-                    setUsers(resData.data)
-                }
-            }
-
-            // if request is not succesfull
-            if (resData && resData.error) {
-                // dismissing all the previous toasts first
-                toast.dismiss();
-                
-                // showing the error message
-                toast.error("Unable to load Users. please try again.", {
-                    autoClose: 3000,
-                    onClose: () => {
-                        // disabling loading
-                        setLoading(false)
-                    }
-                })
-            }
-
+        // getting users
+        getUsers("7", "").then(res => {
+            console.log(res)
         }).catch(err => {
             // console.log('err ', err)
             console.log('err ', err.message)
-
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error("Unable to load Users. please try again.", {
-                autoClose: 3000,
-                onClose: () => {
-                    // disabling loading
-                    setLoading(false)
-                }
-            })
         })
+
+        // getting users
+        setTimeout(() => {
+            const usersData = [
+                {
+                    id: "1",
+                    firstName: "Rick",
+                    lastName: "Grimes",
+                    email: "rickgrimes@gmail.com",
+                    type: "admin",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 5, 12)
+                },
+                {
+                    id: "2",
+                    firstName: "Ipsa",
+                    lastName: "Grimes",
+                    email: "ipsa@gmail.com",
+                    type: "manager",
+                    twoFactors: "yes",
+                    status: "active",
+                    lastActive: new Date(2021, 4, 12)
+                },
+                {
+                    id: "3",
+                    firstName: "Dolorum",
+                    lastName: "Ran",
+                    email: "doran@gmail.com",
+                    type: "manager",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 3, 12)
+                },
+                {
+                    id: "4",
+                    firstName: "Qui",
+                    lastName: "Chee",
+                    email: "cheq@gmail.com",
+                    type: "reporter",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 5, 12)
+                },
+                {
+                    id: "5",
+                    firstName: "Rerum",
+                    lastName: "Nal",
+                    email: "rerumnal@gmail.com",
+                    type: "reporter",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 3, 12)
+                },
+                {
+                    id: "6",
+                    firstName: "Rick",
+                    lastName: "Grimes",
+                    email: "rickgrimes@gmail.com",
+                    type: "admin",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 5, 12)
+                },
+                {
+                    id: "7",
+                    firstName: "Ipsa",
+                    lastName: "Grimes",
+                    email: "ipsa@gmail.com",
+                    type: "manager",
+                    twoFactors: "yes",
+                    status: "active",
+                    lastActive: new Date(2021, 2, 12)
+                },
+                {
+                    id: "8",
+                    firstName: "Dolorum",
+                    lastName: "Ran",
+                    email: "doran@gmail.com",
+                    type: "manager",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 5, 12)
+                },
+                {
+                    id: "9",
+                    firstName: "Qui",
+                    lastName: "Chee",
+                    email: "cheq@gmail.com",
+                    type: "reporter",
+                    twoFactors: "no",
+                    status: "active",
+                    lastActive: new Date(2021, 5, 12)
+                },
+                {
+                    id: "10",
+                    firstName: "Rerum",
+                    lastName: "Nal",
+                    email: "rerumnal@gmail.com",
+                    type: "reporter",
+                    twoFactors: "no",
+                    status: "inactive",
+                    lastActive: new Date(2021, 5, 12)
+                },
+            ]
+            setLoading(false)
+            setUsers([])
+            setUsers(usersData)
+        }, 2000);
 
     }, [])
 
@@ -291,18 +351,3 @@ function Users(props) {
         </section>
     )
 }
-
-
-const getDataFromStore = state => {
-    return {
-        currentUser: state.auth.currentUser
-    };
-}
-
-// const dispatchActionsToProps = dispatch => {
-//     return {
-//         action: item => dispatch(action(item)),
-//     }
-// }
-
-export default connect(getDataFromStore, null)(Users)

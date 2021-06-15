@@ -68,6 +68,29 @@ export default function EditUser__UserDetails(props) {
             </div>
 
             {/* form field */}
+            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserTwoFactor && props.formik.errors.editUserTwoFactor) ? "has-msg msg-error" : ""}`}>
+                <label>Two Factor</label>
+                <div className="media-body st-form-input-container">
+                    <select
+                        className="form-control"
+                        id="editUserTwoFactor"
+                        {...props.formik.getFieldProps('editUserTwoFactor')}>
+                        <option disabled value="">Select Two Factor</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                    {
+                        /* form message */
+                        (props.formik.touched.editUserTwoFactor && props.formik.errors.editUserTwoFactor) && (
+                            <div className="st-form-msg position-absolute">
+                                <p className="st-fs-12">{props.formik.errors.editUserTwoFactor}</p>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+
+            {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserType && props.formik.errors.editUserType) ? "has-msg msg-error" : ""}`}>
                 <label>Type</label>
                 <div className="media-body st-form-input-container">
@@ -76,10 +99,13 @@ export default function EditUser__UserDetails(props) {
                         id="editUserType"
                         {...props.formik.getFieldProps('editUserType')}>
                         <option disabled value="">Select Type</option>
-                        <option value="admin">Admin</option>
-                        <option value="manager">Manager</option>
-                        <option value="reporter">Reporter</option>
-                        <option value="tester">Tester</option>
+                        {
+                            (props.adminGroups && props.adminGroups.length) && props.adminGroups.map(item => (
+                                <option
+                                    key={item.group_id.toString()}
+                                    value={item.group_id.toString()}>{item.group_name}</option>
+                            ))
+                        }
                     </select>
                     {
                         /* form message */
@@ -101,9 +127,8 @@ export default function EditUser__UserDetails(props) {
                         id="editUserStatus"
                         {...props.formik.getFieldProps('editUserStatus')}>
                         <option disabled value="">Select Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="disabled">Disabled</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                     {
                         /* form message */
