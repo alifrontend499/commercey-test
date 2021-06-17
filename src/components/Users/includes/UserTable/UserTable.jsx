@@ -214,7 +214,6 @@ export default function UserTable(props) {
                                                 state: { userDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
-                                        // onClick={ev => props.handleEditUserModalOpen(ev, item)}
                                         >
                                             <FeatherIcon
                                                 icon="edit-2"

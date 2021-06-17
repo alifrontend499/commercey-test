@@ -10,6 +10,9 @@ import {
 // react router
 import { Link } from 'react-router-dom'
 
+// icons : feather
+import FeatherIcon from 'feather-icons-react';
+
 // formik
 import {
     useFormik, //hook for functonal components
@@ -121,6 +124,17 @@ export default function EditEmail(props) {
         <section id="app-emails__edit-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
                 <div className="app-emails__edit-details">
+                    {/* BACK BUTTON WRAPPER */}
+                    <div className="back-button-wrapper mb-2">
+                        <Link to="/settings/emails" className="text-decoration-none st-text-primary d-inline-flex align-items-center cursor-pointer st-fs-15">
+                            <FeatherIcon
+                                icon="arrow-left"
+                                size="14"
+                                className="icon me-1" />
+                            <span>Back to Email Templates</span>
+                        </Link>
+                    </div>
+
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}

@@ -35,14 +35,16 @@ import { toast } from 'react-toastify';
 import UserDetails from './Includes/EditUser__UserDetails'
 
 // APIs
-import { getUserDetails, cancelGetUserDetailsApi, getAdminGroups, cancelAdminUsersApi } from 'utlis/Apis/AdminUsers_API'
+import { getUserDetails, cancelGetUserDetailsApi, getAdminGroups, cancelAdminUsersApi, editUser } from 'utlis/Apis/AdminUsers_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function EditUser(props) {
     // error and success messages
-    const someErrorOccured = "Unable to load the User. please try again."
+    const SOME_ERROR_OCCURED = "Unable to load the User. please try again."    
+    const USER_UPDATED_SUCCESSFULLY = "User detail updated successfully."
+    const ERROR_WHILE_UPDATING_USER = "No detail found."
 
     // refs
     const submitButtonRef = useRef(null)
@@ -51,6 +53,7 @@ function EditUser(props) {
     const [editUserButtonDisable, setEditUserButtonDisable] = useState(false)
     const [editUserButtonLoading, setEditUserButtonLoading] = useState(false)
 
+    const [userId, setUserId] = useState("")
     const [userFirstName, setUserFirstName] = useState("")
     const [userLastName, setUserLastName] = useState("")
     const [userEmail, setUserEmail] = useState("")
@@ -64,6 +67,12 @@ function EditUser(props) {
 
     // on page load
     useEffect(() => {
+        const userIdFromUrl = props.match.params;
+        // setting user id from the url
+        if(userIdFromUrl) {
+            setUserId(userIdFromUrl.id)
+        }
+
         // gettings admin groups admin, superadmin, reporter etc.
         getAdminGroups(props.currentUser.userToken).then(res => {
             const adminGroupsData = res.data
@@ -132,18 +141,13 @@ function EditUser(props) {
                     setUserTwoFactor(user && user.enable_two_factor.toString())
                     setUserStatus(user && user.user_status.toString())
                 }
-
             }).catch(err => {
                 // console.log('err ', err)
                 console.log('err ', err.message)
 
                 // showing the error message
-                toast.error(someErrorOccured, {
+                toast.error(SOME_ERROR_OCCURED, {
                     autoClose: 3000,
-                    onClose: () => {
-                        // disabling loading
-                        setLoading(false)
-                    }
                 })
             })
 
@@ -180,25 +184,86 @@ function EditUser(props) {
     // handle edit user form submmision
     const onEditUserFormSubmit = values => {
         if (values) {
+            // enabling global loading
+            setGlobalLoading(true)
 
             // enabling the button and enabling loading
             setEditUserButtonDisable(true)
             setEditUserButtonLoading(true)
 
-            setTimeout(() => {
+            // saving user to the store
+            // saving the user in the database
+            const userToBeSaved = {
+                login_id: userId,
+                first_name: values.editUserFirstName,
+                last_name: values.editUserLastName,
+                email: values.editUserEmail,
+                group_id: values.editUserType,
+                enable_two_factor: values.editUserTwoFactor,
+                user_status: values.editUserStatus,
+            }
+
+            console.log("userToBeSaved ", userToBeSaved)
+
+            // updating the user details from the database
+            editUser(props.currentUser.userToken, userToBeSaved).then(res => {
                 // disbling the button and enabling loading
                 setEditUserButtonDisable(false)
                 setEditUserButtonLoading(false)
 
+                // disabling global loading
+                setGlobalLoading(false)
+
+                const userEdited = res.data
+
+                // if successfully created
+                if (userEdited.success) {
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing success message
+                    toast.success(USER_UPDATED_SUCCESSFULLY, {
+                        autoClose: 3000
+                    })
+                }
+
+                // if some error
+                if (userEdited.error) {
+                    console.log(ERROR_WHILE_UPDATING_USER, res)
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_UPDATING_USER, {
+                        autoClose: 3000
+                    })
+                }
+
+                console.log('edited user results ', userEdited)
+
+            }).catch(err => {
+                // console.log('err ', err)
+                console.log('err ', err.message)
+
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
-                // showing success message
-                toast.success("User editd succesfully!", {
-                    autoClose: 2500,
+                // showing the error message
+                toast.error(SOME_ERROR_OCCURED, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling global loading
+                        setGlobalLoading(false)
+
+                        // disbling the button and disbling loading
+                        setEditUserButtonDisable(true)
+                        setEditUserButtonLoading(true)
+                    }
                 })
-            }, 1000);
-        } else {
+            })
+
+
         }
     }
 
@@ -1107,6 +1172,8 @@ function EditUser(props) {
                                 </div>
                             </div>
                         </div>
+
+                        <button type="submit" ref={submitButtonRef} className="d-none">submit</button>
                     </form>
 
                 </div>

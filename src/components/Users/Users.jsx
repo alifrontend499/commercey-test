@@ -6,31 +6,33 @@ import { connect } from 'react-redux'
 // bootstrap
 import {
     Container,
-    Modal,
 } from 'react-bootstrap'
 
 // users styles
 import "./styles/users-styles.scss"
 
-// modals
-import CreateUserModal from './includes/modals/CreateUserModal'
-import EditUserModal from './includes/modals/EditUserModal'
-import EditColumnsModal from './includes/modals/EditColumnsModal'
-
 // user table
 import UserTableTopBar from './includes/UserTable/UserTableTopBar'
 import UserTable from './includes/UserTable/UserTable'
 
-// APIs
-import { getUsers } from 'utlis/Apis/AdminUsers_API'
-
 // react toastify
 import { toast } from 'react-toastify';
 
+// APIs
+import { getUsers, deleteUser } from 'utlis/Apis/AdminUsers_API'
+
+// section loading
+import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
+
 function Users(props) {
+    // messages
+    const ERROR_WHILE_FETCHING_USER = "Unable to load Users. please try again."
+    const USER_DELETED_SUCCESSFULLY = "Admin user deleted successfully."
+    const NO_USER_FOUND_DELETING_USER = "No detail found."
+    const ERROR_WHILE_DELETING_USER = "Unable to delete the user. please try again."
+
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
 
     // refs
 
@@ -38,13 +40,7 @@ function Users(props) {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const [createUserModalShow, setCreateUserModalShow] = useState(false)
-    const [editUserModalShow, setEditUserModalShow] = useState(false)
-    const [editColumnsModalShow, setEditColumnsModalShow] = useState(false)
-
     const [allUsersSelected, setAllUsersSelected] = useState(false)
-
-    const [userToBeEdit, setUserToBeEdit] = useState({})
 
     const [column__User, setColumn__User] = useState(true)
     const [column__Email, setColumn__Email] = useState(true)
@@ -53,8 +49,12 @@ function Users(props) {
     const [column__LastActive, setColumn__LastActive] = useState(true)
     const [column__Status, setColumn__Status] = useState(true)
 
+    const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
+
     // useEffect: temprory filling user data
     useEffect(() => {
+        // console.log('props ', props)
+
         // enabling loading
         setLoading(true)
 
@@ -80,9 +80,9 @@ function Users(props) {
             if (resData && resData.error) {
                 // dismissing all the previous toasts first
                 toast.dismiss();
-                
+
                 // showing the error message
-                toast.error("Unable to load Users. please try again.", {
+                toast.error(ERROR_WHILE_FETCHING_USER, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling loading
@@ -99,7 +99,7 @@ function Users(props) {
             toast.dismiss();
 
             // showing the error message
-            toast.error("Unable to load Users. please try again.", {
+            toast.error(ERROR_WHILE_FETCHING_USER, {
                 autoClose: 3000,
                 onClose: () => {
                     // disabling loading
@@ -109,34 +109,6 @@ function Users(props) {
         })
 
     }, [])
-
-    // openning create user modal opening
-    const handleCreateUserModalOpen = () => setCreateUserModalShow(true);
-
-    // closing create user modal opening
-    const handleCreateUserModalClose = () => setCreateUserModalShow(false);
-
-    // openning modal edit user opening
-    const handleEditUserModalOpen = (ev, user) => {
-        ev.preventDefault()
-        setUserToBeEdit(user)
-        setEditUserModalShow(true)
-    };
-
-    // closing modal edit user opening
-    const handleEditUserModalClose = () => {
-        setEditUserModalShow(false)
-    };
-
-    // openning modal edit columns opening
-    const handleEditColumnsModalOpen = () => {
-        setEditColumnsModalShow(true)
-    };
-
-    // closing modal edit columns opening
-    const handleEditColumnsModalClose = () => {
-        setEditColumnsModalShow(false)
-    };
 
     // selecting all the columns
     const handleSelectAllChange = (ev) => {
@@ -162,13 +134,69 @@ function Users(props) {
 
     const handleDeleteUser = (ev, userId) => {
         ev.preventDefault()
+        // dismissing all the previous toasts first
+        toast.dismiss();
 
         var confirmation = window.confirm('Are you sure you want to delete this user?')
-
+        // if user confirms action
         if (confirmation) {
-            alert('user width the id' + userId + ' is delete now')
-        } else {
+            // enabling the global loading
+            setSectionLoadingVisible(true)
 
+            // deleting user from the api
+            deleteUser(props.currentUser.userId, userId).then(res => {
+                // disabling the global loading
+                setSectionLoadingVisible(false)
+
+                const deletedUser = res.data
+                // if user delete succesfully
+                if (deletedUser.success) {
+                    // updating user state after deleting a user.
+                    const filtersUsersList = users.filter(item => item.login_id !== userId)
+
+                    // settings updated users
+                    setUsers(filtersUsersList)
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.success(USER_DELETED_SUCCESSFULLY, {
+                        autoClose: 2500,
+                        onClose: () => {
+                        }
+                    })
+                }
+
+                // if user delete succesfully
+                if (deletedUser.error) {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(NO_USER_FOUND_DELETING_USER, {
+                        autoClose: 2500,
+                        onClose: () => {
+                        }
+                    })
+                }
+            }).catch(err => {
+                // disabling the global loading
+                setSectionLoadingVisible(false)
+
+                // console.log('err ', err)
+                console.log('err ', err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(ERROR_WHILE_DELETING_USER, {
+                    autoClose: 3000,
+                    onClose: () => {
+                    }
+                })
+            })
         }
     }
 
@@ -190,10 +218,6 @@ function Users(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <UserTableTopBar
-                                        editColumnsType={editColumnsType}
-
-                                        handleCreateUserModalOpen={() => handleCreateUserModalOpen()}
-                                        handleEditColumnsModalOpen={() => handleEditColumnsModalOpen()}
 
                                         column__User={column__User}
                                         column__Email={column__Email}
@@ -217,7 +241,6 @@ function Users(props) {
                                         allUsersSelected={allUsersSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
-
                                         column__User={column__User}
                                         column__Email={column__Email}
                                         column__Type={column__Type}
@@ -230,61 +253,19 @@ function Users(props) {
 
                                         users={users}
 
-                                        handleEditUserModalOpen={(ev, item) => handleEditUserModalOpen(ev, item)}
                                         handleDeleteUser={(ev, userId) => handleDeleteUser(ev, userId)}
-
                                     />
+
+                                    {
+                                        /* SECTION LOADING */
+                                        sectionLoadingVisible && (
+                                            <SectionLoading />
+                                        )
+                                    }
+
                                 </div>
                             </div>
                         </div>
-
-                        {/* modal | create user */}
-                        <Modal
-                            show={createUserModalShow}
-                            onHide={handleCreateUserModalClose}
-                            centered
-                            // backdrop={"static"}
-                            className="st-modal create-user-modal">
-                            <Modal.Body>
-                                {/* create user modal body */}
-                                <CreateUserModal
-                                    closeModal={() => handleCreateUserModalClose()}
-                                />
-                            </Modal.Body>
-                        </Modal>
-
-                        {/* modal | edit user */}
-                        <Modal
-                            show={editUserModalShow}
-                            onHide={handleEditUserModalClose}
-                            centered
-                            // backdrop={"static"}
-                            className="st-modal edit-user-modal">
-                            <Modal.Body>
-                                {/* edit user modal body */}
-                                <EditUserModal
-                                    closeModal={() => handleEditUserModalClose()}
-
-                                    user={userToBeEdit}
-                                />
-                            </Modal.Body>
-                        </Modal>
-
-                        {/* modal | edit columns */}
-                        <Modal
-                            show={editColumnsModalShow}
-                            onHide={handleEditColumnsModalClose}
-                            centered
-                            // backdrop={"static"}
-                            className="st-modal edit-columns-modal">
-                            <Modal.Body>
-                                {/* edit columns modal body */}
-                                <EditColumnsModal
-                                    closeModal={() => handleEditColumnsModalClose()}
-                                />
-                            </Modal.Body>
-                        </Modal>
-
                     </div>
                 </div>
             </Container>
@@ -301,7 +282,7 @@ const getDataFromStore = state => {
 
 // const dispatchActionsToProps = dispatch => {
 //     return {
-//         action: item => dispatch(action(item)),
+//         setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
 //     }
 // }
 

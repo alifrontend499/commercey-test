@@ -57,6 +57,7 @@ export async function createUser(token, userData) {
                 last_name: userData.last_name,
                 email: userData.email,
                 group_id: userData.group_id,
+                enable_two_factor: userData.enable_two_factor,
             },
             {
                 headers: {
@@ -80,13 +81,15 @@ export async function createUser(token, userData) {
 export let cancelEditUserApi;
 export async function editUser(token, userData) {
     if ((token, userData)) {
-        const user = await axios.get(
-            apiUrl + "update/detail/" + userData.id,
+        const user = await axios.put(
+            apiUrl + "edit/" + userData.login_id,
             {
                 first_name: userData.first_name,
                 last_name: userData.last_name,
                 email: userData.email,
-                user_type: userData.user_type,
+                group_id: userData.group_id,
+                enable_two_factor: userData.enable_two_factor,
+                user_status: userData.user_status,
             },
             {
                 headers: {
@@ -127,6 +130,26 @@ export async function changePassword(token, userId, newPassword) {
                 }),
             }
         );
+        return user;
+    } else {
+        console.log("Please add required parameters");
+    }
+}
+
+// change user's password
+export let cancelDeleteUserApi;
+export async function deleteUser(token, userId) {
+    if ((token, userId)) {
+        const user = await axios.delete(apiUrl + "delete/" + userId, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }, {
+            cancelToken: new CancelToken(function executor(c) {
+                // An executor function receives a cancel function as a parameter
+                cancelDeleteUserApi = c;
+            }),
+        });
         return user;
     } else {
         console.log("Please add required parameters");

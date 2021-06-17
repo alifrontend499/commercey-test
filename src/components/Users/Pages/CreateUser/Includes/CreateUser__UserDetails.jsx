@@ -68,7 +68,7 @@ export default function CreateUser__UserDetails(props) {
             </div>
 
             {/* form field */}
-            {/* <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserTwoFactor && props.formik.errors.createUserTwoFactor) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserTwoFactor && props.formik.errors.createUserTwoFactor) ? "has-msg msg-error" : ""}`}>
                 <label>Two Factor</label>
                 <div className="media-body st-form-input-container">
                     <select
@@ -80,7 +80,7 @@ export default function CreateUser__UserDetails(props) {
                         <option value="0">No</option>
                     </select>
                     {
-                        form message
+                        // form message
                         (props.formik.touched.createUserTwoFactor && props.formik.errors.createUserTwoFactor) && (
                             <div className="st-form-msg position-absolute">
                                 <p className="st-fs-12">{props.formik.errors.createUserTwoFactor}</p>
@@ -88,7 +88,7 @@ export default function CreateUser__UserDetails(props) {
                         )
                     }
                 </div>
-            </div> */}
+            </div>
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.createUserType && props.formik.errors.createUserType) ? "has-msg msg-error" : ""}`}>

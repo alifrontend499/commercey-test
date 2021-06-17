@@ -107,7 +107,7 @@ function AppRoot(props) {
                 draggable={false}
                 closeOnClick={false}
                 transition={Slide}
-            // pauseOnFocusLoss={false}
+                pauseOnFocusLoss={false}
             />
 
             {

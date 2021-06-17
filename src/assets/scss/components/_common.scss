@@ -68,6 +68,7 @@
 // st listing table
 .st-listing-table {
     padding: 15px;
+    position: relative;
     tbody {
         tr {
             @include transition(0.1s);
@@ -314,5 +315,15 @@
     top: 0;
     left: 0;
     z-index: 9999;
+    background-color: rgba(255,255,255, 0.4);
+}
+// section loading
+.section-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
     background-color: rgba(255,255,255, 0.4);
 }

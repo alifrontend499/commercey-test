@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-// redux
-import { connect } from 'react-redux'
-
 // bootstrap
 import {
     Container
@@ -21,10 +18,7 @@ import { toast } from 'react-toastify';
 // APIs
 import { getEmails } from 'utlis/Apis/Emails_API'
 
-function Emails(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_EMAILS = "Unable to load Email Templates. please try again."
-
+export default function Emails() {
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const editColumnsType = "dropdown"  // dropdown or modal
@@ -46,29 +40,62 @@ function Emails(props) {
     useEffect(() => {
         setLoading(true)
 
-        getEmails(props.currentUser.userToken, "").then(res => {
-            // disabling loading
+        setTimeout(() => {
+            const emailsData = [
+                {
+                    id: "1",
+                    templateName: "Forgot Password Email",
+                    subject: "Forgot Password?",
+                    to: "user",
+                    dateAdded: new Date(2021, 3, 4),
+                },
+                {
+                    id: "2",
+                    templateName: "New Signup Email",
+                    subject: "Thanx for Joining Commercey",
+                    to: "user",
+                    dateAdded: new Date(2021, 2, 11),
+                },
+                {
+                    id: "3",
+                    templateName: "New Order Email",
+                    subject: "Thanx for your order",
+                    to: "user",
+                    dateAdded: new Date(2021, 5, 12),
+                },
+                {
+                    id: "4",
+                    templateName: "Account Deleted Email",
+                    subject: "Your account is deleted successfully",
+                    to: "user",
+                    dateAdded: new Date(2021, 5, 12),
+                },
+                {
+                    id: "5",
+                    templateName: "New Signup Email",
+                    subject: "New user joined the commercey",
+                    to: "admin",
+                    dateAdded: new Date(2020, 7, 1),
+                },
+                {
+                    id: "6",
+                    templateName: "New Order Recieved Email",
+                    subject: "New order recieved",
+                    to: "admin",
+                    dateAdded: new Date(2021, 3, 22),
+                },
+                {
+                    id: "7",
+                    templateName: "Account Deleted Email",
+                    subject: "User deleted the account",
+                    to: "admin",
+                    dateAdded: new Date(2021, 5, 12),
+                },
+            ]
             setLoading(false)
-
-            const loadedEmails = res
-            console.log(loadedEmails)
-
-        }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
-
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_EMAILS, {
-                autoClose: 3000,
-                onClose: () => {
-                    // disabling loading
-                    setLoading(false)
-                }
-            })
-        })
+            setEmails([])
+            setEmails(emailsData)
+        }, 2000);
 
     }, [])
 
@@ -167,18 +194,3 @@ function Emails(props) {
         </section>
     )
 }
-
-
-const getDataFromStore = state => {
-    return {
-        currentUser: state.auth.currentUser
-    };
-}
-
-// const dispatchActionsToProps = dispatch => {
-//     return {
-//         setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
-//     }
-// }
-
-export default connect(getDataFromStore, null)(Emails)

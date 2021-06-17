@@ -16,15 +16,6 @@ export default function UserTableTopBar(props) {
         <div className="inner d-flex">
             {/* lt */}
             <div className="lt">
-                {/* <button
-                    className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary"
-                    onClick={() => props.handleCreateUserModalOpen()}>
-                    <FeatherIcon
-                        icon="user-plus"
-                        size="14"
-                        className="icon me-2" />
-                    <span>Create User</span>
-                </button> */}
                 <Link
                     to="/settings/users/create"
                     className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary">
@@ -49,149 +40,134 @@ export default function UserTableTopBar(props) {
                     </div>
                 </div>
 
-                {
-                    /* edit columns */
-                    (props.editColumnsType && props.editColumnsType === "modal") ? (
-                        <div className="rt_item button-container edit-columns me-2">
-                            <button className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary"
-                                onClick={props.handleEditColumnsModalOpen}>
-                                <FeatherIcon
-                                    icon="edit"
-                                    size="14"
-                                    className="icon me-2" />
-                                <span>Edit Columns</span>
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="rt_item button-container export-options me-2">
-                            <Dropdown className="st-bs-dropdown no-down-icon">
-                                <Dropdown.Toggle className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary">
+                {/* edit columns */}
+                <div className="rt_item button-container export-options me-2">
+                    <Dropdown className="st-bs-dropdown no-down-icon">
+                        <Dropdown.Toggle className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary">
+                            <FeatherIcon
+                                icon="edit"
+                                size="14"
+                                className="icon me-2" />
+                            <span>Edit Columns</span>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__User}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__User(true) : props.setColumn__User(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
                                     <FeatherIcon
-                                        icon="edit"
-                                        size="14"
-                                        className="icon me-2" />
-                                    <span>Edit Columns</span>
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__User}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__User(true) : props.setColumn__User(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">User</span>
-                                    </label>
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">User</span>
+                            </label>
 
 
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__Email}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__Email(true) : props.setColumn__Email(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">Email</span>
-                                    </label>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__Email}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__Email(true) : props.setColumn__Email(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Email</span>
+                            </label>
 
 
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__Type}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__Type(true) : props.setColumn__Type(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">Type</span>
-                                    </label>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__Type}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__Type(true) : props.setColumn__Type(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Type</span>
+                            </label>
 
 
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__TwoFactors}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__TwoFactors(true) : props.setColumn__TwoFactors(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">Two Factors</span>
-                                    </label>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__TwoFactors}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__TwoFactors(true) : props.setColumn__TwoFactors(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Two Factors</span>
+                            </label>
 
 
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__LastActive}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__LastActive(true) : props.setColumn__LastActive(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">Last Active</span>
-                                    </label>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__LastActive}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__LastActive(true) : props.setColumn__LastActive(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Last Active</span>
+                            </label>
 
 
-                                    {/* label item */}
-                                    <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="d-none"
-                                            defaultChecked={props.column__Status}
-                                            onChange={ev => {
-                                                (ev.target.checked) ? props.setColumn__Status(true) : props.setColumn__Status(false)
-                                            }} />
-                                        <span className="box d-flex align-items-center justify-content-center border">
-                                            <FeatherIcon
-                                                icon="check"
-                                                size="15"
-                                                className="icon position-relative" />
-                                        </span>
-                                        <span className="text ms-2">Status</span>
-                                    </label>
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__Status}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__Status(true) : props.setColumn__Status(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Status</span>
+                            </label>
 
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div>
-                    )
-                }
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
 
                 {/* more options */}
                 <div className="rt_item button-container export-options me-2">

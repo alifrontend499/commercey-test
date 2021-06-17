@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 // react router
 import { useHistory } from 'react-router-dom'
@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 // icons : feather
 import FeatherIcon from 'feather-icons-react';
 
-export default function PageGoBack(props) {
+function PageGoBack(props) {
     let history = useHistory()
 
     // go back buttons
@@ -32,3 +32,5 @@ export default function PageGoBack(props) {
         </div>
     )
 }
+
+export default memo(PageGoBack)

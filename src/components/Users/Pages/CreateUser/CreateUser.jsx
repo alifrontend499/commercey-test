@@ -35,7 +35,10 @@ import { toast } from 'react-toastify';
 import UserDetails from './Includes/CreateUser__UserDetails'
 
 // APIs
-import { getAdminGroups, cancelAdminUsersApi, createUser, cancelCreateUserApi } from 'utlis/Apis/AdminUsers_API'
+import { getAdminGroups, cancelAdminUsersApi, createUser } from 'utlis/Apis/AdminUsers_API'
+
+// actions
+import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function CreateUser(props) {
     // messages
@@ -53,7 +56,7 @@ function CreateUser(props) {
     const [userLastName, setUserLastName] = useState("")
     const [userEmail, setUserEmail] = useState("")
     const [userType, setUserType] = useState("")
-    // const [userTwoFactor, setUserTwoFactor] = useState("")
+    const [userTwoFactor, setUserTwoFactor] = useState("")
     // const [userStatus, setUserStatus] = useState("")
 
     const [activePermissionTabId, setActivePermissionTabId] = useState("2")
@@ -91,7 +94,7 @@ function CreateUser(props) {
         createUserLastName: userLastName,
         createUserEmail: userEmail,
         createUserType: userType,
-        // createUserTwoFactor: userTwoFactor,
+        createUserTwoFactor: userTwoFactor,
         // createUserStatus: userStatus
     }
 
@@ -101,15 +104,15 @@ function CreateUser(props) {
         createUserLastName: Yup.string().required('This field is required'),
         createUserEmail: Yup.string().email('Invalid email address').required('This field is required'),
         createUserType: Yup.string().required('This field is required'),
-        // createUserTwoFactor: Yup.string().required('This field is required'),
+        createUserTwoFactor: Yup.string().required('This field is required'),
         // createUserStatus: Yup.string().required('This field is required'),
     })
 
     // handle create user form submmision
     const onCreateUserFormSubmit = values => {
         if (values) {
-
-            console.log(values)
+            // enabling global loading
+            setGlobalLoading(true)
 
             // enabling the button and enabling loading
             setCreateUserButtonDisable(true)
@@ -121,32 +124,39 @@ function CreateUser(props) {
                 last_name: values.createUserLastName,
                 email: values.createUserEmail,
                 group_id: values.createUserType,
+                enable_two_factor: values.createUserTwoFactor,
             }
             createUser(props.currentUser.userToken, userToBeSaved).then(res => {
-
-                console.log("user created ", res)
                 // disbling the button and enabling loading
                 setCreateUserButtonDisable(false)
                 setCreateUserButtonLoading(false)
+
+                // disabling global loading
+                setGlobalLoading(false)
 
                 const userCreated = res.data
 
                 // if successfully created
                 if (userCreated.success) {
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
+                    // redirecting to users
+                    props.history.push('/settings/users', {
+                        shouldReload: true
+                    })
+
                     // showing success message
                     toast.success(USER_CREATED_SUCCESSFULLY, {
-                        autoClose: 2500,
-                        onClose: () => {
-                            // ressetting all the fields to default
-                            setUserFirstName("")
-                            setUserLastName("")
-                            setUserEmail("")
-                            setUserType("")
-                        }
+                        autoClose: 3000
                     })
+                    // ressetting all the fields to default
+                    // setUserFirstName("")
+                    // setUserLastName("")
+                    // setUserEmail("")
+                    // setUserType("")
+                    // setUserTwoFactor("")
                 }
 
                 // if some error
@@ -172,14 +182,15 @@ function CreateUser(props) {
                 toast.error(ERROR_WHILE_CREATING_USER, {
                     autoClose: 3000,
                     onClose: () => {
-                        // disbling the button and enabling loading
+                        // disabling global loading
+                        setGlobalLoading(false)
+
+                        // disbling the button and disbling loading
                         setCreateUserButtonDisable(false)
                         setCreateUserButtonLoading(false)
                     }
                 })
             })
-
-
         }
     }
 
@@ -1079,7 +1090,6 @@ function CreateUser(props) {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </Container>
         </section>
@@ -1093,10 +1103,10 @@ const getDataFromStore = state => {
     };
 }
 
-// const dispatchActionsToProps = dispatch => {
-//     return {
-//         action: item => dispatch(action(item)),
-//     }
-// }
+const dispatchActionsToProps = dispatch => {
+    return {
+        setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
+    }
+}
 
-export default connect(getDataFromStore, null)(CreateUser)
+export default connect(getDataFromStore, dispatchActionsToProps)(CreateUser)
