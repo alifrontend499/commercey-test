@@ -9,3 +9,10 @@ export const SAVE_CURRENT_USER = 'SAVE_CURRENT_USER'
 export const REMOVE_CURRENT_USER = 'REMOVE_CURRENT_USER'
 export const AUTHENTICATE_USER = 'AUTHENTICATE_USER'
 export const EMPTY_AUTH = 'EMPTY_AUTH'
+
+// CATALOG - 
+// categories
+export const ADD_CATAGORIES = 'ADD_CATAGORIES'
+
+// common
+export const EMPTY_CATALOG = 'EMPTY_CATALOG'

@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import UsersLodingSkeleton from './users__loadingSkeleton'
 
 // tooltips
-import { renderTooltipDeleteUser, renderTooltipEditUser } from '../../includes/tooltips/Users__Tooltips'
+import { renderTooltipDelete, renderTooltipEdit } from '../../includes/tooltips/Users__Tooltips'
 
 // react moment
 import Moment from 'react-moment';
@@ -32,8 +32,7 @@ export default function UserTable(props) {
                             <input
                                 type="checkbox"
                                 className="d-none"
-                                // defaultChecked={allUsersSelected}
-                                checked={props.allUsersSelected}
+                                checked={props.allCheckboxSelected}
                                 onChange={ev => props.handleSelectAllChange(ev)} />
                             <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                 <FeatherIcon
@@ -129,7 +128,7 @@ export default function UserTable(props) {
                         <tr key={item.login_id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
-                                    <input type="checkbox" className="d-none user-selector-checkbox" />
+                                    <input type="checkbox" className="d-none all-checkboxes-selector-checkbox" />
                                     <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                         <FeatherIcon
                                             icon="check"
@@ -206,7 +205,7 @@ export default function UserTable(props) {
                                 <div className="d-flex justify-content-end">
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipEditUser}
+                                        overlay={renderTooltipEdit}
                                     >
                                         <Link
                                             to={{
@@ -224,11 +223,11 @@ export default function UserTable(props) {
 
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipDeleteUser}
+                                        overlay={renderTooltipDelete}
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDeleteUser(ev, item.login_id)}
+                                            onClick={ev => props.handleDelete(ev, item.login_id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"

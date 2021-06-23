@@ -1,4 +1,7 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+
+// redux
+import { connect } from 'react-redux'
 
 // bootstrap
 import {
@@ -24,75 +27,188 @@ import { toast, Slide } from 'react-toastify';
 // includes
 import EmailDetails from './Includes/CreateEmail__EmailDetails'
 
-export default function CreateEmail() {
+// APIs
+import { getEmailEvents, cancelGetEmailEventsApi, addEmailTemplate } from 'utlis/Apis/Emails_API'
+
+// actions
+import { setGlobalLoading } from 'redux/actions/actionCommon'
+
+// html editor
+import HTML_Editor from 'utlis/helpers/HTML_Editor'
+
+function CreateEmail(props) {
+    // error and success messages
+    const SOME_ERROR_OCCURED = "Unable to create the email template. please try again."
+    const EMAIL_CREATED_SUCCESSFULLY = "Email template created successfully."
+    const ERROR_WHILE_CREATING_EMAIL = "Error occured!! please check if all the required fields are filled correctly."
+
     // refs
     const submitButtonRef = useRef(null)
 
     // states
-    const [createEmailButtonDisable, setCreateEmailButtonDisable] = useState(false)
-    const [createEmailButtonLoading, setCreateEmailButtonLoading] = useState(false)
+    const [createButtonDisable, setCreateButtonDisable] = useState(false)
+    const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
     const [emailTemplateName, setEmailTemplateName] = useState("")
-    const [emailSubject, setEmailSubject] = useState("")
+    const [emailEventName, setEmailEventTitle] = useState("")
     const [emailTo, setEmailTo] = useState("")
-    // const [emailContent, setEmailContent] = useState("")
+    const [emailFrom, setEmailFrom] = useState("")
+    const [emailSubject, setEmailSubject] = useState("")
+    const [emailCC, setEmailCC] = useState("")
+    const [emailBCC, setEmailBCC] = useState("")
+    const [emailContent, setEmailContent] = useState("")
+
+    const [emailEvents, setEmailEvents] = useState([])
+
+    // on page load
+    useEffect(() => {
+        // getting event id
+        getEmailEvents(props.currentUser.userToken).then(res => {
+            const emailEvents = res.data
+
+            // if request is success
+            if (emailEvents.success) {
+                setEmailEvents(emailEvents.data)
+            }
+
+            // if request is not succeed
+            if (emailEvents.error) {
+                console.log('Error occured while loading email events!', res)
+            }
+        }).catch(err => {
+            // console.log('err ', err)
+            console.log('err ', err.message)
+        })
+
+        return () => {
+            // canceling admin users api when user leaves the component
+            cancelGetEmailEventsApi()
+        }
+    }, [])
 
     // initial create email form values
-    const initialCreateEmailFormValues = {
-        emailTemplateName: emailTemplateName,
-        emailSubject: emailSubject,
-        emailTo: emailTo,
+    const initialCreateFormValues = {
+        emailTemplateName,
+        emailEventName,
+        emailTo,
+        emailFrom,
+        emailSubject,
+        emailCC,
+        emailBCC,
+        emailContent,
     }
 
     // handle create email form validations
-    const createEmailFormValidationSchema = Yup.object({
+    const createFormValidationSchema = Yup.object({
         emailTemplateName: Yup.string().required('This field is required'),
-        emailSubject: Yup.string().required('This field is required'),
+        emailEventName: Yup.string(),
         emailTo: Yup.string().required('This field is required'),
+        emailFrom: Yup.string(),
+        emailSubject: Yup.string().required('This field is required'),
+        emailCC: Yup.string(),
+        emailBCC: Yup.string(),
+        emailContent: Yup.string(),
     })
 
     // handle create email form submmision
-    const onCreateEmailFormSubmit = values => {
+    const onCreateFormSubmit = values => {
         if (values) {
+            // enabling global loading
+            setGlobalLoading(true)
 
             // enabling the button and enabling loading
-            setCreateEmailButtonDisable(true)
-            setCreateEmailButtonLoading(true)
+            setCreateButtonDisable(true)
+            setCreateButtonLoading(true)
 
-            setTimeout(() => {
+            // saving the email in the database
+            const emailToBeSaved = {
+                template_title: values.emailTemplateName,
+                email_subject: values.emailSubject,
+                email_from: values.emailFrom,
+                cc_email: values.emailCC,
+                bcc_email: values.emailBCC,
+                email_body: values.emailContent,
+                send_email_to: values.emailTo,
+                event_id: values.emailEventName,
+            }
+
+            // saving email template
+            addEmailTemplate(props.currentUser.userToken, emailToBeSaved).then(res => {
+                // disabling global loading
+                setGlobalLoading(false)
+
                 // disbling the button and enabling loading
-                setCreateEmailButtonDisable(false)
-                setCreateEmailButtonLoading(false)
+                setCreateButtonDisable(false)
+                setCreateButtonLoading(false)
+                // console.log('res from update user ', res)
+
+                const addingEmail = res.data
+
+                // if request is success
+                if (addingEmail.success) {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // redirecting to users
+                    props.history.push('/settings/emails', {
+                        shouldReload: true
+                    })
+
+                    // showing the error message
+                    toast.success(EMAIL_CREATED_SUCCESSFULLY, {
+                        autoClose: 2500,
+                    })
+
+                    // empty the fields
+                    setEmailTemplateName("")
+                    setEmailEventTitle("")
+                    setEmailTo("")
+                    setEmailFrom("")
+                    setEmailSubject("")
+                    setEmailCC("")
+                    setEmailBCC("")
+                    setEmailContent("")
+                }
+
+                // if request is not succeed
+                if (addingEmail.error) {
+                    console.log(ERROR_WHILE_CREATING_EMAIL, res)
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_CREATING_EMAIL, {
+                        autoClose: 3000,
+                    })
+                }
+            }).catch(err => {
+                console.log('err ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
-                // showing success message
-                toast.success("Email created succesfully!", {
-                    className: 'app-toast',
-                    autoClose: 2500,
-                    transition: Slide,
-                    draggable: false,
-                    hideProgressBar: true,
-                    closeOnClick: false,
+                // showing the error message
+                toast.error(SOME_ERROR_OCCURED, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling global loading
+                        setGlobalLoading(false)
+
+                        // disbling the button and enabling loading
+                        setCreateButtonDisable(false)
+                        setCreateButtonLoading(false)
+                    }
                 })
-
-                // ressetting all the fields to default
-                setEmailTemplateName("")
-                setEmailSubject("")
-                setEmailTo("")
-                // setEmailContent("")
-
-            }, 1000);
-        } else {
+            })
         }
     }
 
     // formik hook
     const formik = useFormik({
-        initialValues: initialCreateEmailFormValues,
-        validationSchema: createEmailFormValidationSchema,
-        onSubmit: onCreateEmailFormSubmit,
+        initialValues: initialCreateFormValues,
+        validationSchema: createFormValidationSchema,
+        onSubmit: onCreateFormSubmit,
         enableReinitialize: true
     })
 
@@ -102,6 +218,14 @@ export default function CreateEmail() {
 
         // triggering click on submit button
         submitButtonRef.current.click()
+    }
+
+    // html editor
+    const getHTML_editorResult = (data) => {
+        console.log("html editor ", data)
+
+        // setting email content
+        setEmailContent(data)
     }
 
     return (
@@ -135,6 +259,7 @@ export default function CreateEmail() {
                                     <Col xs={12} md={9} lg={6} className="px-0">
                                         <EmailDetails
                                             formik={formik}
+                                            emailEvents={emailEvents}
                                         />
                                     </Col>
                                 </div>
@@ -147,39 +272,16 @@ export default function CreateEmail() {
                                     {/* heading */}
                                     <p className="app-heading text-capitalize">Email Content</p>
                                 </div>
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        {/* form field */}
-                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(formik.touched.emailSubject && formik.errors.emailSubject) ? "has-msg msg-error" : ""}`}>
-                                            <label>Subject</label>
-                                            <div className="media-body st-form-input-container">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Subject"
-                                                    id="emailSubject"
-                                                    {...formik.getFieldProps('emailSubject')} />
-                                                {
-                                                    /* form message */
-                                                    (formik.touched.emailSubject && formik.errors.emailSubject) && (
-                                                        <div className="st-form-msg position-absolute">
-                                                            <p className="st-fs-12">{formik.errors.emailSubject}</p>
-                                                        </div>
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
-                                    </Col>
+                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
 
-                                    <Col xs={12} md={9} lg={6} className="px-0">
+                                    <Col xs={12} md={9} lg={10} className="px-0">
                                         {/* form field */}
-                                        <div className="st-form st-form-with-label-left d-flex flex-wrap align-items-start">
+                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap`}>
                                             <label>Content</label>
-                                            <div className="media-body st-form-input-container">
-                                                <textarea
-                                                    rows="5"
-                                                    placeholder="Content"
-                                                    className="form-control"></textarea>
+                                            <div className="media-body">
+                                                <HTML_Editor
+                                                    getResult={getHTML_editorResult}
+                                                />
                                             </div>
                                         </div>
                                     </Col>
@@ -195,10 +297,10 @@ export default function CreateEmail() {
                                     <button
                                         type="submit"
                                         className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                        disabled={createEmailButtonDisable}
+                                        disabled={createButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {
-                                            createEmailButtonLoading ? (
+                                            createButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
                                                 <span>Create Email</span>
@@ -217,3 +319,18 @@ export default function CreateEmail() {
         </section>
     )
 }
+
+
+const getDataFromStore = state => {
+    return {
+        currentUser: state.auth.currentUser
+    };
+}
+
+const dispatchActionsToProps = dispatch => {
+    return {
+        setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
+    }
+}
+
+export default connect(getDataFromStore, dispatchActionsToProps)(CreateEmail)

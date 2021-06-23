@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import EmailsLodingSkeleton from './emails__loadingSkeleton'
 
 // tooltips
-import { renderTooltipDeleteEmail, renderTooltipEditEmail } from '../tooltips/Emails__Tooltips'
+import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Emails__Tooltips'
 
 // react moment
 import Moment from 'react-moment';
@@ -32,7 +32,7 @@ export default function EmailsTable(props) {
                             <input
                                 type="checkbox"
                                 className="d-none"
-                                checked={props.allEmailsSelected}
+                                checked={props.allCheckboxSelected}
                                 onChange={ev => props.handleSelectAllChange(ev)} />
                             <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                 <FeatherIcon
@@ -63,6 +63,16 @@ export default function EmailsTable(props) {
                     }
 
                     {
+                        props.column__Event && (
+                            <th>
+                                <p className="text-capitalize">
+                                    event name
+                                </p>
+                            </th>
+                        )
+                    }
+
+                    {
                         props.column__to && (
                             <th>
                                 <p className="text-capitalize">
@@ -74,7 +84,7 @@ export default function EmailsTable(props) {
 
                     {
                         props.column__DateAdded && (
-                            <th>
+                            <th width="170">
                                 <p className="text-capitalize">
                                     date added
                                 </p>
@@ -105,10 +115,10 @@ export default function EmailsTable(props) {
                 {
                     /* EMAILS DATA */
                     (props.emails && props.emails.length) ? props.emails.map(item => (
-                        <tr key={item.id}>
+                        <tr key={item.template_id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
-                                    <input type="checkbox" className="d-none email-selector-checkbox" />
+                                    <input type="checkbox" className="d-none all-checkboxes-selector-checkbox" />
                                     <span className="box d-flex align-items-center justify-content-center border" style={{ height: 17, width: 17 }}>
                                         <FeatherIcon
                                             icon="check"
@@ -122,7 +132,7 @@ export default function EmailsTable(props) {
                                 props.column__TemplateName && (
                                     <td className="column__TemplateName">
                                         <p className="">
-                                            {item.templateName}
+                                            {item.template_title}
                                         </p>
                                     </td>
                                 )
@@ -132,7 +142,17 @@ export default function EmailsTable(props) {
                                 props.column__Subject && (
                                     <td className="column__Subject">
                                         <p className="">
-                                            {item.subject}
+                                            {item.email_subject}
+                                        </p>
+                                    </td>
+                                )
+                            }
+
+                            {
+                                props.column__Event && (
+                                    <td className="column__Event">
+                                        <p className="">
+                                            {item.event_title}
                                         </p>
                                     </td>
                                 )
@@ -142,7 +162,7 @@ export default function EmailsTable(props) {
                                 props.column__to && (
                                     <td className="column__to">
                                         <p className="">
-                                            {item.to}
+                                            {item.send_email_to}
                                         </p>
                                     </td>
                                 )
@@ -165,11 +185,11 @@ export default function EmailsTable(props) {
                                 <div className="d-flex justify-content-end">
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipEditEmail}
+                                        overlay={renderTooltipEdit}
                                     >
                                         <Link
                                             to={{
-                                                pathname: '/settings/emails/edit/' + item.id,
+                                                pathname: '/settings/emails/edit/' + item.template_id,
                                                 state: { emailDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
@@ -183,11 +203,11 @@ export default function EmailsTable(props) {
 
                                     <OverlayTrigger
                                         placement={"left"}
-                                        overlay={renderTooltipDeleteEmail}
+                                        overlay={renderTooltipDelete}
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDeleteEmail(ev, item.id)}
+                                            onClick={ev => props.handleDelete(ev, item.template_id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"

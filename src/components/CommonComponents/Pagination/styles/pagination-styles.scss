@@ -1,0 +1,35 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+/* PAGINATION STYLES */
+#st-pagination {
+}
+.st-pagination {
+    .pagination-link {
+        padding: 6px 5px;
+        background: #fff;
+        color: $text__dark-color;
+        border: 1px solid $borderColor__light;
+        border-radius: $common-border-radius;
+        min-width: 30px;
+        min-height: 30px;
+        text-align: center;
+        margin: 0 2px;
+        @include transition;
+        &.active,
+        &:hover {
+            background: $primary-color;
+            color: #fff;
+        }
+        &.active {
+            font-weight: 600;
+        }
+        &.disabled {
+            pointer-events: none !important;
+        }
+        &.disabled:not(.link-count) {
+            opacity: .7;
+        }
+    }
+}

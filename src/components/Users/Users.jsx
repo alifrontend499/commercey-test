@@ -40,7 +40,7 @@ function Users(props) {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const [allUsersSelected, setAllUsersSelected] = useState(false)
+    const [allCheckboxSelected, setAllCheckboxesSelected] = useState(false)
 
     const [column__User, setColumn__User] = useState(true)
     const [column__Email, setColumn__Email] = useState(true)
@@ -59,7 +59,7 @@ function Users(props) {
         setLoading(true)
 
         // getting admin users data
-        getUsers(props.currentUser.userId, "").then(res => {
+        getUsers(props.currentUser.userId).then(res => {
             const resData = res.data
 
             // disabling loading
@@ -68,12 +68,7 @@ function Users(props) {
             // if request succesfull
             if (resData && resData.success) {
                 // settings users
-                if (users.length) {
-                    // if users already exists
-                } else {
-                    // if no user already exists
-                    setUsers(resData.data)
-                }
+                setUsers(resData.data)
             }
 
             // if request is not succesfull
@@ -90,7 +85,6 @@ function Users(props) {
                     }
                 })
             }
-
         }).catch(err => {
             // console.log('err ', err)
             console.log('err ', err.message)
@@ -112,18 +106,18 @@ function Users(props) {
 
     // selecting all the columns
     const handleSelectAllChange = (ev) => {
-        const checkboxes = document.getElementsByClassName('user-selector-checkbox')
+        const checkboxes = document.getElementsByClassName('all-checkboxes-selector-checkbox')
 
-        // checking the checkbox and selecting all users
-        setAllUsersSelected(!allUsersSelected)
+        // checking the checkbox and selecting all checkboxes
+        setAllCheckboxesSelected(!allCheckboxSelected)
         setTimeout(() => {
             if (ev.target.checked) {
-                // all users selected
+                // all checkboxes selected
                 checkboxes.length && Array.from(checkboxes).forEach(checkbox => {
                     checkbox.checked = true
                 });
             } else {
-                // all users not selected
+                // all checkboxes not selected
                 checkboxes.length && Array.from(checkboxes).forEach(checkbox => {
                     checkbox.checked = false
                 });
@@ -132,7 +126,8 @@ function Users(props) {
 
     };
 
-    const handleDeleteUser = (ev, userId) => {
+    // handle delete user
+    const handleDelete = (ev, userId) => {
         ev.preventDefault()
         // dismissing all the previous toasts first
         toast.dismiss();
@@ -238,7 +233,7 @@ function Users(props) {
                                 {/* table */}
                                 <div className="st-listing-table users-table">
                                     <UserTable
-                                        allUsersSelected={allUsersSelected}
+                                        allCheckboxSelected={allCheckboxSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
                                         column__User={column__User}
@@ -253,7 +248,7 @@ function Users(props) {
 
                                         users={users}
 
-                                        handleDeleteUser={(ev, userId) => handleDeleteUser(ev, userId)}
+                                        handleDelete={(ev, userId) => handleDelete(ev, userId)}
                                     />
 
                                     {

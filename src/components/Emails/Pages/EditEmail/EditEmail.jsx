@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 
+// redux
+import { connect } from 'react-redux'
+
 // bootstrap
 import {
     Container,
@@ -22,93 +25,284 @@ import {
 import * as Yup from 'yup'
 
 // react toastify
-import { toast, Slide } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 // includes
 import EmailDetails from './Includes/EditEmail__EmailDetails'
 
-export default function EditEmail(props) {
+// APIs
+import { getEmailDetails, cancelGetEmailDetailsApi, getEmailEvents, cancelGetEmailEventsApi, editEmailTemplate } from 'utlis/Apis/Emails_API'
+
+// actions
+import { setGlobalLoading } from 'redux/actions/actionCommon'
+
+// html editor
+import HTML_Editor from 'utlis/helpers/HTML_Editor'
+
+function EditEmail(props) {
+    // error and success messages
+    const SOME_ERROR_OCCURED = "Unable to load the email template. please try again."
+    const EMAIL_UPDATED_SUCCESSFULLY = "email template detail updated successfully."
+    const ERROR_WHILE_LOADING_EMAIL = "No detail found."
+
     // refs
     const submitButtonRef = useRef(null)
 
     // states
+    const [emailId, setEmailId] = useState("")
+
     const [editEmailButtonDisable, setEditEmailButtonDisable] = useState(false)
     const [editEmailButtonLoading, setEditEmailButtonLoading] = useState(false)
 
     const [emailTemplateName, setEmailTemplateName] = useState("")
-    const [emailSubject, setEmailSubject] = useState("")
+    const [emailEventName, setEmailEventTitle] = useState("")
     const [emailTo, setEmailTo] = useState("")
-    // const [emailContent, setEmailContent] = useState("")
+    const [emailFrom, setEmailFrom] = useState("")
+    const [emailSubject, setEmailSubject] = useState("")
+    const [emailCC, setEmailCC] = useState("")
+    const [emailBCC, setEmailBCC] = useState("")
+    const [emailContent, setEmailContent] = useState("")
+    const [defaultEmailContent, setDefaultEmailContent] = useState("")
 
-    // edit email's values
+    const [emailEvents, setEmailEvents] = useState([])
+
+    const [emailTemplateId, setEmailTemplateId] = useState([])
+
+    // on page load
+    useEffect(() => {
+        const emailIdFromUrl = props.match.params;
+        // setting user id from the url
+        if (emailIdFromUrl) {
+            setEmailId(emailIdFromUrl.id)
+        }
+
+        // getting event id
+        getEmailEvents(props.currentUser.userToken, emailId).then(res => {
+            const emailEvents = res.data
+
+            // if request is success
+            if (emailEvents.success) {
+                setEmailEvents(emailEvents.data)
+            }
+
+            // if request is not succeed
+            if (emailEvents.error) {
+                console.log('Error occured while loading email events!', res)
+            }
+        }).catch(err => {
+            console.log('err ', err.message)
+        })
+
+        return () => {
+            // canceling admin users api when user leaves the component
+            cancelGetEmailEventsApi()
+        }
+    }, [])
+
+    // geting form values from the url
     useEffect(() => {
         const locState = props.location.state ?? props.location.state
 
-        // if state exists in the location
+        // if state with the email exists in the location
         if (locState) {
             const email = locState.emailDetails
-            setEmailTemplateName((email && email.templateName) ? email.templateName : "")
-            setEmailSubject((email && email.subject) ? email.subject : "")
-            setEmailTo((email && email.to) ? email.to : "")
+            setEmailTemplateId(email && email.template_id)
+            setEmailTemplateName(email && email.template_title)
+            setEmailEventTitle(email && email.event_id)
+            setEmailTo(email && email.send_email_to)
+            setEmailFrom(email && email.email_from)
+            setEmailSubject(email && email.email_subject)
+            setEmailCC(email && email.cc_email)
+            setEmailBCC(email && email.bcc_email)
+            setEmailContent(email && email.email_body)
+
+            setDefaultEmailContent(email && email.email_body)
         }
     }, [props])
 
-    // initial edit email form values
-    const initialEditEmailFormValues = {
-        emailTemplateName: emailTemplateName,
-        emailSubject: emailSubject,
-        emailTo: emailTo,
-    }
+    // geting form values from the database if not found in the url
+    useEffect(() => {
+        const locState = props.location.state ?? props.location.state
+        // if state with the user exists in the location
+        if (!locState) {
+            // enabling the global loading
+            props.setGlobalLoading(true)
+            // loading the user from the database
+            const emailId = props.match.params.id ?? props.match.params.id
 
-    // handle edit email form validations
-    const editEmailFormValidationSchema = Yup.object({
-        emailTemplateName: Yup.string().required('This field is required'),
-        emailSubject: Yup.string().required('This field is required'),
-        emailTo: Yup.string().required('This field is required'),
-    })
+            // getting single email details
+            getEmailDetails(props.currentUser.userToken, emailId).then(res => {
+                const email = res.data
 
-    // handle edit email form submmision
-    const onEditEmailFormSubmit = values => {
-        if (values) {
+                // disabling the global loading
+                props.setGlobalLoading(false)
 
-            // enabling the button and enabling loading
-            setEditEmailButtonDisable(true)
-            setEditEmailButtonLoading(true)
+                // if request is success
+                if (email.success) {
+                    setEmailTemplateId(email.data && email.data.template_id)
+                    setEmailTemplateName(email.data && email.data.template_title)
+                    setEmailEventTitle(email.data && email.data.event_id)
+                    setEmailTo(email.data && email.data.send_email_to)
+                    setEmailFrom(email.data && email.data.email_from)
+                    setEmailSubject(email.data && email.data.email_subject)
+                    setEmailCC(email.data && email.data.cc_email)
+                    setEmailBCC(email.data && email.data.bcc_email)
+                    setEmailContent(email.data && email.data.email_body)
+                    
+                    setDefaultEmailContent(email.data && email.data.email_body)
+                }
+                // if request is not succeed
+                if (email.error) {
+                    console.log(ERROR_WHILE_LOADING_EMAIL, res)
 
-            setTimeout(() => {
-                // disbling the button and enabling loading
-                setEditEmailButtonDisable(false)
-                setEditEmailButtonLoading(false)
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_LOADING_EMAIL, {
+                        autoClose: 3000,
+                    })
+                }
+            }).catch(err => {
+                console.log('err ', err.message)
+
+                // disabling the global loading
+                props.setGlobalLoading(false)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
-                // showing success message
-                toast.success("Email editd succesfully!", {
-                    className: 'app-toast',
-                    autoClose: 2500,
-                    transition: Slide,
-                    draggable: false,
-                    hideProgressBar: true,
-                    closeOnClick: false,
+                // showing the error message
+                toast.error(SOME_ERROR_OCCURED, {
+                    autoClose: 3000,
                 })
+            })
 
-                // ressetting all the fields to default
-                setEmailTemplateName("")
-                setEmailSubject("")
-                setEmailTo("")
-                // setEmailContent("")
+            return () => {
+                // disabling the global loading
+                props.setGlobalLoading(false)
 
-            }, 1000);
-        } else {
+                // canceling admin users api when user leaves the component
+                cancelGetEmailDetailsApi()
+            }
+        }
+
+    }, [])
+
+    // html editor
+    const getHTML_editorResult = (data) => {
+        // setting email content
+        setEmailContent(data)
+    }
+
+    // initial edit email form values
+    const initialEditFormValues = {
+        emailTemplateName,
+        emailEventName,
+        emailTo,
+        emailFrom,
+        emailSubject,
+        emailCC,
+        emailBCC,
+        emailContent,
+    }
+
+    // handle edit email form validations
+    const editFormValidationSchema = Yup.object({
+        emailTemplateName: Yup.string().required('This field is required'),
+        emailEventName: Yup.string().required('This field is required'),
+        emailTo: Yup.string().required('This field is required'),
+        emailFrom: Yup.string(),
+        emailSubject: Yup.string().required('This field is required'),
+        emailCC: Yup.string(),
+        emailBCC: Yup.string(),
+        emailContent: Yup.string(),
+    })
+
+    // handle edit email form submmision
+    const onEmailFormSubmit = values => {
+        if (values) {
+            // enabling global loading
+            setGlobalLoading(true)
+
+            // disabling the button and enabling loading
+            setEditEmailButtonDisable(true)
+            setEditEmailButtonLoading(true)
+
+            // saving the email in the database
+            const emailToBeSaved = {
+                template_id: emailTemplateId,
+                template_title: values.emailTemplateName,
+                email_subject: values.emailSubject,
+                email_from: values.emailFrom,
+                cc_email: values.emailCC,
+                bcc_email: values.emailBCC,
+                email_body: values.emailContent,
+                send_email_to: values.emailTo,
+                event_id: values.emailEventName,
+            }
+
+            // updating the user details from the database
+            editEmailTemplate(props.currentUser.userToken, emailToBeSaved).then(res => {
+                // disabling global loading
+                setGlobalLoading(false)
+
+                // enabling the button and disabling loading
+                setEditEmailButtonDisable(false)
+                setEditEmailButtonLoading(false)
+
+                const emailUpdated = res.data
+
+                // if successfully created
+                if (emailUpdated.success) {
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing success message
+                    toast.success(EMAIL_UPDATED_SUCCESSFULLY, {
+                        autoClose: 3000
+                    })
+                }
+
+                // if some error
+                if (emailUpdated.error) {
+                    console.log(SOME_ERROR_OCCURED, res)
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(SOME_ERROR_OCCURED, {
+                        autoClose: 3000
+                    })
+                }
+            }).catch(err => {
+                console.log('err ', err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(SOME_ERROR_OCCURED, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling global loading
+                        setGlobalLoading(false)
+
+                        // enabling the button and disabling loading
+                        setEditEmailButtonDisable(false)
+                        setEditEmailButtonLoading(false)
+                    }
+                })
+            })
         }
     }
 
     // formik hook
     const formik = useFormik({
-        initialValues: initialEditEmailFormValues,
-        validationSchema: editEmailFormValidationSchema,
-        onSubmit: onEditEmailFormSubmit,
+        initialValues: initialEditFormValues,
+        validationSchema: editFormValidationSchema,
+        onSubmit: onEmailFormSubmit,
         enableReinitialize: true
     })
 
@@ -162,6 +356,7 @@ export default function EditEmail(props) {
                                     <Col xs={12} md={9} lg={6} className="px-0">
                                         <EmailDetails
                                             formik={formik}
+                                            emailEvents={emailEvents}
                                         />
                                     </Col>
                                 </div>
@@ -174,39 +369,16 @@ export default function EditEmail(props) {
                                     {/* heading */}
                                     <p className="app-heading text-capitalize">Email Content</p>
                                 </div>
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
+                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
+                                    <Col xs={12} md={9} lg={10} className="px-0">
                                         {/* form field */}
-                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(formik.touched.emailSubject && formik.errors.emailSubject) ? "has-msg msg-error" : ""}`}>
-                                            <label>Subject</label>
-                                            <div className="media-body st-form-input-container">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Subject"
-                                                    id="emailSubject"
-                                                    {...formik.getFieldProps('emailSubject')} />
-                                                {
-                                                    /* form message */
-                                                    (formik.touched.emailSubject && formik.errors.emailSubject) && (
-                                                        <div className="st-form-msg position-absolute">
-                                                            <p className="st-fs-12">{formik.errors.emailSubject}</p>
-                                                        </div>
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
-                                    </Col>
-
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        {/* form field */}
-                                        <div className="st-form st-form-with-label-left d-flex flex-wrap align-items-start">
+                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap`}>
                                             <label>Content</label>
-                                            <div className="media-body st-form-input-container">
-                                                <textarea
-                                                    rows="5"
-                                                    placeholder="Content"
-                                                    className="form-control"></textarea>
+                                            <div className="media-body">
+                                                <HTML_Editor
+                                                    defaultValue={emailContent}
+                                                    getResult={data => getHTML_editorResult(data)}
+                                                />
                                             </div>
                                         </div>
                                     </Col>
@@ -244,3 +416,17 @@ export default function EditEmail(props) {
         </section>
     )
 }
+
+const getDataFromStore = state => {
+    return {
+        currentUser: state.auth.currentUser
+    };
+}
+
+const dispatchActionsToProps = dispatch => {
+    return {
+        setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
+    }
+}
+
+export default connect(getDataFromStore, dispatchActionsToProps)(EditEmail)

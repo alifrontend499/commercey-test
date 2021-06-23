@@ -1,4 +1,4 @@
-# SOL TRADING Web App
+# COMMERCEY ADMIN PANEL
 
 ## RUN THE PROJECT
 
@@ -144,4 +144,13 @@ https://fkhadra.github.io/react-toastify/introduction
 
 ```
 npm install --save react-toastify
+```
+
+## `13. driftjs`
+for wysiwyg editor
+
+https://draftjs.org/docs/getting-started
+
+```
+npm install draft-js
 ```

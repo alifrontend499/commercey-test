@@ -77,9 +77,6 @@ function EditUser(props) {
         getAdminGroups(props.currentUser.userToken).then(res => {
             const adminGroupsData = res.data
 
-            // disabling the global loading
-            props.setGlobalLoading(false)
-
             // if there's no error
             if (adminGroupsData.success) {
                 setAdminGroups(adminGroupsData.data)
@@ -191,7 +188,6 @@ function EditUser(props) {
             setEditUserButtonDisable(true)
             setEditUserButtonLoading(true)
 
-            // saving user to the store
             // saving the user in the database
             const userToBeSaved = {
                 login_id: userId,
@@ -203,7 +199,7 @@ function EditUser(props) {
                 user_status: values.editUserStatus,
             }
 
-            console.log("userToBeSaved ", userToBeSaved)
+            // console.log("userToBeSaved ", userToBeSaved)
 
             // updating the user details from the database
             editUser(props.currentUser.userToken, userToBeSaved).then(res => {
@@ -240,7 +236,7 @@ function EditUser(props) {
                     })
                 }
 
-                console.log('edited user results ', userEdited)
+                // console.log('edited user results ', userEdited)
 
             }).catch(err => {
                 // console.log('err ', err)

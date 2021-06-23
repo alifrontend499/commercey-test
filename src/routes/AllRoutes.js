@@ -14,10 +14,17 @@ import Users from "components/Users";
 import CreateUser from "components/Users/Pages/CreateUser";
 import EditUser from "components/Users/Pages/EditUser";
 
-
 import Emails from "components/Emails/Emails";
 import CreateEmail from "components/Emails/Pages/CreateEmail";
 import EditEmail from "components/Emails/Pages/EditEmail";
+
+import Categories from "components/Categories";
+import CreateCategory from "components/Categories/Pages/CreateCategory";
+import EditCategory from "components/Categories/Pages/EditCategory";
+
+import Brands from "components/Brands";
+import CreateBrand from "components/Brands/Pages/CreateBrand";
+import EditBrand from "components/Brands/Pages/EditBrand";
 
 // page not found
 import PageNotFound from "components/PageNotFound";
@@ -83,6 +90,47 @@ export default function AllRoutes(props) {
                 authLoading={props.authLoading}
                 path="/settings/emails/edit/:id"
                 component={EditEmail}
+                exact
+            />
+
+            {/* CATALOG */}
+            {/* categories */}
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/categories/"
+                component={Categories}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/categories/create"
+                component={CreateCategory}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/categories/edit/:id"
+                component={EditCategory}
+                exact
+            />
+
+            {/* brands */}
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/brands/"
+                component={Brands}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/brands/create"
+                component={CreateBrand}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/brands/edit/:id"
+                component={EditBrand}
                 exact
             />
 

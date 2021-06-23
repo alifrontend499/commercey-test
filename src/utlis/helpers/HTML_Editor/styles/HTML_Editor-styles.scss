@@ -1,0 +1,23 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+$defaultInputBorderColor: #eaedf1;
+
+// EDITOR STYLES
+.ql-container,
+.ql-toolbar.ql-snow {
+    border-color: $defaultInputBorderColor !important;
+    @include transition;
+    &:hover,
+    &:focus {
+        // border-color: darken(
+        //     $color: $defaultInputBorderColor,
+        //     $amount: 10
+        // ) !important;
+    }
+}
+.ql-editor {
+    min-height: 150px;
+    max-height: 400px;
+}

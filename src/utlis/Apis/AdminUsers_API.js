@@ -9,10 +9,9 @@ import { apiUrl } from "./constants";
 
 // get admin users
 export let cancelGetUsersApi;
-export async function getUsers(token, page) {
-    // if ((token, page)) {
+export async function getUsers(token) {
     if (token) {
-        const users = await axios.get(apiUrl + "list" + page, {
+        const users = await axios.get(apiUrl + "list", {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -136,7 +135,7 @@ export async function changePassword(token, userId, newPassword) {
     }
 }
 
-// change user's password
+// delete user
 export let cancelDeleteUserApi;
 export async function deleteUser(token, userId) {
     if ((token, userId)) {

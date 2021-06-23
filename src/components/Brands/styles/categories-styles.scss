@@ -1,0 +1,21 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// categories
+.app-categories__create-details,
+.app-categories__edit-details {
+    padding-bottom: 90px;
+    position: relative;
+    .action-btns {
+        position: absolute;
+        bottom: 0;
+        // left: $appLeftBarWidth;
+        // width: calc(100% - #{$appLeftBarWidth});
+        left: 0;
+        width: 100%;
+    }
+}
+.app-categories__edit-details {
+    
+}

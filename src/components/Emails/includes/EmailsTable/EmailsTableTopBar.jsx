@@ -69,7 +69,6 @@ export default function EmailsTableTopBar(props) {
                                 <span className="text ms-2">Template Name</span>
                             </label>
 
-
                             {/* label item */}
                             <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
                                 <input
@@ -86,6 +85,24 @@ export default function EmailsTableTopBar(props) {
                                         className="icon position-relative" />
                                 </span>
                                 <span className="text ms-2">Subject</span>
+                            </label>
+
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__Event}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__Event(true) : props.setColumn__Event(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Event</span>
                             </label>
 
                             {/* label item */}

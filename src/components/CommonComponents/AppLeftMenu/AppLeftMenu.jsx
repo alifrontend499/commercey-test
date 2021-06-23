@@ -200,23 +200,32 @@ export default function AppLeftMenu() {
                             <div className="alm_sub-menu">
                                 {/* SUB NAV ITEM */}
                                 <div className="alm_sub-nav-item">
-                                    <Link to="/dashboard" className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
+                                    <NavLink
+                                        to="/catalog/products"
+                                        activeClassName="opened"
+                                        className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
                                         Products
-                                    </Link>
+                                    </NavLink>
                                 </div>
 
                                 {/* SUB NAV ITEM */}
                                 <div className="alm_sub-nav-item">
-                                    <Link to="/dashboard" className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
+                                    <NavLink
+                                        to="/catalog/categories"
+                                        activeClassName="opened"
+                                        className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
                                         Categories
-                                    </Link>
+                                    </NavLink>
                                 </div>
 
                                 {/* SUB NAV ITEM */}
                                 <div className="alm_sub-nav-item">
-                                    <Link to="/dashboard" className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
-                                        Gift Cards
-                                    </Link>
+                                    <NavLink
+                                        to="/catalog/brands"
+                                        activeClassName="opened"
+                                        className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
+                                        Brands
+                                    </NavLink>
                                 </div>
                             </div>
                         )

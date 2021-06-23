@@ -3,9 +3,9 @@ import { Tooltip } from "react-bootstrap";
 
 // TOOLTIPS
 // delete
-export const renderTooltipDeleteUser = (props) => (
+export const renderTooltipDelete = (props) => (
     <Tooltip {...props}>Delete User</Tooltip>
 );
 
 // edit
-export const renderTooltipEditUser = (props) => <Tooltip {...props}>Edit User</Tooltip>;
+export const renderTooltipEdit = (props) => <Tooltip {...props}>Edit User</Tooltip>;

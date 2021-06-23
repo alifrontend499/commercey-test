@@ -6,7 +6,7 @@ export default function EditUser__UserDetails(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserFirstName && props.formik.errors.editUserFirstName) ? "has-msg msg-error" : ""}`}>
-                <label>First Name</label>
+                <label>First Name <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -27,7 +27,7 @@ export default function EditUser__UserDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserLastName && props.formik.errors.editUserLastName) ? "has-msg msg-error" : ""}`}>
-                <label>Last Name</label>
+                <label>Last Name <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -48,7 +48,7 @@ export default function EditUser__UserDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserEmail && props.formik.errors.editUserEmail) ? "has-msg msg-error" : ""}`}>
-                <label>Email</label>
+                <label>Email <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="email"
@@ -69,7 +69,7 @@ export default function EditUser__UserDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserTwoFactor && props.formik.errors.editUserTwoFactor) ? "has-msg msg-error" : ""}`}>
-                <label>Two Factor</label>
+                <label>Two Factor <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
@@ -92,7 +92,7 @@ export default function EditUser__UserDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserType && props.formik.errors.editUserType) ? "has-msg msg-error" : ""}`}>
-                <label>Type</label>
+                <label>Type <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
@@ -120,7 +120,7 @@ export default function EditUser__UserDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.editUserStatus && props.formik.errors.editUserStatus) ? "has-msg msg-error" : ""}`}>
-                <label>Status</label>
+                <label>Status <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
