@@ -32,14 +32,7 @@ export async function addBrand(token, brandData) {
     if (token, brandData) {
         const emails = await axios.post(apiUrl_forBrands + "brand",
             {
-                brand_name: brandData.brand_name,
-                description: brandData.description,
-                status: brandData.status,
-                parent_id: brandData.parent_id,
-                meta_title: brandData.meta_title,
-                meta_keywords: brandData.meta_keywords,
-                meta_description: brandData.meta_description,
-                image: brandData.image,
+                manufacturer_name: brandData.brand_name,
             },
             {
                 headers: {
@@ -84,14 +77,7 @@ export async function editBrand(token, brandData) {
     if (token, brandData) {
         const emails = await axios.put(apiUrl_forBrands + "brand/" + brandData.brand_id,
             {
-                brand_name: brandData.brand_name,
-                description: brandData.description,
-                status: brandData.status,
-                parent_id: brandData.parent_id,
-                meta_title: brandData.meta_title,
-                meta_keywords: brandData.meta_keywords,
-                meta_description: brandData.meta_description,
-                image: brandData.image,
+                manufacturer_name: brandData.brand_name,
             },
             {
                 headers: {

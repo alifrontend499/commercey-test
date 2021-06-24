@@ -8,10 +8,10 @@ import {
     Container
 } from 'react-bootstrap'
 
-// categories styles
-import "./styles/categories-styles.scss"
+// brands styles
+import "./styles/brands-styles.scss"
 
-// category table
+// brands table
 import BrandsTableTopBar from './includes/BrandsTable/BrandsTableTopBar'
 import BrandsTable from './includes/BrandsTable/BrandsTable'
 
@@ -19,7 +19,7 @@ import BrandsTable from './includes/BrandsTable/BrandsTable'
 import { toast } from 'react-toastify';
 
 // APIs
-import { getCategories, deleteCategory } from 'utlis/Apis/Categories_API'
+import { getBrands, deleteBrand } from 'utlis/Apis/Brands_API'
 
 // section loading
 import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
@@ -27,15 +27,13 @@ import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
 // pagination
 import Pagination from 'components/CommonComponents/Pagination'
 
-// actions
-import { addCategories } from 'redux/actions/actionCatalog'
 
 function Brands(props) {
     // messages
-    const ERROR_WHILE_FETCHING_CATEGORIES = "Unable to load Categories. please try again."
-    const ERROR_WHILE_DELETING_CATEGORIES = "No detail found"
-    const CATEGORIES_DELETED_SUCCESSFULLY = "Category template deleted successfully."
-    const UNKNOWN_ERROR = "Unable to delete the category. please try again."
+    const ERROR_WHILE_FETCHING_BRANDS = "Unable to load Brands. please try again."
+    const ERROR_WHILE_DELETING_BRANDS = "No detail found"
+    const BRANDS_DELETED_SUCCESSFULLY = "Brand deleted successfully."
+    const UNKNOWN_ERROR = "Unable to delete the Brand. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -44,28 +42,26 @@ function Brands(props) {
     // refs
 
     // states
-    const [categories, setCategories] = useState([])
+    const [brands, setBrands] = useState([])
     const [loading, setLoading] = useState(false)
 
     const [allCheckboxSelected, setAllCheckboxesSelected] = useState(false)
     const [paginationLinks, setPaginationLinks] = useState([])
 
-    const [column__CategoryName, setColumn__CategoryName] = useState(true)
-    const [column__CategoryImg, setColumn__CategoryImg] = useState(true)
-    const [column__CategoryParentCategory, setColumn__CategoryParentCategory] = useState(true)
-    const [column__CategoryStatus, setColumn__CategoryStatus] = useState(true)
+    const [column__ManufacturerName, setColumn__ManufacturerName] = useState(true)
+    const [column__ManufacturerUrl, setColumn__ManufacturerUrl] = useState(true)
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
 
 
-    // useEffect: getting category data
+    // useEffect: getting brands data
     useEffect(() => {
         const serchQuery = props.location.search
 
         // if search query is present in the URL
         if (serchQuery && serchQuery.length) {
-            // if categories available then enabling section loading else enabling loading
-            if (categories && categories.length) {
+            // if manufacturer available then enabling section loading else enabling loading
+            if (manufacturer && manufacturer.length) {
                 // enabling section loading
                 setSectionLoadingVisible(true)
             } else {
@@ -77,23 +73,22 @@ function Brands(props) {
             const serchQueryUpdated = serchQuery.replace("?", "")
 
             // if search query is not present in the URL
-            getCategories(props.currentUser.userToken, "show_disabled=1&" + serchQueryUpdated).then(res => {
+            getBrands(props.currentUser.userToken, serchQueryUpdated).then(res => {
                 // disabling section loading & loading
                 setSectionLoadingVisible(false)
                 setLoading(false)
 
                 const resData = res.data
 
+                console.log("Brands Data ", resData)
+
                 // if request succesfull
                 if (resData && resData.success) {
                     // setting pagination links
-                    setPaginationLinks(resData.links)
+                    setPaginationLinks(resData.data.links)
 
-                    // settings categories
-                    setCategories(resData.data)
-
-                    // updating global state for categories
-                    props.addCategoriesToGlobalState(serchQueryUpdated, resData.data)
+                    // settings brands
+                    setBrands(resData.data.data)
                 }
 
                 // if request is not succesfull
@@ -102,7 +97,7 @@ function Brands(props) {
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+                    toast.error(ERROR_WHILE_FETCHING_BRANDS, {
                         autoClose: 3000,
                         onClose: () => {
                             // disabling loading
@@ -118,7 +113,7 @@ function Brands(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+                toast.error(ERROR_WHILE_FETCHING_BRANDS, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling section loading & loading
@@ -133,19 +128,18 @@ function Brands(props) {
             setLoading(true)
 
             // if search query is not present in the URL
-            getCategories(props.currentUser.userToken, "show_disabled=1").then(res => {
+            getBrands(props.currentUser.userToken).then(res => {
                 // disabling loading
                 setLoading(false)
 
                 const resData = res.data
-
                 // if request succesfull
                 if (resData && resData.success) {
                     // setting pagination links
-                    setPaginationLinks(resData.links)
+                    setPaginationLinks(resData.data.links)
 
-                    // settings categories
-                    setCategories(resData.data)
+                    // settings brands
+                    setBrands(resData.data.data)
                 }
 
                 // if request is not succesfull
@@ -154,7 +148,7 @@ function Brands(props) {
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+                    toast.error(ERROR_WHILE_FETCHING_BRANDS, {
                         autoClose: 3000,
                         onClose: () => {
                             // disabling loading
@@ -170,7 +164,7 @@ function Brands(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+                toast.error(ERROR_WHILE_FETCHING_BRANDS, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling loading
@@ -203,34 +197,33 @@ function Brands(props) {
 
     };
 
-    const handleDelete = (ev, catId) => {
+    const handleDelete = (ev, brandId) => {
         ev.preventDefault()
-        console.log('catId ', catId)
-        var confirmation = window.confirm('Are you sure you want to delete this category?')
+        var confirmation = window.confirm('Are you sure you want to delete this brand?')
 
         if (confirmation) {
             // enabling the section loading
             setSectionLoadingVisible(true)
 
             // deleting data from the api
-            deleteCategory(props.currentUser.userToken, catId).then(res => {
+            deleteBrand(props.currentUser.userToken, brandId).then(res => {
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
                 const deletedData = res.data
                 // if delete succesfully
                 if (deletedData.success) {
-                    // updating categories state after deleting an categories.
-                    const filteredList = categories.filter(item => item.category_id !== catId)
+                    // updating brands state after deleting an brands.
+                    const filteredList = brands.filter(item => item.manufacturer_id !== brandId)
 
-                    // settings updated categories
-                    setCategories(filteredList)
+                    // settings updated brands
+                    setBrands(filteredList)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(CATEGORIES_DELETED_SUCCESSFULLY, {
+                    toast.success(BRANDS_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
                         }
@@ -239,12 +232,12 @@ function Brands(props) {
 
                 // if some error while deleting
                 if (deletedData.error) {
-                    console.log(ERROR_WHILE_DELETING_CATEGORIES, res)
+                    console.log(ERROR_WHILE_DELETING_BRANDS, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_DELETING_CATEGORIES, {
+                    toast.error(ERROR_WHILE_DELETING_BRANDS, {
                         autoClose: 2500,
                     })
                 }
@@ -289,33 +282,27 @@ function Brands(props) {
                                     <BrandsTableTopBar
                                         editColumnsType={editColumnsType}
 
-                                        column__CategoryName={column__CategoryName}
-                                        column__CategoryImg={column__CategoryImg}
-                                        column__CategoryParentCategory={column__CategoryParentCategory}
-                                        column__CategoryStatus={column__CategoryStatus}
+                                        column__ManufacturerName={column__ManufacturerName}
+                                        column__ManufacturerUrl={column__ManufacturerUrl}
 
-                                        setColumn__CategoryName={setColumn__CategoryName}
-                                        setColumn__CategoryImg={setColumn__CategoryImg}
-                                        setColumn__CategoryParentCategory={setColumn__CategoryParentCategory}
-                                        setColumn__CategoryStatus={setColumn__CategoryStatus}
+                                        setColumn__ManufacturerName={setColumn__ManufacturerName}
+                                        setColumn__ManufacturerUrl={setColumn__ManufacturerUrl}
                                     />
                                 </div>
 
                                 {/* table */}
-                                <div className="st-listing-table categories-table">
+                                <div className="st-listing-table brands-table">
                                     <BrandsTable
                                         allCheckboxSelected={allCheckboxSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
-                                        column__CategoryName={column__CategoryName}
-                                        column__CategoryImg={column__CategoryImg}
-                                        column__CategoryParentCategory={column__CategoryParentCategory}
-                                        column__CategoryStatus={column__CategoryStatus}
+                                        column__ManufacturerName={column__ManufacturerName}
+                                        column__ManufacturerUrl={column__ManufacturerUrl}
 
                                         loadingCount={loadingCount}
                                         loading={loading}
 
-                                        categories={categories}
+                                        brands={brands}
 
                                         handleDelete={(ev, id) => handleDelete(ev, id)}
                                     />
@@ -351,10 +338,10 @@ const getDataFromStore = state => {
     };
 }
 
-const dispatchActionsToProps = dispatch => {
-    return {
-        addCategoriesToGlobalState: (page, data) => dispatch(addCategories(page, data)),
-    }
-}
+// const dispatchActionsToProps = dispatch => {
+//     return {
+//         functionsData: (prop) => dispatch(functionsData(prop)),
+//     }
+// }
 
-export default connect(getDataFromStore, dispatchActionsToProps)(Brands)
+export default connect(getDataFromStore, null)(Brands)

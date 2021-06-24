@@ -2,9 +2,9 @@
 @import "/src/assets/scss/components/variables";
 @import "/src/assets/scss/components/mixins";
 
-// categories
-.app-categories__create-details,
-.app-categories__edit-details {
+// brands
+.app-brands__create-details,
+.app-brands__edit-details {
     padding-bottom: 90px;
     position: relative;
     .action-btns {
@@ -16,6 +16,6 @@
         width: 100%;
     }
 }
-.app-categories__edit-details {
+.app-brands__edit-details {
     
 }

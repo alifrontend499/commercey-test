@@ -13,12 +13,6 @@ function brands__loadingSkeleton() {
                 <Skeleton count={1} height={20} />
             </td>
             <td>
-                <Skeleton count={1} height={60} width={60} />
-            </td>
-            <td>
-                <Skeleton count={1} height={20} />
-            </td>
-            <td>
                 <Skeleton count={1} height={20} />
             </td>
             <td>

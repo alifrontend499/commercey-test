@@ -17,7 +17,7 @@ export default function BrandsTableTopBar(props) {
             {/* lt */}
             <div className="lt">
                 <Link
-                    to="/catalog/categories/create"
+                    to="/catalog/brands/create"
                     className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary">
                     <FeatherIcon
                         icon="plus"
@@ -56,9 +56,9 @@ export default function BrandsTableTopBar(props) {
                                 <input
                                     type="checkbox"
                                     className="d-none"
-                                    defaultChecked={props.column__CategoryName}
+                                    defaultChecked={props.column__ManufacturerName}
                                     onChange={ev => {
-                                        (ev.target.checked) ? props.setColumn__CategoryName(true) : props.setColumn__CategoryName(false)
+                                        (ev.target.checked) ? props.setColumn__ManufacturerName(true) : props.setColumn__ManufacturerName(false)
                                     }} />
                                 <span className="box d-flex align-items-center justify-content-center border">
                                     <FeatherIcon
@@ -66,7 +66,7 @@ export default function BrandsTableTopBar(props) {
                                         size="15"
                                         className="icon position-relative" />
                                 </span>
-                                <span className="text ms-2">Name</span>
+                                <span className="text ms-2">Brand Name</span>
                             </label>
 
                             {/* label item */}
@@ -74,9 +74,9 @@ export default function BrandsTableTopBar(props) {
                                 <input
                                     type="checkbox"
                                     className="d-none"
-                                    defaultChecked={props.column__CategoryImg}
+                                    defaultChecked={props.column__ManufacturerUrl}
                                     onChange={ev => {
-                                        (ev.target.checked) ? props.setColumn__CategoryImg(true) : props.setColumn__CategoryImg(false)
+                                        (ev.target.checked) ? props.setColumn__ManufacturerUrl(true) : props.setColumn__ManufacturerUrl(false)
                                     }} />
                                 <span className="box d-flex align-items-center justify-content-center border">
                                     <FeatherIcon
@@ -84,46 +84,8 @@ export default function BrandsTableTopBar(props) {
                                         size="15"
                                         className="icon position-relative" />
                                 </span>
-                                <span className="text ms-2">Image</span>
+                                <span className="text ms-2">Brand URL</span>
                             </label>
-                            
-                            {/* label item */}
-                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="d-none"
-                                    defaultChecked={props.column__CategoryParentCategory}
-                                    onChange={ev => {
-                                        (ev.target.checked) ? props.setColumn__CategoryParentCategory(true) : props.setColumn__CategoryParentCategory(false)
-                                    }} />
-                                <span className="box d-flex align-items-center justify-content-center border">
-                                    <FeatherIcon
-                                        icon="check"
-                                        size="15"
-                                        className="icon position-relative" />
-                                </span>
-                                <span className="text ms-2">Parent Category</span>
-                            </label>
-
-                            {/* label item */}
-                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="d-none"
-                                    defaultChecked={props.column__CategoryStatus}
-                                    onChange={ev => {
-                                        (ev.target.checked) ? props.setColumn__CategoryStatus(true) : props.setColumn__CategoryStatus(false)
-                                    }} />
-                                <span className="box d-flex align-items-center justify-content-center border">
-                                    <FeatherIcon
-                                        icon="check"
-                                        size="15"
-                                        className="icon position-relative" />
-                                </span>
-                                <span className="text ms-2">Status</span>
-                            </label>
-
-                            
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>

@@ -4,7 +4,6 @@ import React from 'react'
 import {
     Table,
     OverlayTrigger,
-    Image,
 } from 'react-bootstrap'
 
 // icons : feather
@@ -14,13 +13,10 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 // skeleton loading
-import CategoriesLodingSkeleton from './brands__loadingSkeleton'
+import BrandsLodingSkeleton from './brands__loadingSkeleton'
 
 // tooltips
-import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Categories__Tooltips'
-
-// images
-import noImgFound from 'assets/images/no-img-found.png'
+import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Brands__Tooltips'
 
 export default function BrandsTable(props) {
 
@@ -44,40 +40,20 @@ export default function BrandsTable(props) {
                         </label>
                     </th>
                     {
-                        props.column__CategoryName && (
+                        props.column__ManufacturerName && (
                             <th>
                                 <p className="text-capitalize">
-                                    name
+                                    brand name
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__CategoryImg && (
+                        props.column__ManufacturerUrl && (
                             <th>
                                 <p className="text-capitalize">
-                                    image
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
-                        props.column__CategoryParentCategory && (
-                            <th>
-                                <p className="text-capitalize">
-                                    Parent Category
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
-                        props.column__CategoryStatus && (
-                            <th>
-                                <p className="text-capitalize">
-                                    Status
+                                    brand url
                                 </p>
                             </th>
                         )
@@ -95,7 +71,7 @@ export default function BrandsTable(props) {
                             {
                                 (props.loadingCount && props.loadingCount.length) && props.loadingCount.map(item => (
                                     <React.Fragment key={item}>
-                                        <CategoriesLodingSkeleton />
+                                        <BrandsLodingSkeleton />
                                     </React.Fragment>
                                 ))
                             }
@@ -105,8 +81,8 @@ export default function BrandsTable(props) {
 
                 {
                     /* EMAILS DATA */
-                    (props.categories && props.categories.length) ? props.categories.map(item => (
-                        <tr key={item.category_id}>
+                    (props.brands && props.brands.length) ? props.brands.map(item => (
+                        <tr key={item.manufacturer_id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
                                     <input type="checkbox" className="d-none all-checkboxes-selector-checkbox" />
@@ -120,40 +96,20 @@ export default function BrandsTable(props) {
                             </td>
 
                             {
-                                props.column__CategoryName && (
-                                    <td className="column__CategoryName">
+                                props.column__ManufacturerName && (
+                                    <td className="column__ManufacturerName">
                                         <p className="">
-                                            {item.category_name}
+                                            {item.manufacturer_name}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__CategoryImg && (
-                                    <td className="column__CategoryImg">
+                                props.column__ManufacturerUrl && (
+                                    <td className="column__ManufacturerUrl">
                                         <p className="">
-                                            <Image src={item.image ?? noImgFound} fluid width={70} />
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__CategoryParentCategory && (
-                                    <td className="column__CategoryParentCategory">
-                                        <p className="">
-                                            {item.parent_name}
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__CategoryStatus && (
-                                    <td className="column__CategoryStatus">
-                                        <p className="">
-                                            {item.status ? "Active" : "Inactive"}
+                                            {item.manufacturer_url}
                                         </p>
                                     </td>
                                 )
@@ -167,8 +123,8 @@ export default function BrandsTable(props) {
                                     >
                                         <Link
                                             to={{
-                                                pathname: '/catalog/categories/edit/' + item.category_id,
-                                                state: { categoryDetails: item }
+                                                pathname: '/catalog/brands/edit/' + item.manufacturer_id,
+                                                state: { brandsDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
                                         >
@@ -185,7 +141,7 @@ export default function BrandsTable(props) {
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDelete(ev, item.category_id)}
+                                            onClick={ev => props.handleDelete(ev, item.manufacturer_id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"

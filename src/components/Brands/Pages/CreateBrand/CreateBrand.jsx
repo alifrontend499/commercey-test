@@ -25,21 +25,19 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import CategoryDetailsFields from './Includes/CreateCategory__CategoryDetails'
-import CategoryDescriptionFields from './Includes/CreateCategory__Description'
-import CategorySEOFields from './Includes/CreateCategory__SEO'
+import BrandDetailsFields from './Includes/CreateBrand__BrandDetails'
 
 // APIs
-import { getCategories, cancelGetCategoriesApi, addCategory } from 'utlis/Apis/Categories_API'
+import { addBrand } from 'utlis/Apis/Brands_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function CreateBrand(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to create the category. please try again."
-    const CATEGORY_ADDED_SUCCESSFULLY = "Category created successfully."
-    const ERROR_WHILE_CREATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
+    const SOME_ERROR_OCCURED = "Unable to create the brand. please try again."
+    const BRAND_ADDED_SUCCESSFULLY = "Brand created successfully."
+    const ERROR_WHILE_CREATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
 
     // refs
     const submitButtonRef = useRef(null)
@@ -48,62 +46,16 @@ function CreateBrand(props) {
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
-    const [categoryName, setCategoryName] = useState("")
-    const [status, setStatus] = useState("")
-    const [description, setDescription] = useState("")
-    const [parentCategoryName, setParentCategoryName] = useState("")
-    const [metaTitle, setMetaTitle] = useState("")
-    const [metaKeyword, setMetaKeyword] = useState("")
-    const [metaDescription, setMetaDescription] = useState("")
-    const [image, setImage] = useState("")
-
-    const [parentCategories, setParentCategories] = useState([])
-
-    // on page load
-    useEffect(() => {
-        // getting parent categories
-        getCategories(props.currentUser.userToken, "parent_id=0&limit=100").then(res => {
-            const parentCategories = res.data
-
-            // if request is success
-            if (parentCategories.success) {
-                setParentCategories(parentCategories.data)
-            }
-
-            // if request is not succeed
-            if (parentCategories.error) {
-                console.log('Error occured while loading parent categories!', res)
-            }
-        }).catch(err => {
-            console.log('err ', err.message)
-        })
-
-        return () => {
-            // canceling get categories api when user leaves the component
-            cancelGetCategoriesApi()
-        }
-    }, [])
+    const [brandName, setBrandName] = useState("")
 
     // initial form values
     const initialCreateFormValues = {
-        categoryName,
-        status,
-        parentCategoryName,
-        metaTitle,
-        metaKeyword,
-        metaDescription,
-        image,
+        brandName
     }
 
     // handle form validations
     const createFormValidationSchema = Yup.object({
-        categoryName: Yup.string().required('This field is required'),
-        status: Yup.string(),
-        parentCategoryName: Yup.string(),
-        metaTitle: Yup.string(),
-        metaKeyword: Yup.string(),
-        metaDescription: Yup.string(),
-        image: Yup.string(),
+        brandName: Yup.string().required('This field is required'),
     })
 
     // handle form submmision
@@ -118,24 +70,16 @@ function CreateBrand(props) {
 
             // saving the data in the database
             const dataToBeSaved = {
-                category_name: values.categoryName,
-                description: description,
-                status: values.status,
-                parent_id: values.parentCategoryName,
-                meta_title: values.metaTitle,
-                meta_keywords: values.metaKeyword,
-                meta_description: values.metaDescription,
-                image: values.image,
+                brand_name: values.brandName,
             }
 
             // saving data
-            addCategory(props.currentUser.userToken, dataToBeSaved).then(res => {
+            addBrand(props.currentUser.userToken, dataToBeSaved).then(res => {
                 console.log('res from update user ', res)
                 // disabling global loading
                 setGlobalLoading(false)
 
                 // disbling the button and enabling loading
-                setCreateButtonDisable(false)
                 setCreateButtonLoading(false)
 
                 const addingData = res.data
@@ -145,38 +89,35 @@ function CreateBrand(props) {
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
-                    // redirecting to users
-                    props.history.push('/catalog/categories', {
-                        shouldReload: true
-                    })
-
-
                     // showing the error message
-                    toast.success(CATEGORY_ADDED_SUCCESSFULLY, {
+                    toast.success(BRAND_ADDED_SUCCESSFULLY, {
                         autoClose: 2500,
-                    })
+                        onClose: () => {
+                            // empty the fields
+                            setBrandName("")
 
-                    // empty the fields
-                    setCategoryName("")
-                    setDescription("")
-                    setStatus("")
-                    setParentCategoryName("")
-                    setMetaTitle("")
-                    setMetaKeyword("")
-                    setMetaDescription("")
-                    setImage("")
+                            // redirecting to users
+                            props.history.push('/catalog/brands', {
+                                shouldReload: true
+                            })
+                        }
+                    })
                 }
 
                 // if request is not succeed
                 if (addingData.error) {
-                    console.log(ERROR_WHILE_CREATING_CATEGORY, res)
+                    console.log(ERROR_WHILE_CREATING_BRAND, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_CREATING_CATEGORY, {
+                    toast.error(ERROR_WHILE_CREATING_BRAND, {
                         autoClose: 3000,
+                        onClose: () => {
+                            // enabling the button and disabling loading
+                            setCreateButtonDisable(false)
+                        }
                     })
                 }
             }).catch(err => {
@@ -217,22 +158,16 @@ function CreateBrand(props) {
         submitButtonRef.current.click()
     }
 
-    // html editor
-    const getHTML_editorResult = (data) => {
-        // setting description
-        setDescription(data)
-    }
-
     return (
-        <section id="app-categories__create-details" className="st-def-mar-TB">
+        <section id="app-blogs__create-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-categories__create-details">
+                <div className="app-blogs__create-details">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
-                        <p className="app-heading text-capitalize">Create Category</p>
+                        <p className="app-heading text-capitalize">Create Brands</p>
                         <p className="app-desc">
-                            Create a category for your products.
+                            Create a brand for your products.
                         </p>
                     </div>
 
@@ -252,44 +187,7 @@ function CreateBrand(props) {
 
                                 <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
                                     <Col xs={12} md={9} lg={6} className="px-0">
-                                        <CategoryDetailsFields
-                                            formik={formik}
-                                            parentCategories={parentCategories}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
-
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">Description</p>
-                                </div>
-
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-                                    <Col xs={12} md={9} className="px-0">
-                                        <CategoryDescriptionFields
-                                            formik={formik}
-                                            defaultValue={description}
-                                            getResult={getHTML_editorResult}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
-
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">SEO</p>
-                                </div>
-
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        <CategorySEOFields
+                                        <BrandDetailsFields
                                             formik={formik}
                                         />
                                     </Col>
@@ -299,7 +197,7 @@ function CreateBrand(props) {
                             {/* app card : bottom-bar */}
                             <div className="app-card action-btns">
                                 <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
-                                    <Link to="/catalog/categories" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
+                                    <Link to="/catalog/brands" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
@@ -311,7 +209,7 @@ function CreateBrand(props) {
                                             createButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
-                                                <span>Create Category</span>
+                                                <span>Create Brand</span>
                                             )
                                         }
                                     </button>
