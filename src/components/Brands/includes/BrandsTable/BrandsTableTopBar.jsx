@@ -12,6 +12,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 export default function BrandsTableTopBar(props) {
+
     return (
         <div className="inner d-flex">
             {/* lt */}
@@ -31,7 +32,11 @@ export default function BrandsTableTopBar(props) {
             <div className="rt ms-auto d-flex">
                 {/* search */}
                 <div className="rt_item st-form form-sm st-form-with-icon-left search mb-0 me-2">
-                    <input type="text" className="form-control" placeholder="Search" />
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                        onChange={props.handleSearchChange} />
                     <div className="icon">
                         <FeatherIcon
                             icon="search"

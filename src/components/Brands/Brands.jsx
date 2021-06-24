@@ -27,6 +27,8 @@ import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
 // pagination
 import Pagination from 'components/CommonComponents/Pagination'
 
+// common healpers
+import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 
 function Brands(props) {
     // messages
@@ -34,6 +36,7 @@ function Brands(props) {
     const ERROR_WHILE_DELETING_BRANDS = "No detail found"
     const BRANDS_DELETED_SUCCESSFULLY = "Brand deleted successfully."
     const UNKNOWN_ERROR = "Unable to delete the Brand. please try again."
+    const ERROR_WHILE_SEARCHING_BRANDS = "Unable to find the Brand. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -53,6 +56,8 @@ function Brands(props) {
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
 
+    const [isSearching, setIsSearching] = useState(false)
+
 
     // useEffect: getting brands data
     useEffect(() => {
@@ -60,8 +65,8 @@ function Brands(props) {
 
         // if search query is present in the URL
         if (serchQuery && serchQuery.length) {
-            // if manufacturer available then enabling section loading else enabling loading
-            if (manufacturer && manufacturer.length) {
+            // if brands available then enabling section loading else enabling loading
+            if (brands && brands.length) {
                 // enabling section loading
                 setSectionLoadingVisible(true)
             } else {
@@ -85,10 +90,10 @@ function Brands(props) {
                 // if request succesfull
                 if (resData && resData.success) {
                     // setting pagination links
-                    setPaginationLinks(resData.data.links)
+                    setPaginationLinks(resData.links)
 
                     // settings brands
-                    setBrands(resData.data.data)
+                    setBrands(resData.data)
                 }
 
                 // if request is not succesfull
@@ -122,7 +127,6 @@ function Brands(props) {
                     }
                 })
             })
-
         } else {
             // enabling loading
             setLoading(true)
@@ -133,13 +137,15 @@ function Brands(props) {
                 setLoading(false)
 
                 const resData = res.data
+                console.log("Brands Data ", resData)
+
                 // if request succesfull
                 if (resData && resData.success) {
                     // setting pagination links
-                    setPaginationLinks(resData.data.links)
+                    setPaginationLinks(resData.links)
 
                     // settings brands
-                    setBrands(resData.data.data)
+                    setBrands(resData.data)
                 }
 
                 // if request is not succesfull
@@ -197,6 +203,7 @@ function Brands(props) {
 
     };
 
+    // deleting
     const handleDelete = (ev, brandId) => {
         ev.preventDefault()
         var confirmation = window.confirm('Are you sure you want to delete this brand?')
@@ -262,6 +269,124 @@ function Brands(props) {
         }
     }
 
+    // searching
+    const handleSearchChange = debounce(ev => {
+        let searchQuery = ev.target.value
+
+        // if serch query has lenght
+        if (searchQuery && searchQuery.length) {
+            // enabling search mode
+            setIsSearching(true)
+
+            // enabling section loading
+            setSectionLoadingVisible(true)
+
+            getBrands(props.currentUser.userToken, "keyword=" + searchQuery).then(res => {
+                // disabling section loading
+                setSectionLoadingVisible(false)
+
+                const resData = res.data
+
+                console.log("user searching ", resData)
+
+                // if request succesfull
+                if (resData && resData.success) {
+                    // setting pagination links
+                    setPaginationLinks(resData.links)
+
+                    // settings brands
+                    setBrands(resData.data)
+                }
+
+                // if request is not succesfull
+                if (resData && resData.error) {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_SEARCHING_BRANDS, {
+                        autoClose: 3000,
+                        onClose: () => {
+                            // disabling loading
+                            setLoading(false)
+                        }
+                    })
+                }
+            }).catch(err => {
+                // console.log('err ', err)
+                console.log('err ', err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(ERROR_WHILE_SEARCHING_BRANDS, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling section loading & loading
+                        setSectionLoadingVisible(false)
+                        setLoading(false)
+                    }
+                })
+            })
+        } else {
+            // disabling user search mode
+            setIsSearching(false)
+
+            // enabling section loading
+            setSectionLoadingVisible(true)
+
+            getBrands(props.currentUser.userToken).then(res => {
+                // disabling section loading
+                setSectionLoadingVisible(false)
+
+                const resData = res.data
+
+                console.log("user searching ", resData)
+
+                // if request succesfull
+                if (resData && resData.success) {
+                    // setting pagination links
+                    setPaginationLinks(resData.links)
+
+                    // settings brands
+                    setBrands(resData.data)
+                }
+
+                // if request is not succesfull
+                if (resData && resData.error) {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_SEARCHING_BRANDS, {
+                        autoClose: 3000,
+                        onClose: () => {
+                            // disabling loading
+                            setLoading(false)
+                        }
+                    })
+                }
+            }).catch(err => {
+                // console.log('err ', err)
+                console.log('err ', err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(ERROR_WHILE_SEARCHING_BRANDS, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling section loading & loading
+                        setSectionLoadingVisible(false)
+                        setLoading(false)
+                    }
+                })
+            })
+        }
+    }, 500)
+
     return (
         <section id="app-brands" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -287,6 +412,8 @@ function Brands(props) {
 
                                         setColumn__ManufacturerName={setColumn__ManufacturerName}
                                         setColumn__ManufacturerUrl={setColumn__ManufacturerUrl}
+
+                                        handleSearchChange={handleSearchChange}
                                     />
                                 </div>
 
@@ -319,6 +446,7 @@ function Brands(props) {
                             {/* paginations */}
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
+                                    routeName={"/catalog/brands"}
                                     paginationLinks={paginationLinks}
                                 />
                             </div>

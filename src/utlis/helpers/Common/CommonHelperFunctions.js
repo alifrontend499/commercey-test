@@ -71,3 +71,18 @@ export function globalLogout() {
     // finally page reload
     window.location.reload()
 }
+
+// debounce
+export const debounce = (func, delay) => {
+    let timeoutId;
+    return function (...args) {
+        // if already running function
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+        }
+        timeoutId = setTimeout(() => {
+            // executing function
+            func(...args)
+        }, delay);
+    }
+}

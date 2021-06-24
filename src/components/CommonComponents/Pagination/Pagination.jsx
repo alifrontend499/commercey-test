@@ -10,7 +10,9 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 export default function Pagination(props) {
-    const { paginationLinks } = props
+    const { paginationLinks, routeName } = props
+
+    console.log('props ', props)
 
     return (
         <React.Fragment>
@@ -25,7 +27,7 @@ export default function Pagination(props) {
                                             // button previous
                                             (item.label === "pagination.previous") && (
                                                 <Link
-                                                    to={`/catalog/categories?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-previous ms-0
                                                     ${(!item.url) ? "disabled" : ""}`}>
                                                     <FeatherIcon
@@ -39,7 +41,7 @@ export default function Pagination(props) {
                                             // button links
                                             ((item.label !== "pagination.previous") && (item.label !== "pagination.next")) && (
                                                 <Link
-                                                    to={`/catalog/categories?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-count 
                                                     ${item.active ? "active disabled" : ""}
                                                     ${(!item.url) ? "disabled" : ""}`}>
@@ -51,7 +53,7 @@ export default function Pagination(props) {
                                             // button previous
                                             (item.label === "pagination.next") && (
                                                 <Link
-                                                    to={`/catalog/categories?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-next
                                                     ${(!item.url) ? "disabled" : ""}`}>
                                                     <FeatherIcon
