@@ -20,7 +20,7 @@ export default function UserTableTopBar(props) {
                     to="/settings/users/create"
                     className="st-btn st-btn-primary no-min-width st-btn-sm d-flex align-items-center justify-content-center btn btn-primary">
                     <FeatherIcon
-                        icon="user-plus"
+                        icon="plus"
                         size="14"
                         className="icon me-2" />
                     <span>Create User</span>
@@ -31,7 +31,7 @@ export default function UserTableTopBar(props) {
             <div className="rt ms-auto d-flex">
                 {/* search */}
                 <div className="rt_item st-form form-sm st-form-with-icon-left search mb-0 me-2">
-                    <input type="text" className="form-control" placeholder="Search" />
+                    <input type="text" className="form-control" placeholder="Search" onChange={props.handleSearchChange} />
                     <div className="icon">
                         <FeatherIcon
                             icon="search"

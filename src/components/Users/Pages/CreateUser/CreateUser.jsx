@@ -71,7 +71,7 @@ function CreateUser(props) {
 
             // if there's no error
             if (adminGroupsData.success) {
-                setAdminGroups(adminGroupsData.data)
+                setAdminGroups(adminGroupsData.data.data)
             }
 
             // if there's some error
@@ -127,8 +127,7 @@ function CreateUser(props) {
                 enable_two_factor: values.createUserTwoFactor,
             }
             createUser(props.currentUser.userToken, userToBeSaved).then(res => {
-                // disbling the button and enabling loading
-                setCreateUserButtonDisable(false)
+                // disabling loading
                 setCreateUserButtonLoading(false)
 
                 // disabling global loading
@@ -142,21 +141,26 @@ function CreateUser(props) {
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
-                    // redirecting to users
-                    props.history.push('/settings/users', {
-                        shouldReload: true
-                    })
-
                     // showing success message
                     toast.success(USER_CREATED_SUCCESSFULLY, {
-                        autoClose: 3000
+                        autoClose: 3000,
+                        onClose: () => {
+                            // enabling the button
+                            setCreateUserButtonDisable(false)
+
+                            // ressetting all the fields to default
+                            setUserFirstName("")
+                            setUserLastName("")
+                            setUserEmail("")
+                            setUserType("")
+                            setUserTwoFactor("")
+
+                            // redirecting to users
+                            props.history.push('/settings/users', {
+                                shouldReload: true
+                            })
+                        }
                     })
-                    // ressetting all the fields to default
-                    // setUserFirstName("")
-                    // setUserLastName("")
-                    // setUserEmail("")
-                    // setUserType("")
-                    // setUserTwoFactor("")
                 }
 
                 // if some error

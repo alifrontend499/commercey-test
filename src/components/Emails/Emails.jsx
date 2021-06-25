@@ -24,12 +24,19 @@ import { getEmails, deleteEmailTemplate } from 'utlis/Apis/Emails_API'
 // section loading
 import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
 
+// pagination
+import Pagination from 'components/CommonComponents/Pagination'
+
+// common healpers
+import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
+
 function Emails(props) {
     // messages
     const ERROR_WHILE_FETCHING_EMAILS = "Unable to load Email Templates. please try again."
     const ERROR_WHILE_DELETING_EMAIL = "No detail found"
     const UNKNOWN_ERROR = "Unable to delete the email. please try again."
     const EMAIL_DELETED_SUCCESSFULLY = "Email template deleted successfully."
+    const ERROR_WHILE_SEARCHING_EMAILS = "Unable to find the email templates. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -51,18 +58,56 @@ function Emails(props) {
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
 
+    const [paginationLinks, setPaginationLinks] = useState([])
+
+    const [searchQuery, setSearchQuery] = useState("")
+
     // getting emails
     useEffect(() => {
-        setLoading(true)
+        let URLParams = ''
+        const serchQuery = props.location.search
 
-        getEmails(props.currentUser.userToken).then(res => {
-            // disabling loading
+        // if emails available then enabling section loading else enabling loading
+        if (emails && emails.length) {
+            // enabling section loading
+            setSectionLoadingVisible(true)
+        } else {
+            // enabling loading
+            setLoading(true)
+        }
+
+        // if search query is present in the URL
+        if (serchQuery && serchQuery.length) {
+
+            // if user is searching something
+            if (searchQuery && searchQuery.length) {
+                // updating the searchQueary
+                URLParams = `${serchQuery.replace("?", "")}&keyword=${searchQuery}`
+            } else {
+                // updating the searchQueary
+                URLParams = serchQuery.replace("?", "")
+            }
+        }
+
+        // if search query is not present in the URL
+        if (!serchQuery) {
+            URLParams = ''
+        }
+
+        // getting emails
+        getEmails(props.currentUser.userToken, URLParams).then(res => {
+            // disabling section loading & loading
+            setSectionLoadingVisible(false)
             setLoading(false)
 
             const resData = res.data
 
             // if request succesfull
             if (resData && resData.success) {
+                // setting pagination links
+                setPaginationLinks(resData.links)
+
+                // settings emails
                 setEmails(resData.data)
             }
 
@@ -73,15 +118,9 @@ function Emails(props) {
 
                 // showing the error message
                 toast.error(ERROR_WHILE_FETCHING_EMAILS, {
-                    autoClose: 3000,
-                    onClose: () => {
-                        // disabling loading
-                        setLoading(false)
-                    }
+                    autoClose: 3000
                 })
             }
-
-
         }).catch(err => {
             // console.log('err ', err)
             console.log('err ', err.message)
@@ -93,13 +132,13 @@ function Emails(props) {
             toast.error(ERROR_WHILE_FETCHING_EMAILS, {
                 autoClose: 3000,
                 onClose: () => {
-                    // disabling loading
+                    // disabling section loading & loading
+                    setSectionLoadingVisible(false)
                     setLoading(false)
                 }
             })
         })
-
-    }, [])
+    }, [props])
 
     // selecting all the columns
     const handleSelectAllChange = (ev) => {
@@ -123,6 +162,7 @@ function Emails(props) {
 
     };
 
+    // deleting
     const handleDelete = (ev, emailId) => {
         ev.preventDefault()
 
@@ -190,6 +230,75 @@ function Emails(props) {
         }
     }
 
+    // searching
+    const handleSearchChange = debounce(ev => {
+        let URLParams = ''
+        let searchQueryValue = ev.target.value
+
+        // enabling section loading
+        setSectionLoadingVisible(true)
+
+        // if serch query has length
+        if (searchQueryValue && searchQueryValue.length) {
+            // setting search query data
+            setSearchQuery(searchQueryValue)
+
+            // setting params
+            URLParams = "keyword=" + searchQueryValue
+        }
+
+        // if serch query does not have length
+        if (!searchQueryValue) {
+            // setting search query data
+            setSearchQuery("")
+
+            // setting params
+            URLParams = ""
+        }
+        // getting emails
+        getEmails(props.currentUser.userToken, URLParams).then(res => {
+            // disabling section loading
+            setSectionLoadingVisible(false)
+
+            const resData = res.data
+
+            // if request succesfull
+            if (resData && resData.success) {
+                // setting pagination links
+                setPaginationLinks(resData.links)
+
+                // settings emails
+                setEmails(resData.data)
+            }
+
+            // if request is not succesfull
+            if (resData && resData.error) {
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(ERROR_WHILE_SEARCHING_EMAILS, {
+                    autoClose: 3000
+                })
+            }
+        }).catch(err => {
+            // console.log('err ', err)
+            console.log('err ', err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(ERROR_WHILE_SEARCHING_EMAILS, {
+                autoClose: 3000,
+                onClose: () => {
+                    // disabling section loading
+                    setSectionLoadingVisible(false)
+                }
+            })
+        })
+    }, 500)
+
     return (
         <section id="app-emails" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -204,7 +313,7 @@ function Emails(props) {
                     <div className="app-content-container">
                         {/* app card */}
                         <div className="app-card">
-                            <div className="app-card-content bg-white border st-border-light st-default-rounded-block">
+                            <div className="app-card-content bg-white border st-border-light st-default-rounded-block mb-3">
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <EmailsTableTopBar
@@ -221,6 +330,8 @@ function Emails(props) {
                                         setColumn__Event={bool => setColumn__Event(bool)}
                                         setColumn__to={bool => setColumn__to(bool)}
                                         setColumn__DateAdded={bool => setColumn__DateAdded(bool)}
+
+                                        handleSearchChange={handleSearchChange}
                                     />
                                 </div>
 
@@ -250,6 +361,14 @@ function Emails(props) {
                                         )
                                     }
                                 </div>
+                            </div>
+
+                            {/* paginations */}
+                            <div className="pagination-container d-flex justify-content-end">
+                                <Pagination
+                                    routeName={"/settings/emails"}
+                                    paginationLinks={paginationLinks}
+                                />
                             </div>
                         </div>
 

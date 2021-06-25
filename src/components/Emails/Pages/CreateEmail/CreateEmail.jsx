@@ -22,7 +22,7 @@ import {
 import * as Yup from 'yup'
 
 // react toastify
-import { toast, Slide } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 // includes
 import EmailDetails from './Includes/CreateEmail__EmailDetails'
@@ -68,7 +68,7 @@ function CreateEmail(props) {
 
             // if request is success
             if (emailEvents.success) {
-                setEmailEvents(emailEvents.data)
+                setEmailEvents(emailEvents.data.data)
             }
 
             // if request is not succeed
@@ -94,20 +94,18 @@ function CreateEmail(props) {
         emailFrom,
         emailSubject,
         emailCC,
-        emailBCC,
-        emailContent,
+        emailBCC
     }
 
     // handle create email form validations
     const createFormValidationSchema = Yup.object({
         emailTemplateName: Yup.string().required('This field is required'),
-        emailEventName: Yup.string(),
+        emailEventName: Yup.string().required('This field is required'),
         emailTo: Yup.string().required('This field is required'),
         emailFrom: Yup.string(),
         emailSubject: Yup.string().required('This field is required'),
         emailCC: Yup.string(),
         emailBCC: Yup.string(),
-        emailContent: Yup.string(),
     })
 
     // handle create email form submmision
@@ -127,7 +125,7 @@ function CreateEmail(props) {
                 email_from: values.emailFrom,
                 cc_email: values.emailCC,
                 bcc_email: values.emailBCC,
-                email_body: values.emailContent,
+                email_body: emailContent,
                 send_email_to: values.emailTo,
                 event_id: values.emailEventName,
             }
@@ -140,7 +138,6 @@ function CreateEmail(props) {
                 // disbling the button and enabling loading
                 setCreateButtonDisable(false)
                 setCreateButtonLoading(false)
-                // console.log('res from update user ', res)
 
                 const addingEmail = res.data
 
@@ -149,25 +146,26 @@ function CreateEmail(props) {
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
-                    // redirecting to users
-                    props.history.push('/settings/emails', {
-                        shouldReload: true
-                    })
-
                     // showing the error message
                     toast.success(EMAIL_CREATED_SUCCESSFULLY, {
                         autoClose: 2500,
-                    })
+                        onClose: () => {
+                            // empty the fields
+                            setEmailTemplateName("")
+                            setEmailEventTitle("")
+                            setEmailTo("")
+                            setEmailFrom("")
+                            setEmailSubject("")
+                            setEmailCC("")
+                            setEmailBCC("")
+                            setEmailContent("")
 
-                    // empty the fields
-                    setEmailTemplateName("")
-                    setEmailEventTitle("")
-                    setEmailTo("")
-                    setEmailFrom("")
-                    setEmailSubject("")
-                    setEmailCC("")
-                    setEmailBCC("")
-                    setEmailContent("")
+                            // redirecting to users
+                            props.history.push('/settings/emails', {
+                                shouldReload: true
+                            })
+                        }
+                    })
                 }
 
                 // if request is not succeed
@@ -222,8 +220,6 @@ function CreateEmail(props) {
 
     // html editor
     const getHTML_editorResult = (data) => {
-        console.log("html editor ", data)
-
         // setting email content
         setEmailContent(data)
     }

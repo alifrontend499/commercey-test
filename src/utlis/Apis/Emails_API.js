@@ -9,9 +9,9 @@ import { apiUrl_forEmail } from "./constants";
 
 // get emails
 export let cancelGetEmailsApi;
-export async function getEmails(token) {
+export async function getEmails(token, query = "") {
     if (token) {
-        const emails = await axios.get(apiUrl_forEmail + "list", {
+        const emails = await axios.get(apiUrl_forEmail + "list?" + query, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

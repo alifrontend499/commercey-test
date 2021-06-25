@@ -26,7 +26,7 @@ export default function CreateEmail__EmailDetails(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.emailEventName && props.formik.errors.emailEventName) ? "has-msg msg-error" : ""}`}>
-                <label>Event Name</label>
+                <label>Event Name <span>*</span></label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"

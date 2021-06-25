@@ -9,9 +9,9 @@ import { apiUrl } from "./constants";
 
 // get admin users
 export let cancelGetUsersApi;
-export async function getUsers(token) {
+export async function getUsers(token, query = "") {
     if (token) {
-        const users = await axios.get(apiUrl + "list", {
+        const users = await axios.get(apiUrl + "list?" + query, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

@@ -62,7 +62,6 @@ function EditEmail(props) {
     const [emailCC, setEmailCC] = useState("")
     const [emailBCC, setEmailBCC] = useState("")
     const [emailContent, setEmailContent] = useState("")
-    const [defaultEmailContent, setDefaultEmailContent] = useState("")
 
     const [emailEvents, setEmailEvents] = useState([])
 
@@ -82,7 +81,7 @@ function EditEmail(props) {
 
             // if request is success
             if (emailEvents.success) {
-                setEmailEvents(emailEvents.data)
+                setEmailEvents(emailEvents.data.data)
             }
 
             // if request is not succeed
@@ -116,7 +115,6 @@ function EditEmail(props) {
             setEmailBCC(email && email.bcc_email)
             setEmailContent(email && email.email_body)
 
-            setDefaultEmailContent(email && email.email_body)
         }
     }, [props])
 
@@ -148,8 +146,6 @@ function EditEmail(props) {
                     setEmailCC(email.data && email.data.cc_email)
                     setEmailBCC(email.data && email.data.bcc_email)
                     setEmailContent(email.data && email.data.email_body)
-                    
-                    setDefaultEmailContent(email.data && email.data.email_body)
                 }
                 // if request is not succeed
                 if (email.error) {
@@ -204,7 +200,6 @@ function EditEmail(props) {
         emailSubject,
         emailCC,
         emailBCC,
-        emailContent,
     }
 
     // handle edit email form validations
@@ -216,7 +211,6 @@ function EditEmail(props) {
         emailSubject: Yup.string().required('This field is required'),
         emailCC: Yup.string(),
         emailBCC: Yup.string(),
-        emailContent: Yup.string(),
     })
 
     // handle edit email form submmision
@@ -237,7 +231,7 @@ function EditEmail(props) {
                 email_from: values.emailFrom,
                 cc_email: values.emailCC,
                 bcc_email: values.emailBCC,
-                email_body: values.emailContent,
+                email_body: emailContent,
                 send_email_to: values.emailTo,
                 event_id: values.emailEventName,
             }
