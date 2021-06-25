@@ -75,7 +75,6 @@ function CreateBrand(props) {
 
             // saving data
             addBrand(props.currentUser.userToken, dataToBeSaved).then(res => {
-                console.log('res from update user ', res)
                 // disabling global loading
                 setGlobalLoading(false)
 
@@ -95,11 +94,11 @@ function CreateBrand(props) {
                         onClose: () => {
                             // empty the fields
                             setBrandName("")
-
+                            setCreateButtonDisable(false)
                             // redirecting to users
-                            props.history.push('/catalog/brands', {
-                                shouldReload: true
-                            })
+                            // props.history.push('/catalog/brands', {
+                            //     shouldReload: true
+                            // })
                         }
                     })
                 }

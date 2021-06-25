@@ -31,7 +31,11 @@ export default function CategoriesTableTopBar(props) {
             <div className="rt ms-auto d-flex">
                 {/* search */}
                 <div className="rt_item st-form form-sm st-form-with-icon-left search mb-0 me-2">
-                    <input type="text" className="form-control" placeholder="Search" />
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search"
+                        onChange={props.handleSearchChange} />
                     <div className="icon">
                         <FeatherIcon
                             icon="search"
@@ -86,7 +90,7 @@ export default function CategoriesTableTopBar(props) {
                                 </span>
                                 <span className="text ms-2">Image</span>
                             </label>
-                            
+
                             {/* label item */}
                             <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
                                 <input
@@ -123,7 +127,7 @@ export default function CategoriesTableTopBar(props) {
                                 <span className="text ms-2">Status</span>
                             </label>
 
-                            
+
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>

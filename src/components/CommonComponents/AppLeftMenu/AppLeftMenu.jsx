@@ -17,7 +17,7 @@ import { Link, NavLink } from 'react-router-dom';
 
 export default function AppLeftMenu() {
     const [openedDropdowns, setOpenedDropdowns] = useState([])
-    const [menuExpanded, setMenuExpanded] = useState(false)
+    const [menuExpanded, setMenuExpanded] = useState(true)
 
     // toggle submenu in the left menu
     const handleSubMenuVisibility = (ev, dataId) => {

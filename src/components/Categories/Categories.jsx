@@ -27,6 +27,9 @@ import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
 // pagination
 import Pagination from 'components/CommonComponents/Pagination'
 
+// common healpers
+import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
+
 // actions
 import { addCategories } from 'redux/actions/actionCatalog'
 
@@ -36,6 +39,7 @@ function Categories(props) {
     const ERROR_WHILE_DELETING_CATEGORIES = "No detail found"
     const CATEGORIES_DELETED_SUCCESSFULLY = "Category template deleted successfully."
     const UNKNOWN_ERROR = "Unable to delete the category. please try again."
+    const ERROR_WHILE_SEARCHING_CATEGORIES = "Unable to find the Categories. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -57,115 +61,60 @@ function Categories(props) {
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
 
+    const [searchQuery, setSearchQuery] = useState("")
 
     // useEffect: getting category data
     useEffect(() => {
+        let URLParams = ''
         const serchQuery = props.location.search
-
-        // if search query is present in the URL
-        if (serchQuery && serchQuery.length) {
-            // if categories available then enabling section loading else enabling loading
-            if (categories && categories.length) {
-                // enabling section loading
-                setSectionLoadingVisible(true)
-            } else {
-                // enabling loading
-                setLoading(true)
-            }
-
-            // updating the searchQueary
-            const serchQueryUpdated = serchQuery.replace("?", "")
-
-            // if search query is not present in the URL
-            getCategories(props.currentUser.userToken, "show_disabled=1&" + serchQueryUpdated).then(res => {
-                // disabling section loading & loading
-                setSectionLoadingVisible(false)
-                setLoading(false)
-
-                const resData = res.data
-
-                // if request succesfull
-                if (resData && resData.success) {
-                    // setting pagination links
-                    setPaginationLinks(resData.links)
-
-                    // settings categories
-                    setCategories(resData.data)
-
-                    // updating global state for categories
-                    props.addCategoriesToGlobalState(serchQueryUpdated, resData.data)
-                }
-
-                // if request is not succesfull
-                if (resData && resData.error) {
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-
-                    // showing the error message
-                    toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
-                        autoClose: 3000,
-                        onClose: () => {
-                            // disabling loading
-                            setLoading(false)
-                        }
-                    })
-                }
-            }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
-
-                // dismissing all the previous toasts first
-                toast.dismiss();
-
-                // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
-                    autoClose: 3000,
-                    onClose: () => {
-                        // disabling section loading & loading
-                        setSectionLoadingVisible(false)
-                        setLoading(false)
-                    }
-                })
-            })
-
+        // if categories available then enabling section loading else enabling loading
+        if (categories && categories.length) {
+            // enabling section loading
+            setSectionLoadingVisible(true)
         } else {
             // enabling loading
             setLoading(true)
+        }
 
-            // if search query is not present in the URL
-            getCategories(props.currentUser.userToken, "show_disabled=1").then(res => {
-                // disabling loading
-                setLoading(false)
+        // if search query is present in the URL
+        if (serchQuery && serchQuery.length) {
+            // if user is searching something
+            if (searchQuery && searchQuery.length) {
+                // updating the searchQueary
+                URLParams = `${serchQuery.replace("?", "")}&keyword=${searchQuery}`
+            } else {
+                // updating the searchQueary
+                URLParams = serchQuery.replace("?", "")
+            }
+        } 
 
-                const resData = res.data
+        // if search query is not present in the URL
+        if(!serchQuery) {
+            URLParams = ""
+        }
 
-                // if request succesfull
-                if (resData && resData.success) {
-                    // setting pagination links
-                    setPaginationLinks(resData.links)
+        // getting data
+        getCategories(props.currentUser.userToken, URLParams).then(res => {
+            // disabling section loading & loading
+            setSectionLoadingVisible(false)
+            setLoading(false)
 
-                    // settings categories
-                    setCategories(resData.data)
-                }
+            const resData = res.data
 
-                // if request is not succesfull
-                if (resData && resData.error) {
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
+            // if request succesfull
+            if (resData && resData.success) {
+                // setting pagination links
+                setPaginationLinks(resData.links)
 
-                    // showing the error message
-                    toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
-                        autoClose: 3000,
-                        onClose: () => {
-                            // disabling loading
-                            setLoading(false)
-                        }
-                    })
-                }
-            }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
+                // settings categories
+                setCategories(resData.data)
 
+                // updating global state for categories
+                // props.addCategoriesToGlobalState(URLParams, resData.data)
+            }
+
+            // if request is not succesfull
+            if (resData && resData.error) {
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
@@ -177,8 +126,24 @@ function Categories(props) {
                         setLoading(false)
                     }
                 })
+            }
+        }).catch(err => {
+            console.log('err ', err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+                autoClose: 3000,
+                onClose: () => {
+                    // disabling section loading & loading
+                    setSectionLoadingVisible(false)
+                    setLoading(false)
+                }
             })
-        }
+        })
+
     }, [props])
 
     // selecting all the columns
@@ -203,6 +168,7 @@ function Categories(props) {
 
     };
 
+    // deleting
     const handleDelete = (ev, catId) => {
         ev.preventDefault()
         console.log('catId ', catId)
@@ -269,6 +235,76 @@ function Categories(props) {
         }
     }
 
+    // searching
+    const handleSearchChange = debounce(ev => {
+        let URLParams = ''
+        let searchQueryValue = ev.target.value
+
+        // enabling section loading
+        setSectionLoadingVisible(true)
+
+        // if serch query has length
+        if (searchQueryValue && searchQueryValue.length) {
+            // setting search query data
+            setSearchQuery(searchQueryValue)
+
+            // setting params
+            URLParams = "keyword=" + searchQueryValue
+        }
+
+        // if serch query does not have length
+        if (!searchQueryValue) {
+            // setting search query data
+            setSearchQuery("")
+
+            // setting params
+            URLParams = ""
+        }
+
+        // getting data
+        getCategories(props.currentUser.userToken, URLParams).then(res => {
+            // disabling section loading & loading
+            setSectionLoadingVisible(false)
+
+            const resData = res.data
+
+            // if request succesfull
+            if (resData && resData.success) {
+                // setting pagination links
+                setPaginationLinks(resData.links)
+
+                // settings categories
+                setCategories(resData.data)
+            }
+
+            // if request is not succesfull
+            if (resData && resData.error) {
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(ERROR_WHILE_SEARCHING_CATEGORIES, {
+                    autoClose: 3000
+                })
+            }
+        }).catch(err => {
+            console.log('err ', err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(ERROR_WHILE_SEARCHING_CATEGORIES, {
+                autoClose: 3000,
+                onClose: () => {
+                    // disabling section loading
+                    setSectionLoadingVisible(false)
+                }
+            })
+        })
+        
+    }, 500)
+
     return (
         <section id="app-categories" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -298,6 +334,8 @@ function Categories(props) {
                                         setColumn__CategoryImg={setColumn__CategoryImg}
                                         setColumn__CategoryParentCategory={setColumn__CategoryParentCategory}
                                         setColumn__CategoryStatus={setColumn__CategoryStatus}
+
+                                        handleSearchChange={handleSearchChange}
                                     />
                                 </div>
 
@@ -332,6 +370,7 @@ function Categories(props) {
                             {/* paginations */}
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
+                                    routeName={"/catalog/categories"}
                                     paginationLinks={paginationLinks}
                                 />
                             </div>

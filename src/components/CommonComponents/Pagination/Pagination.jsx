@@ -12,8 +12,6 @@ import { Link } from 'react-router-dom';
 export default function Pagination(props) {
     const { paginationLinks, routeName } = props
 
-    console.log('props ', props)
-
     return (
         <React.Fragment>
             {
