@@ -1,0 +1,50 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// categories
+.app-products__create-product,
+.app-products__edit-product {
+    padding-bottom: 90px;
+    position: relative;
+    .action-btns {
+        position: absolute;
+        bottom: 0;
+        // left: $appLeftBarWidth;
+        // width: calc(100% - #{$appLeftBarWidth});
+        left: 0;
+        width: 100%;
+    }
+
+    .nav-tabs {
+        border-bottom: none;
+        margin-bottom: 10px;
+
+        .nav-link {
+            margin-bottom: 0;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-right: 15px;
+            color: $text__dark-color;
+            font-size: 16px;
+            &.active {
+                color: $primary-color;
+                border-color: $primary-color;
+                font-weight: 600;
+                background-color: transparent;
+            }
+
+            // if tab has error
+            &.has-error {
+                color: $text__danger-color;
+                &.active {
+                    border-color: $text__danger-color;
+                }
+            }
+        }
+    }
+}
+.app-products__edit-product {
+}

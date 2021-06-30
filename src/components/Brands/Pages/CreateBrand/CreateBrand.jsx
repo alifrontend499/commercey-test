@@ -35,10 +35,10 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function CreateBrand(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to create the brand. please try again."
     const BRAND_ADDED_SUCCESSFULLY = "Brand created successfully."
     const ERROR_WHILE_CREATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
-
+    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+    
     // refs
     const submitButtonRef = useRef(null)
 
@@ -95,10 +95,6 @@ function CreateBrand(props) {
                             // empty the fields
                             setBrandName("")
                             setCreateButtonDisable(false)
-                            // redirecting to users
-                            // props.history.push('/catalog/brands', {
-                            //     shouldReload: true
-                            // })
                         }
                     })
                 }
@@ -120,13 +116,13 @@ function CreateBrand(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while getBrandDetails api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling global loading

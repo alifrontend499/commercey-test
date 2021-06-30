@@ -17,8 +17,12 @@
         text-align: center;
         margin: 0 2px;
         @include transition;
-        &.active,
-        &:hover {
+        // &.active,
+        // &:hover {
+        //     background: $primary-color;
+        //     color: #fff;
+        // }
+        &.active {
             background: $primary-color;
             color: #fff;
         }

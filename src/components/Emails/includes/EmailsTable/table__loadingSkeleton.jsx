@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 // Skeleton loading
 import Skeleton from 'react-loading-skeleton';
 
-function emails__loadingSkeleton() {
+function table__loadingSkeleton() {
     return (
         <tr>
             <td>
@@ -43,4 +43,4 @@ function emails__loadingSkeleton() {
     )
 }
 
-export default memo(emails__loadingSkeleton)
+export default memo(table__loadingSkeleton)

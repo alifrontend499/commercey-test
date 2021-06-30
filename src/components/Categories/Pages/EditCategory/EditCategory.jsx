@@ -40,10 +40,10 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function EditCategory(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to update the category. please try again."
     const CATEGORY_UPDATED_SUCCESSFULLY = "Category updated successfully."
     const ERROR_WHILE_UPDATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
-    const ERROR_WHILE_LOADING_CATEGORY = "No detail found."
+    const ERROR_WHILE_LOADING_CATEGORY_DETAILS = "No detail found."
+    const UNKNOWN_ERROR = "unknown error occured. please try again"
 
     // refs
     const submitButtonRef = useRef(null)
@@ -64,25 +64,6 @@ function EditCategory(props) {
     const [parentCategories, setParentCategories] = useState([])
 
     const [categoryId, setCategoryId] = useState([])
-
-    // on page load
-    useEffect(() => {
-        console.log("categoryName ", categoryName && categoryName.toString())
-        console.log("status ", status && status.toString())
-        console.log("description ", description && description.toString())
-        console.log("parentCategoryName ", parentCategoryName && parentCategoryName.toString())
-        console.log("metaTitle ", metaTitle && metaTitle.toString())
-        console.log("metaKeyword ", metaKeyword && metaKeyword.toString())
-        console.log("metaDescription ", metaDescription && metaDescription.toString())
-        console.log("image ", image && image.toString())
-    }, [categoryName,
-        status,
-        description,
-        parentCategoryName,
-        metaTitle,
-        metaKeyword,
-        metaDescription,
-        image,])
 
     // on page load
     useEffect(() => {
@@ -145,7 +126,6 @@ function EditCategory(props) {
 
             // getting single category details
             getCategoryDetails(props.currentUser.userToken, catId).then(res => {
-                console.log("categories details from database ", res)
                 const category = res.data
 
                 // disabling the global loading
@@ -165,18 +145,18 @@ function EditCategory(props) {
                 }
                 // if request is not succeed
                 if (category.error) {
-                    console.log(ERROR_WHILE_LOADING_CATEGORY, res)
+                    console.log(ERROR_WHILE_LOADING_CATEGORY_DETAILS, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_LOADING_CATEGORY, {
+                    toast.error(ERROR_WHILE_LOADING_CATEGORY_DETAILS, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while getCategoryDetails api ', err.message)
 
                 // disabling the global loading
                 props.setGlobalLoading(false)
@@ -185,7 +165,7 @@ function EditCategory(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                 })
             })
@@ -272,23 +252,23 @@ function EditCategory(props) {
 
                 // if some error
                 if (updatedData.error) {
-                    console.log(SOME_ERROR_OCCURED, res)
+                    console.log(ERROR_WHILE_UPDATING_CATEGORY, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(SOME_ERROR_OCCURED, {
+                    toast.error(ERROR_WHILE_UPDATING_CATEGORY, {
                         autoClose: 3000
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while editCategory api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling global loading
@@ -314,8 +294,6 @@ function EditCategory(props) {
     // handle button submission
     const handleFormSubmission = (ev) => {
         ev.preventDefault()
-
-        console.log("handleFormSubmission", submitButtonRef)
 
         // triggering click on submit button
         submitButtonRef.current.click()
@@ -427,7 +405,7 @@ function EditCategory(props) {
                                             editButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
-                                                <span>Save Changes</span>
+                                                <span>Update Category</span>
                                             )
                                         }
                                     </button>

@@ -30,13 +30,15 @@ import Pagination from 'components/CommonComponents/Pagination'
 // common healpers
 import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 
+// custom hooks
+import useQuery from 'utlis/CustomHooks/useQueryHook'
+
 function Users(props) {
     // messages
     const ERROR_WHILE_FETCHING_USER = "Unable to load Users. please try again."
     const USER_DELETED_SUCCESSFULLY = "Admin user deleted successfully."
     const NO_USER_FOUND_DELETING_USER = "No detail found."
     const ERROR_WHILE_DELETING_USER = "Unable to delete the user. please try again."
-    const ERROR_WHILE_SEARCHING_USERS = "Unable to find the User. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -62,36 +64,23 @@ function Users(props) {
 
     const [searchQuery, setSearchQuery] = useState("")
 
+    let query = useQuery();
+
     // useEffect: getting users data
     useEffect(() => {
-        let URLParams = ''
-        const serchQuery = props.location.search
+        let page = query.get('page')
+        let keyword = query.get('keyword')
 
-        // if users available then enabling section loading else enabling loading
+        // generating url parameters
+        let URLParams = `${(keyword) ? "keyword=" + keyword + "&" : ""}${page ? "page=" + page : ""}`
+
+        // enabling loading types based on the data present or not
         if (users && users.length) {
             // enabling section loading
             setSectionLoadingVisible(true)
         } else {
             // enabling loading
             setLoading(true)
-        }
-
-        // if search query is present in the URL
-        if (serchQuery && serchQuery.length) {
-
-            // if user is searching something
-            if (searchQuery && searchQuery.length) {
-                // updating the searchQueary
-                URLParams = `${serchQuery.replace("?", "")}&keyword=${searchQuery}`
-            } else {
-                // updating the searchQueary
-                URLParams = serchQuery.replace("?", "")
-            }
-        }
-
-        // if search query is not present in the URL
-        if (!serchQuery) {
-            URLParams = ''
         }
 
         // getting admin users data
@@ -232,7 +221,6 @@ function Users(props) {
 
     // searching
     const handleSearchChange = debounce(ev => {
-        let URLParams = ''
         let searchQueryValue = ev.target.value
 
         // enabling section loading
@@ -243,8 +231,8 @@ function Users(props) {
             // setting search query data
             setSearchQuery(searchQueryValue)
 
-            // setting params
-            URLParams = "keyword=" + searchQueryValue
+            // redirecting to products with search data
+            props.history.push(`/settings/users?keyword=${searchQueryValue}&page=1`)
         }
 
         // if serch query does not have length
@@ -252,51 +240,9 @@ function Users(props) {
             // setting search query data
             setSearchQuery("")
 
-            // setting params
-            URLParams = ""
+            // redirecting to products with search data
+            props.history.push(`/settings/users?page=1`)
         }
-
-        // getting admin users data
-        getUsers(props.currentUser.userId, URLParams).then(res => {
-            // disabling section loading
-            setSectionLoadingVisible(false)
-
-            const resData = res.data
-
-            // if request succesfull
-            if (resData && resData.success) {
-                // setting pagination links
-                setPaginationLinks(resData.links)
-
-                // settings users
-                setUsers(resData.data)
-            }
-
-            // if request is not succesfull
-            if (resData && resData.error) {
-                // dismissing all the previous toasts first
-                toast.dismiss();
-
-                // showing the error message
-                toast.error(ERROR_WHILE_SEARCHING_USERS, {
-                    autoClose: 3000
-                })
-            }
-        }).catch(err => {
-            console.log('err ', err.message)
-
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(ERROR_WHILE_SEARCHING_USERS, {
-                autoClose: 3000,
-                onClose: () => {
-                    // disabling section loading
-                    setSectionLoadingVisible(false)
-                }
-            })
-        })
     }, 500)
 
     return (
@@ -370,6 +316,7 @@ function Users(props) {
                             {/* paginations */}
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
+                                    searchQuery={searchQuery}
                                     routeName={"/settings/users"}
                                     paginationLinks={paginationLinks}
                                 />

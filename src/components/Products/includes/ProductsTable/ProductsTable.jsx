@@ -4,6 +4,7 @@ import React from 'react'
 import {
     Table,
     OverlayTrigger,
+    Image,
 } from 'react-bootstrap'
 
 // icons : feather
@@ -13,15 +14,15 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 // skeleton loading
-import EmailsLodingSkeleton from './table__loadingSkeleton'
+import ProductsLodingSkeleton from './table__loadingSkeleton'
 
 // tooltips
-import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Emails__Tooltips'
+import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Table__Tooltips'
 
-// react moment
-import Moment from 'react-moment';
+// images
+import noImgFound from 'assets/images/no-img-found.png'
 
-export default function EmailsTable(props) {
+export default function ProductsTable(props) {
 
     return (
         <Table responsive className="mb-0">
@@ -43,50 +44,40 @@ export default function EmailsTable(props) {
                         </label>
                     </th>
                     {
-                        props.column__TemplateName && (
+                        props.column__ProductName && (
                             <th>
                                 <p className="text-capitalize">
-                                    template name
+                                    name
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__Subject && (
+                        props.column__ProductImg && (
                             <th>
                                 <p className="text-capitalize">
-                                    subject
+                                    image
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__Event && (
+                        props.column__ProductSKU && (
                             <th>
                                 <p className="text-capitalize">
-                                    event name
+                                    SKU
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__to && (
+                        props.column__ProductStatus && (
                             <th>
                                 <p className="text-capitalize">
-                                    to
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
-                        props.column__DateAdded && (
-                            <th width="170">
-                                <p className="text-capitalize">
-                                    date added
+                                    Status
                                 </p>
                             </th>
                         )
@@ -104,7 +95,7 @@ export default function EmailsTable(props) {
                             {
                                 (props.loadingCount && props.loadingCount.length) && props.loadingCount.map(item => (
                                     <React.Fragment key={item}>
-                                        <EmailsLodingSkeleton />
+                                        <ProductsLodingSkeleton />
                                     </React.Fragment>
                                 ))
                             }
@@ -114,8 +105,8 @@ export default function EmailsTable(props) {
 
                 {
                     /* EMAILS DATA */
-                    (props.emails && props.emails.length) ? props.emails.map(item => (
-                        <tr key={item.template_id}>
+                    (props.products && props.products.length) ? props.products.map(item => (
+                        <tr key={item.product_id}>
                             <td className="column__checkbox">
                                 <label className="st-checkbox st-checkbox-primary d-inline-flex cursor-pointer">
                                     <input type="checkbox" className="d-none all-checkboxes-selector-checkbox" />
@@ -129,53 +120,40 @@ export default function EmailsTable(props) {
                             </td>
 
                             {
-                                props.column__TemplateName && (
-                                    <td className="column__TemplateName">
+                                props.column__ProductName && (
+                                    <td className="column__ProductName">
                                         <p className="">
-                                            {item.template_title}
+                                            {item.product_name}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__Subject && (
-                                    <td className="column__Subject">
+                                props.column__ProductImg && (
+                                    <td className="column__ProductImg">
                                         <p className="">
-                                            {item.email_subject}
+                                            <Image src={item.thumb ? item.thumb : noImgFound} fluid width={70} />
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__Event && (
-                                    <td className="column__Event">
+                                props.column__ProductSKU && (
+                                    <td className="column__ProductSKU">
                                         <p className="">
-                                            {item.event_title}
+                                            {item.sku}
                                         </p>
                                     </td>
                                 )
                             }
 
                             {
-                                props.column__to && (
-                                    <td className="column__to">
+                                props.column__ProductStatus && (
+                                    <td className="column__ProductStatus">
                                         <p className="">
-                                            {item.send_email_to}
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__DateAdded && (
-                                    <td className="column__DateAdded">
-                                        <p className="">
-                                            <Moment
-                                                format="MMMM DD, YYYY hh:mm a"
-                                                date={item.dateAdded}
-                                            />
+                                            {item.active ? "Active" : "Inactive"}
                                         </p>
                                     </td>
                                 )
@@ -189,8 +167,8 @@ export default function EmailsTable(props) {
                                     >
                                         <Link
                                             to={{
-                                                pathname: '/settings/emails/edit/' + item.template_id,
-                                                state: { emailDetails: item }
+                                                pathname: '/catalog/products/edit/' + item.product_id,
+                                                state: { productDetails: item }
                                             }}
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center me-1"
                                         >
@@ -207,7 +185,7 @@ export default function EmailsTable(props) {
                                     >
                                         <button
                                             className="st-round-btn st-btn-transparent st-btn-xs d-flex align-items-center justify-content-center"
-                                            onClick={ev => props.handleDelete(ev, item.template_id)}
+                                            onClick={ev => props.handleDelete(ev, item.product_id)}
                                         >
                                             <FeatherIcon
                                                 icon="trash"

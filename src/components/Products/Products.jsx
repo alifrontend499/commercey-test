@@ -3,23 +3,27 @@ import React, { useState, useEffect } from 'react'
 // redux
 import { connect } from 'react-redux'
 
+import {
+    useLocation
+} from "react-router-dom";
+
 // bootstrap
 import {
     Container
 } from 'react-bootstrap'
 
-// brands styles
-import "./styles/brands-styles.scss"
+// products styles
+import "./styles/products-styles.scss"
 
-// brands table
-import BrandsTableTopBar from './includes/BrandsTable/BrandsTableTopBar'
-import BrandsTable from './includes/BrandsTable/BrandsTable'
+// products table
+import ProductsTableTopBar from './includes/ProductsTable/ProductsTableTopBar'
+import ProductsTable from './includes/ProductsTable/ProductsTable'
 
 // react toastify
 import { toast } from 'react-toastify';
 
 // APIs
-import { getBrands, deleteBrand } from 'utlis/Apis/Brands_API'
+import { getProducts, deleteProduct } from 'utlis/Apis/Products_API'
 
 // section loading
 import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
@@ -33,12 +37,12 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
-function Brands(props) {
+function Products(props) {
     // messages
-    const ERROR_WHILE_FETCHING_BRANDS = "Unable to load Brands. please try again."
-    const ERROR_WHILE_DELETING_BRAND = "No detail found"
-    const BRAND_DELETED_SUCCESSFULLY = "Brand deleted successfully."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+    const ERROR_WHILE_FETCHING_PRODUCTS = "Unable to load Products. please try again."
+    const ERROR_WHILE_DELETING_PRODUCTS = "No detail found"
+    const PRODUCT_DELETED_SUCCESSFULLY = "Product template deleted successfully."
+    const UNKNOWN_ERROR = "Unable to delete the Product. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -47,14 +51,16 @@ function Brands(props) {
     // refs
 
     // states
-    const [brands, setBrands] = useState([])
+    const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
 
     const [allCheckboxSelected, setAllCheckboxesSelected] = useState(false)
     const [paginationLinks, setPaginationLinks] = useState([])
 
-    const [column__ManufacturerName, setColumn__ManufacturerName] = useState(true)
-    const [column__ManufacturerUrl, setColumn__ManufacturerUrl] = useState(true)
+    const [column__ProductName, setColumn__ProductName] = useState(true)
+    const [column__ProductImg, setColumn__ProductImg] = useState(true)
+    const [column__ProductSKU, setColumn__ProductSKU] = useState(true)
+    const [column__ProductStatus, setColumn__ProductStatus] = useState(true)
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
 
@@ -62,7 +68,7 @@ function Brands(props) {
 
     let query = useQuery();
 
-    // useEffect: getting brands data
+    // useEffect: getting products data
     useEffect(() => {
         let page = query.get('page')
         let keyword = query.get('keyword')
@@ -71,7 +77,7 @@ function Brands(props) {
         let URLParams = `${(keyword) ? "keyword=" + keyword + "&" : ""}${page ? "page=" + page : ""}`
 
         // enabling loading types based on the data present or not
-        if (brands && brands.length) {
+        if (products && products.length) {
             // enabling section loading
             setSectionLoadingVisible(true)
         } else {
@@ -80,7 +86,7 @@ function Brands(props) {
         }
 
         // getting data
-        getBrands(props.currentUser.userToken, URLParams).then(res => {
+        getProducts(props.currentUser.userToken, URLParams).then(res => {
             // disabling section loading & loading
             setSectionLoadingVisible(false)
             setLoading(false)
@@ -92,8 +98,8 @@ function Brands(props) {
                 // setting pagination links
                 setPaginationLinks(resData.links)
 
-                // settings brands
-                setBrands(resData.data)
+                // settings products
+                setProducts(resData.data)
             }
 
             // if request is not succesfull
@@ -102,7 +108,7 @@ function Brands(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_BRANDS, {
+                toast.error(ERROR_WHILE_FETCHING_PRODUCTS, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling loading
@@ -111,13 +117,13 @@ function Brands(props) {
                 })
             }
         }).catch(err => {
-            console.log('err while getBrands api ', err.message)
+            console.log('err ', err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(UNKNOWN_ERROR, {
+            toast.error(ERROR_WHILE_FETCHING_PRODUCTS, {
                 autoClose: 3000,
                 onClose: () => {
                     // disabling section loading & loading
@@ -151,33 +157,33 @@ function Brands(props) {
     };
 
     // deleting
-    const handleDelete = (ev, brandId) => {
+    const handleDelete = (ev, prodId) => {
         ev.preventDefault()
-        var confirmation = window.confirm('Are you sure you want to delete this brand?')
+        var confirmation = window.confirm('Are you sure you want to delete this product?')
 
         if (confirmation) {
             // enabling the section loading
             setSectionLoadingVisible(true)
 
             // deleting data from the api
-            deleteBrand(props.currentUser.userToken, brandId).then(res => {
+            deleteProduct(props.currentUser.userToken, prodId).then(res => {
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
                 const deletedData = res.data
                 // if delete succesfully
                 if (deletedData.success) {
-                    // updating brands state after deleting an brands.
-                    const filteredList = brands.filter(item => item.manufacturer_id !== brandId)
+                    // updating products state after deleting an products.
+                    const filteredList = products.filter(item => item.product_id !== prodId)
 
-                    // settings updated brands
-                    setBrands(filteredList)
+                    // settings updated products
+                    setProducts(filteredList)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(BRAND_DELETED_SUCCESSFULLY, {
+                    toast.success(PRODUCT_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
                         }
@@ -186,22 +192,22 @@ function Brands(props) {
 
                 // if some error while deleting
                 if (deletedData.error) {
-                    console.log(ERROR_WHILE_DELETING_BRAND, res)
+                    console.log(ERROR_WHILE_DELETING_PRODUCTS, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_DELETING_BRAND, {
+                    toast.error(ERROR_WHILE_DELETING_PRODUCTS, {
                         autoClose: 2500,
                     })
                 }
 
             }).catch(err => {
-                console.log('err while getBrands api ', err.message)
-
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
+                // console.log('err ', err)
+                console.log('err ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
@@ -229,7 +235,7 @@ function Brands(props) {
             setSearchQuery(searchQueryValue)
 
             // redirecting to products with search data
-            props.history.push(`/catalog/brands?keyword=${searchQueryValue}&page=1`)
+            props.history.push(`/catalog/products?keyword=${searchQueryValue}&page=1`)
         }
 
         // if serch query does not have length
@@ -238,18 +244,18 @@ function Brands(props) {
             setSearchQuery("")
 
             // redirecting to products with search data
-            props.history.push(`/catalog/brands?page=1`)
+            props.history.push(`/catalog/products?page=1`)
         }
     }, 500)
 
     return (
-        <section id="app-brands" className="st-def-mar-TB">
+        <section id="app-products" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-brands">
+                <div className="app-products">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper d-flex mb-2">
                         {/* heading */}
-                        <p className="app-heading text-capitalize">Brands</p>
+                        <p className="app-heading text-capitalize">Products</p>
                     </div>
 
                     {/* CONTENT WRAPPER */}
@@ -259,32 +265,38 @@ function Brands(props) {
                             <div className="app-card-content bg-white border st-border-light st-default-rounded-block mb-3">
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
-                                    <BrandsTableTopBar
+                                    <ProductsTableTopBar
                                         editColumnsType={editColumnsType}
 
-                                        column__ManufacturerName={column__ManufacturerName}
-                                        column__ManufacturerUrl={column__ManufacturerUrl}
+                                        column__ProductName={column__ProductName}
+                                        column__ProductImg={column__ProductImg}
+                                        column__ProductSKU={column__ProductSKU}
+                                        column__ProductStatus={column__ProductStatus}
 
-                                        setColumn__ManufacturerName={setColumn__ManufacturerName}
-                                        setColumn__ManufacturerUrl={setColumn__ManufacturerUrl}
+                                        setColumn__ProductName={setColumn__ProductName}
+                                        setColumn__ProductImg={setColumn__ProductImg}
+                                        setColumn__ProductSKU={setColumn__ProductSKU}
+                                        setColumn__ProductStatus={setColumn__ProductStatus}
 
                                         handleSearchChange={handleSearchChange}
                                     />
                                 </div>
 
                                 {/* table */}
-                                <div className="st-listing-table brands-table">
-                                    <BrandsTable
+                                <div className="st-listing-table products-table">
+                                    <ProductsTable
                                         allCheckboxSelected={allCheckboxSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
-                                        column__ManufacturerName={column__ManufacturerName}
-                                        column__ManufacturerUrl={column__ManufacturerUrl}
+                                        column__ProductName={column__ProductName}
+                                        column__ProductImg={column__ProductImg}
+                                        column__ProductSKU={column__ProductSKU}
+                                        column__ProductStatus={column__ProductStatus}
 
                                         loadingCount={loadingCount}
                                         loading={loading}
 
-                                        brands={brands}
+                                        products={products}
 
                                         handleDelete={(ev, id) => handleDelete(ev, id)}
                                     />
@@ -302,7 +314,7 @@ function Brands(props) {
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
                                     searchQuery={searchQuery}
-                                    routeName={"/catalog/brands"}
+                                    routeName={"/catalog/products"}
                                     paginationLinks={paginationLinks}
                                 />
                             </div>
@@ -324,8 +336,8 @@ const getDataFromStore = state => {
 
 // const dispatchActionsToProps = dispatch => {
 //     return {
-//         functionsData: (prop) => dispatch(functionsData(prop)),
+//         func: (data) => dispatch(func(data)),
 //     }
 // }
 
-export default connect(getDataFromStore, null)(Brands)
+export default connect(getDataFromStore, null)(Products)

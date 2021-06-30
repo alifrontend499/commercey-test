@@ -33,13 +33,15 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // actions
 import { addCategories } from 'redux/actions/actionCatalog'
 
+// custom hooks
+import useQuery from 'utlis/CustomHooks/useQueryHook'
+
 function Categories(props) {
     // messages
     const ERROR_WHILE_FETCHING_CATEGORIES = "Unable to load Categories. please try again."
-    const ERROR_WHILE_DELETING_CATEGORIES = "No detail found"
-    const CATEGORIES_DELETED_SUCCESSFULLY = "Category template deleted successfully."
-    const UNKNOWN_ERROR = "Unable to delete the category. please try again."
-    const ERROR_WHILE_SEARCHING_CATEGORIES = "Unable to find the Categories. please try again."
+    const ERROR_WHILE_DELETING_CATEGORY = "No detail found."
+    const CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully."
+    const UNKNOWN_ERROR = "Unknown error occured. please try again"
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -63,34 +65,23 @@ function Categories(props) {
 
     const [searchQuery, setSearchQuery] = useState("")
 
+    let query = useQuery();
+
     // useEffect: getting category data
     useEffect(() => {
-        let URLParams = ''
-        const serchQuery = props.location.search
-        // if categories available then enabling section loading else enabling loading
+        let page = query.get('page')
+        let keyword = query.get('keyword')
+
+        // generating url parameters
+        let URLParams = `${(keyword) ? "keyword=" + keyword + "&" : ""}${page ? "page=" + page : ""}`
+
+        // enabling loading types based on the data present or not
         if (categories && categories.length) {
             // enabling section loading
             setSectionLoadingVisible(true)
         } else {
             // enabling loading
             setLoading(true)
-        }
-
-        // if search query is present in the URL
-        if (serchQuery && serchQuery.length) {
-            // if user is searching something
-            if (searchQuery && searchQuery.length) {
-                // updating the searchQueary
-                URLParams = `${serchQuery.replace("?", "")}&keyword=${searchQuery}`
-            } else {
-                // updating the searchQueary
-                URLParams = serchQuery.replace("?", "")
-            }
-        } 
-
-        // if search query is not present in the URL
-        if(!serchQuery) {
-            URLParams = ""
         }
 
         // getting data
@@ -128,13 +119,13 @@ function Categories(props) {
                 })
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log('err while getCategories api ', err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
+            toast.error(UNKNOWN_ERROR, {
                 autoClose: 3000,
                 onClose: () => {
                     // disabling section loading & loading
@@ -196,7 +187,7 @@ function Categories(props) {
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(CATEGORIES_DELETED_SUCCESSFULLY, {
+                    toast.success(CATEGORY_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
                         }
@@ -205,12 +196,12 @@ function Categories(props) {
 
                 // if some error while deleting
                 if (deletedData.error) {
-                    console.log(ERROR_WHILE_DELETING_CATEGORIES, res)
+                    console.log(ERROR_WHILE_DELETING_CATEGORY, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_DELETING_CATEGORIES, {
+                    toast.error(ERROR_WHILE_DELETING_CATEGORY, {
                         autoClose: 2500,
                     })
                 }
@@ -220,7 +211,7 @@ function Categories(props) {
                 setSectionLoadingVisible(false)
 
                 // console.log('err ', err)
-                console.log('err ', err.message)
+                console.log('err while deleteCategory api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
@@ -237,7 +228,6 @@ function Categories(props) {
 
     // searching
     const handleSearchChange = debounce(ev => {
-        let URLParams = ''
         let searchQueryValue = ev.target.value
 
         // enabling section loading
@@ -248,8 +238,8 @@ function Categories(props) {
             // setting search query data
             setSearchQuery(searchQueryValue)
 
-            // setting params
-            URLParams = "keyword=" + searchQueryValue
+            // redirecting to products with search data
+            props.history.push(`/catalog/categories?keyword=${searchQueryValue}&page=1`)
         }
 
         // if serch query does not have length
@@ -257,52 +247,9 @@ function Categories(props) {
             // setting search query data
             setSearchQuery("")
 
-            // setting params
-            URLParams = ""
+            // redirecting to products with search data
+            props.history.push(`/catalog/categories?page=1`)
         }
-
-        // getting data
-        getCategories(props.currentUser.userToken, URLParams).then(res => {
-            // disabling section loading & loading
-            setSectionLoadingVisible(false)
-
-            const resData = res.data
-
-            // if request succesfull
-            if (resData && resData.success) {
-                // setting pagination links
-                setPaginationLinks(resData.links)
-
-                // settings categories
-                setCategories(resData.data)
-            }
-
-            // if request is not succesfull
-            if (resData && resData.error) {
-                // dismissing all the previous toasts first
-                toast.dismiss();
-
-                // showing the error message
-                toast.error(ERROR_WHILE_SEARCHING_CATEGORIES, {
-                    autoClose: 3000
-                })
-            }
-        }).catch(err => {
-            console.log('err ', err.message)
-
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(ERROR_WHILE_SEARCHING_CATEGORIES, {
-                autoClose: 3000,
-                onClose: () => {
-                    // disabling section loading
-                    setSectionLoadingVisible(false)
-                }
-            })
-        })
-        
     }, 500)
 
     return (
@@ -370,6 +317,7 @@ function Categories(props) {
                             {/* paginations */}
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
+                                    searchQuery={searchQuery}
                                     routeName={"/catalog/categories"}
                                     paginationLinks={paginationLinks}
                                 />

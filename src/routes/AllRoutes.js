@@ -26,6 +26,10 @@ import Brands from "components/Brands";
 import CreateBrand from "components/Brands/Pages/CreateBrand";
 import EditBrand from "components/Brands/Pages/EditBrand";
 
+import Products from "components/Products";
+import CreateProduct from "components/Products/Pages/CreateProduct";
+import EditProduct from "components/Products/Pages/EditProduct";
+
 // page not found
 import PageNotFound from "components/PageNotFound";
 
@@ -131,6 +135,26 @@ export default function AllRoutes(props) {
                 authLoading={props.authLoading}
                 path="/catalog/brands/edit/:id"
                 component={EditBrand}
+                exact
+            />
+
+            {/* products */}
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/products/"
+                component={Products}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/products/create"
+                component={CreateProduct}
+                exact
+            />
+            <ProtectedRoute
+                authLoading={props.authLoading}
+                path="/catalog/products/edit/:id"
+                component={EditProduct}
                 exact
             />
 

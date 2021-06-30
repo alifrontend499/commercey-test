@@ -30,13 +30,15 @@ import Pagination from 'components/CommonComponents/Pagination'
 // common healpers
 import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 
+// custom hooks
+import useQuery from 'utlis/CustomHooks/useQueryHook'
+
 function Emails(props) {
     // messages
     const ERROR_WHILE_FETCHING_EMAILS = "Unable to load Email Templates. please try again."
     const ERROR_WHILE_DELETING_EMAIL = "No detail found"
     const UNKNOWN_ERROR = "Unable to delete the email. please try again."
     const EMAIL_DELETED_SUCCESSFULLY = "Email template deleted successfully."
-    const ERROR_WHILE_SEARCHING_EMAILS = "Unable to find the email templates. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -62,36 +64,23 @@ function Emails(props) {
 
     const [searchQuery, setSearchQuery] = useState("")
 
+    let query = useQuery();
+
     // getting emails
     useEffect(() => {
-        let URLParams = ''
-        const serchQuery = props.location.search
+        let page = query.get('page')
+        let keyword = query.get('keyword')
 
-        // if emails available then enabling section loading else enabling loading
+        // generating url parameters
+        let URLParams = `${(keyword) ? "keyword=" + keyword + "&" : ""}${page ? "page=" + page : ""}`
+
+        // enabling loading types based on the data present or not
         if (emails && emails.length) {
             // enabling section loading
             setSectionLoadingVisible(true)
         } else {
             // enabling loading
             setLoading(true)
-        }
-
-        // if search query is present in the URL
-        if (serchQuery && serchQuery.length) {
-
-            // if user is searching something
-            if (searchQuery && searchQuery.length) {
-                // updating the searchQueary
-                URLParams = `${serchQuery.replace("?", "")}&keyword=${searchQuery}`
-            } else {
-                // updating the searchQueary
-                URLParams = serchQuery.replace("?", "")
-            }
-        }
-
-        // if search query is not present in the URL
-        if (!serchQuery) {
-            URLParams = ''
         }
 
         // getting emails
@@ -232,7 +221,6 @@ function Emails(props) {
 
     // searching
     const handleSearchChange = debounce(ev => {
-        let URLParams = ''
         let searchQueryValue = ev.target.value
 
         // enabling section loading
@@ -243,8 +231,8 @@ function Emails(props) {
             // setting search query data
             setSearchQuery(searchQueryValue)
 
-            // setting params
-            URLParams = "keyword=" + searchQueryValue
+            // redirecting to products with search data
+            props.history.push(`/settings/emails?keyword=${searchQueryValue}&page=1`)
         }
 
         // if serch query does not have length
@@ -252,51 +240,9 @@ function Emails(props) {
             // setting search query data
             setSearchQuery("")
 
-            // setting params
-            URLParams = ""
+            // redirecting to products with search data
+            props.history.push(`/settings/emails?page=1`)
         }
-        // getting emails
-        getEmails(props.currentUser.userToken, URLParams).then(res => {
-            // disabling section loading
-            setSectionLoadingVisible(false)
-
-            const resData = res.data
-
-            // if request succesfull
-            if (resData && resData.success) {
-                // setting pagination links
-                setPaginationLinks(resData.links)
-
-                // settings emails
-                setEmails(resData.data)
-            }
-
-            // if request is not succesfull
-            if (resData && resData.error) {
-                // dismissing all the previous toasts first
-                toast.dismiss();
-
-                // showing the error message
-                toast.error(ERROR_WHILE_SEARCHING_EMAILS, {
-                    autoClose: 3000
-                })
-            }
-        }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
-
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(ERROR_WHILE_SEARCHING_EMAILS, {
-                autoClose: 3000,
-                onClose: () => {
-                    // disabling section loading
-                    setSectionLoadingVisible(false)
-                }
-            })
-        })
     }, 500)
 
     return (
@@ -366,6 +312,7 @@ function Emails(props) {
                             {/* paginations */}
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
+                                    searchQuery={searchQuery}
                                     routeName={"/settings/emails"}
                                     paginationLinks={paginationLinks}
                                 />

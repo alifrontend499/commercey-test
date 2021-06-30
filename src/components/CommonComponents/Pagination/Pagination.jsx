@@ -10,7 +10,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 export default function Pagination(props) {
-    const { paginationLinks, routeName } = props
+    const { paginationLinks, routeName, searchQuery } = props
 
     return (
         <React.Fragment>
@@ -25,7 +25,7 @@ export default function Pagination(props) {
                                             // button previous
                                             (item.label === "pagination.previous") && (
                                                 <Link
-                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${(searchQuery && searchQuery.length) && "keyword=" + searchQuery + "&"}${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-previous ms-0
                                                     ${(!item.url) ? "disabled" : ""}`}>
                                                     <FeatherIcon
@@ -39,11 +39,13 @@ export default function Pagination(props) {
                                             // button links
                                             ((item.label !== "pagination.previous") && (item.label !== "pagination.next")) && (
                                                 <Link
-                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${(searchQuery && searchQuery.length) && "keyword=" + searchQuery + "&"}${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-count 
                                                     ${item.active ? "active disabled" : ""}
                                                     ${(!item.url) ? "disabled" : ""}`}>
-                                                    {key}
+                                                    {
+                                                        (!item.url) ? "..." : item.label
+                                                    }
                                                 </Link>
                                             )
                                         }
@@ -51,7 +53,7 @@ export default function Pagination(props) {
                                             // button previous
                                             (item.label === "pagination.next") && (
                                                 <Link
-                                                    to={`${routeName}?${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
+                                                    to={`${routeName}?${(searchQuery && searchQuery.length) && "keyword=" + searchQuery + "&"}${item.url && item.url.split("?")[item.url.split("?").length - 1]}`}
                                                     className={`pagination-link text-decoration-none link-next
                                                     ${(!item.url) ? "disabled" : ""}`}>
                                                     <FeatherIcon

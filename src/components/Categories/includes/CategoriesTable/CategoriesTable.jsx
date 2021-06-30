@@ -14,7 +14,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 // skeleton loading
-import CategoriesLodingSkeleton from './categories__loadingSkeleton'
+import CategoriesLodingSkeleton from './table__loadingSkeleton'
 
 // tooltips
 import { renderTooltipDelete, renderTooltipEdit } from '../tooltips/Categories__Tooltips'

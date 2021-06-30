@@ -3,23 +3,11 @@ import React, { memo } from 'react'
 // Skeleton loading
 import Skeleton from 'react-loading-skeleton';
 
-function users__loadingSkeleton() {
+function table__loadingSkeleton() {
     return (
         <tr>
             <td>
                 <Skeleton count={1} height={20} width={20} />
-            </td>
-            <td>
-                <Skeleton count={1} height={20} />
-            </td>
-            <td>
-                <Skeleton count={1} height={20} />
-            </td>
-            <td>
-                <Skeleton count={1} height={20} />
-            </td>
-            <td>
-                <Skeleton count={1} height={20} />
             </td>
             <td>
                 <Skeleton count={1} height={20} />
@@ -49,4 +37,4 @@ function users__loadingSkeleton() {
     )
 }
 
-export default memo(users__loadingSkeleton)
+export default memo(table__loadingSkeleton)

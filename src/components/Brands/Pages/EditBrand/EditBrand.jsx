@@ -13,6 +13,9 @@ import {
 // react router
 import { Link } from 'react-router-dom'
 
+// icons : feather
+import FeatherIcon from 'feather-icons-react';
+
 // formik
 import {
     useFormik, //hook for functonal components
@@ -35,11 +38,11 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function EditBrand(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to edit the brand. please try again."
     const BRAND_UPDATED_SUCCESSFULLY = "Brand updated successfully."
     const ERROR_WHILE_UPDATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
     const ERROR_WHILE_LOADING_BRAND = "No detail found."
-
+    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+    
     // refs
     const submitButtonRef = useRef(null)
 
@@ -106,7 +109,7 @@ function EditBrand(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while getBrandDetails api ', err.message)
 
                 // disabling the global loading
                 props.setGlobalLoading(false)
@@ -115,7 +118,7 @@ function EditBrand(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                 })
             })
@@ -191,13 +194,13 @@ function EditBrand(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while editBrand api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling global loading
@@ -232,12 +235,23 @@ function EditBrand(props) {
         <section id="app-brands__edit-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
                 <div className="app-brands__edit-details">
+                    {/* BACK BUTTON WRAPPER */}
+                    <div className="back-button-wrapper mb-2">
+                        <Link to="/catalog/brands" className="text-decoration-none st-text-primary d-inline-flex align-items-center cursor-pointer st-fs-15">
+                            <FeatherIcon
+                                icon="arrow-left"
+                                size="14"
+                                className="icon me-1" />
+                            <span>Back to brands</span>
+                        </Link>
+                    </div>
+
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
-                        <p className="app-heading text-capitalize">Create Brands</p>
+                        <p className="app-heading text-capitalize">Edit Brands</p>
                         <p className="app-desc">
-                            Create a brand for your products.
+                            Edit a brand for your products.
                         </p>
                     </div>
 

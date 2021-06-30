@@ -13,7 +13,7 @@ import FeatherIcon from 'feather-icons-react';
 import { Link } from 'react-router-dom';
 
 // skeleton loading
-import UsersLodingSkeleton from './users__loadingSkeleton'
+import UsersLodingSkeleton from './table__loadingSkeleton'
 
 // tooltips
 import { renderTooltipDelete, renderTooltipEdit } from '../../includes/tooltips/Users__Tooltips'

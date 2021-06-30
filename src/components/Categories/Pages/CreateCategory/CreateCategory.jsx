@@ -37,9 +37,9 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function CreateCategory(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to create the category. please try again."
     const CATEGORY_ADDED_SUCCESSFULLY = "Category created successfully."
     const ERROR_WHILE_CREATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
+    const UNKNOWN_ERROR = "unknown error occured. please try again"
 
     // refs
     const submitButtonRef = useRef(null)
@@ -130,7 +130,6 @@ function CreateCategory(props) {
 
             // saving data
             addCategory(props.currentUser.userToken, dataToBeSaved).then(res => {
-                console.log('res from update user ', res)
                 // disabling global loading
                 setGlobalLoading(false)
 
@@ -180,13 +179,13 @@ function CreateCategory(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log('err while addCategory api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                     onClose: () => {
                         // disabling global loading
