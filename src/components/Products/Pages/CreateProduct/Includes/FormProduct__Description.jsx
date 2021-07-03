@@ -10,7 +10,10 @@ export default function FormProduct__Description(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap mb-3`}>
-                <label>Short Description <span>*</span></label>
+                <label>
+                    Short Description
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body">
                     <HTML_Editor
                         defaultValue={defaultValueForShortDesc}
@@ -21,7 +24,10 @@ export default function FormProduct__Description(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap`}>
-                <label>Long Description <span>*</span></label>
+                <label>
+                    Long Description
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body">
                     <HTML_Editor
                         defaultValue={defaultValueForLongDesc}

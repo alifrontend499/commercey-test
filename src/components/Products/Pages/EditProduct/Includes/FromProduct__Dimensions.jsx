@@ -5,7 +5,10 @@ export default function FromProduct__Dimensions(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.weight && props.formik.errors.weight) ? "has-msg msg-error" : ""}`}>
-                <label>Weight <span>*</span></label>
+                <label>
+                    Weight
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -26,7 +29,10 @@ export default function FromProduct__Dimensions(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.width && props.formik.errors.width) ? "has-msg msg-error" : ""}`}>
-                <label>Width <span>*</span></label>
+                <label>
+                    Width
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -47,7 +53,10 @@ export default function FromProduct__Dimensions(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.height && props.formik.errors.height) ? "has-msg msg-error" : ""}`}>
-                <label>Height <span>*</span></label>
+                <label>
+                    Height
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -68,7 +77,10 @@ export default function FromProduct__Dimensions(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.depth && props.formik.errors.depth) ? "has-msg msg-error" : ""}`}>
-                <label>Depth <span>*</span></label>
+                <label>
+                    Depth
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"

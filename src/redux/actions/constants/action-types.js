@@ -1,6 +1,8 @@
 // COMMON
 export const SET_GLOBAL_LOADING = 'SET_GLOBAL_LOADING'
 export const EMPTY_COMMON = 'EMPTY_COMMON'
+export const EMPTY_CATALOG = 'EMPTY_CATALOG'
+export const SET_SIDEBAR_STATUS = 'SET_SIDEBAR_STATUS'
 
 // AUTH
 export const SAVE_COMMONTOKEN = 'SAVE_COMMONTOKEN'
@@ -13,6 +15,3 @@ export const EMPTY_AUTH = 'EMPTY_AUTH'
 // CATALOG - 
 // categories
 export const ADD_CATAGORIES = 'ADD_CATAGORIES'
-
-// common
-export const EMPTY_CATALOG = 'EMPTY_CATALOG'

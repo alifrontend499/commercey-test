@@ -6,17 +6,14 @@ import { connect } from 'react-redux'
 // bootstrap
 import {
     Container,
-    Col,
-    Spinner,
-    Tabs,
-    Tab
+    Spinner
 } from 'react-bootstrap'
-
-// react router
-import { Link } from 'react-router-dom'
 
 // icons : feather
 import FeatherIcon from 'feather-icons-react';
+
+// react router
+import { Link } from 'react-router-dom'
 
 // formik
 import {
@@ -30,24 +27,24 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import ProductDetailsFields from './Includes/FormProduct__Details'
-import ProductPriceFields from './Includes/FormProduct__Price'
-import ProductDescriptionFields from './Includes/FormProduct__Description'
-import ProductStockFields from './Includes/FormProduct__Stock'
-import ProductDimensionsFields from './Includes/FromProduct__Dimensions'
-import ProductSEOFields from './Includes/FormProduct__SEO'
+import ProductLeftBar from './Includes/ProductLeftBar'
+import ProductContentView from './Includes/ProductContentView'
 
 // APIs
+import { editProduct, getProductDetails, cancelGetProductDetailsApi } from 'utlis/Apis/Products_API'
 import { getCategories, cancelGetCategoriesApi } from 'utlis/Apis/Categories_API'
+import { getBrands, cancelGetBrandsApi } from 'utlis/Apis/Brands_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function EditProduct(props) {
     // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to edit the product. please try again."
-    const CATEGORY_ADDED_SUCCESSFULLY = "Product updated successfully."
-    const ERROR_WHILE_CREATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
+    const SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS = "Please make sure that all the required fields are filled"
+    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+    const PRODUCT_UPDATED_SUCCESSFULLY = "Product Updated successfully."
+    const ERROR_WHILE_ADDING_PRODUCT = "Error occured!! please check if all the required fields are filled correctly."
+    const ERROR_WHILE_GETTING_PRODUCT_DETAILS = "unable to get the user details. please try again"
 
     // refs
     const submitButtonRef = useRef(null)
@@ -55,13 +52,6 @@ function EditProduct(props) {
     // states
     const [editButtonDisable, setEditButtonDisable] = useState(false)
     const [editButtonLoading, setEditButtonLoading] = useState(false)
-
-    const [detailsTabHasError, setDetailsTabHasError] = useState(false)
-    const [priceTabHasError, setPriceTabHasError] = useState(false)
-    const [descriptionTabHasError, setDescriptionTabHasError] = useState(false)
-    const [stockTabHasError, setStockTabHasError] = useState(false)
-    const [dimensionsTabHasError, setDimensionsTabHasError] = useState(false)
-    const [SEOTabHasError, setSEOTabHasError] = useState(false)
 
     const [productName, setProductName] = useState("")
     const [SKU, setSKU] = useState("")
@@ -71,8 +61,8 @@ function EditProduct(props) {
     const [promoPrice, setPromoPrice] = useState("")
     const [categoryId, setCategoryId] = useState("")
     const [brandId, setBrandId] = useState("")
-    const [shortDescription, setShortDescription] = useState("hello")
-    const [longDescription, setLongDescription] = useState("bye")
+    const [shortDescription, setShortDescription] = useState("")
+    const [longDescription, setLongDescription] = useState("")
     const [stock, setStock] = useState("")
     const [lowStock, setLowStock] = useState("")
     const [maxOrderQuantity, setMaxOrderQuantity] = useState("")
@@ -85,6 +75,9 @@ function EditProduct(props) {
     const [metaDescription, setMetaDescription] = useState("")
 
     const [parentCategories, setParentCategories] = useState([])
+    const [brands, setBrands] = useState([])
+
+    const [productId, setProductId] = useState("")
 
     // initial form values
     const initialEditFormValues = {
@@ -113,22 +106,170 @@ function EditProduct(props) {
         productName: Yup.string().required('This field is required'),
         SKU: Yup.string().required('This field is required'),
         status: Yup.string().required('This field is required'),
-        costPrice: Yup.string().required('This field is required'),
+        costPrice: Yup.string(),
         price: Yup.string().required('This field is required'),
-        promoPrice: Yup.string().required('This field is required'),
+        promoPrice: Yup.string(),
         categoryId: Yup.string().required('This field is required'),
-        brandId: Yup.string().required('This field is required'),
+        brandId: Yup.string(),
         stock: Yup.string().required('This field is required'),
-        lowStock: Yup.string().required('This field is required'),
-        maxOrderQuantity: Yup.string().required('This field is required'),
-        minOrderQuantity: Yup.string().required('This field is required'),
-        weight: Yup.string().required('This field is required'),
-        width: Yup.string().required('This field is required'),
-        depth: Yup.string().required('This field is required'),
-        height: Yup.string().required('This field is required'),
-        metaTitle: Yup.string().required('This field is required'),
-        metaDescription: Yup.string().required('This field is required'),
+        lowStock: Yup.string(),
+        maxOrderQuantity: Yup.string(),
+        minOrderQuantity: Yup.string(),
+        weight: Yup.string(),
+        width: Yup.string(),
+        depth: Yup.string(),
+        height: Yup.string(),
+        metaTitle: Yup.string(),
+        metaDescription: Yup.string(),
     })
+
+    // getting parent categories
+    useEffect(() => {
+        const idFromUrl = props.match.params;
+        // setting user id from the url
+        if (idFromUrl) {
+            setProductId(idFromUrl.id)
+        }
+
+        // getting parent categories
+        getCategories(props.currentUser.userToken, "parent_id=0&limit=100").then(res => {
+            const parentCategories = res.data
+
+            // if request is success
+            if (parentCategories.success) {
+                setParentCategories(parentCategories.data)
+            }
+
+            // if request is not succeed
+            if (parentCategories.error) {
+                console.log('Error occured while loading parent categories!', res)
+            }
+        }).catch(err => {
+            console.log('err ', err.message)
+        })
+
+        return () => {
+            // canceling get categories api when user leaves the component
+            cancelGetCategoriesApi()
+        }
+    }, [])
+
+    // getting brands
+    useEffect(() => {
+        // getting brands
+        getBrands(props.currentUser.userToken, "limit=-1").then(res => {
+            const brandsRes = res.data
+
+            // if request is success
+            if (brandsRes.success) {
+                setBrands(brandsRes.data)
+            }
+
+            // if request is not succeed
+            if (brandsRes.error) {
+                console.log('Error occured while loading brands!', res)
+            }
+        }).catch(err => {
+            console.log('err ', err.message)
+        })
+
+        return () => {
+            // canceling get categories api when user leaves the component
+            cancelGetBrandsApi()
+        }
+    }, [])
+
+    // // getting product details from the location state 
+    // useEffect(() => {
+    //     const locState = props.location.state ?? props.location.state
+    //     // console.log("locState ", locState)
+    //     // if state with the product data exists in the location state
+    //     if (locState) {
+    //         const prodData = locState.productDetails
+    //         setProductName(prodData?.product_name ?? "")
+    //         setSKU(prodData?.sku ?? "")
+    //         setStatus(prodData?.status ?? "")
+    //         setCostPrice(prodData?.cost_price ?? "")
+    //         setPrice(prodData?.price ?? "")
+    //         setPromoPrice(prodData?.promo_price ?? "")
+    //         setCategoryId(prodData?.category_id ?? "")
+    //         setBrandId(prodData?.brand_id ?? "")
+    //         setShortDescription(prodData?.short_description ?? "")
+    //         setLongDescription(prodData?.long_description ?? "")
+    //         setStock(prodData?.stock ?? "")
+    //         setLowStock(prodData?.low_stock ?? "")
+    //         setMaxOrderQuantity(prodData?.max_order_quantity ?? "")
+    //         setMinOrderQuantity(prodData?.min_order_quantity ?? "")
+    //         setWeight(prodData?.weight ?? "")
+    //         setWidth(prodData?.width ?? "")
+    //         setDepth(prodData?.depth ?? "")
+    //         setHeight(prodData?.height ?? "")
+    //         setMetaTitle(prodData?.meta_title ?? "")
+    //         setMetaDescription(prodData?.meta_description ?? "")
+    //     }
+    // }, [props])
+
+    // getting product details from the database with the id from the url
+    useEffect(() => {
+        // user id from the url
+        const productId = props.match.params.id ?? ""
+
+        // if product id found from the URL
+        if (productId) {
+            // enabling the global loading
+            props.setGlobalLoading(true)
+
+            // getting product details
+            getProductDetails(props.currentUser.userToken, productId).then(res => {
+                const prodDetRes = res.data
+                // disabling the global loading
+                props.setGlobalLoading(false)
+
+                // if request is success
+                if (prodDetRes.success) {
+                    setProductName(prodDetRes?.data.product_name ?? "")
+                    setSKU(prodDetRes?.data.sku ?? "")
+                    setStatus(prodDetRes?.data.active ?? "")
+                    setCostPrice(prodDetRes?.data.cost_price ?? "")
+                    setPrice(prodDetRes?.data.price ?? "")
+                    setPromoPrice(prodDetRes?.data.promo_price ?? "")
+                    setCategoryId(prodDetRes?.data.category_id ?? "")
+                    setBrandId(prodDetRes?.data.brand_id ?? "")
+                    setShortDescription(prodDetRes?.data.short_description ?? "")
+                    setLongDescription(prodDetRes?.data.long_description ?? "")
+                    setStock(prodDetRes?.data.stock ?? "")
+                    setLowStock(prodDetRes?.data.low_stock ?? "")
+                    setMaxOrderQuantity(prodDetRes?.data.max_order_quantity ?? "")
+                    setMinOrderQuantity(prodDetRes?.data.min_order_quantity ?? "")
+                    setWeight(prodDetRes?.data.weight ?? "")
+                    setWidth(prodDetRes?.data.width ?? "")
+                    setDepth(prodDetRes?.data.depth ?? "")
+                    setHeight(prodDetRes?.data.height ?? "")
+                    setMetaTitle(prodDetRes?.data.meta_title ?? "")
+                    setMetaDescription(prodDetRes?.data.meta_description ?? "")
+                }
+
+                // // if request is not succeed
+                if (prodDetRes.error) {
+                    console.log('Error occured while getting product details!', res)
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_GETTING_PRODUCT_DETAILS, {
+                        autoClose: 3000,
+                    })
+                }
+            }).catch(err => {
+                console.log('err ', err.message)
+            })
+
+            return () => {
+                // canceling get categories api when user leaves the component
+                cancelGetProductDetailsApi()
+            }
+        }
+    }, [])
 
     // handle form submmision
     const onEditFormSubmit = values => {
@@ -142,29 +283,100 @@ function EditProduct(props) {
 
             // saving the data in the database
             const dataToBeSaved = {
-                product_name: values.product_name,
-                sku: values.sku,
+                product_id: productId,
+                product_name: values.productName,
+                sku: values.SKU,
                 status: values.status,
-                cost_price: values.cost_price,
+                cost_price: values.costPrice,
                 price: values.price,
-                promo_price: values.promo_price,
-                category_id: values.category_id,
-                brand_id: values.brand_id,
+                promo_price: values.promoPrice,
+                category_id: values.categoryId,
+                brand_id: values.brandId,
                 short_description: shortDescription,
                 long_description: longDescription,
                 stock: values.stock,
-                low_stock: values.low_stock,
-                max_order_quantity: values.max_order_quantity,
-                min_order_quantity: values.min_order_quantity,
+                low_stock: values.lowStock,
+                max_order_quantity: values.maxOrderQuantity,
+                min_order_quantity: values.minOrderQuantity,
                 weight: values.weight,
                 width: values.width,
                 depth: values.depth,
                 height: values.height,
-                meta_title: values.meta_title,
-                meta_description: values.meta_description,
+                meta_title: values.metaTitle,
+                meta_description: values.metaDescription,
             }
 
+            // saving in databse
+            editProduct(props.currentUser.userToken, dataToBeSaved).then(res => {
+                // disabling global loading
+                setGlobalLoading(false)
 
+                // enabling the button and disabling loading
+                setEditButtonDisable(false)
+                setEditButtonLoading(false)
+
+                const addingData = res.data
+
+                // if request is success
+                if (addingData.success) {
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.success(PRODUCT_UPDATED_SUCCESSFULLY, {
+                        autoClose: 2500,
+                        onClose: () => {
+
+                            // redirecting to users
+                            // props.history.push('/catalog/products', {
+                            //     shouldReload: true
+                            // })
+                        }
+                    })
+                }
+
+                // if request is not succeed
+                if (addingData.error) {
+                    console.log(ERROR_WHILE_ADDING_PRODUCT, res)
+
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_ADDING_PRODUCT, {
+                        autoClose: 3000,
+                    })
+                }
+            }).catch(err => {
+                console.log('err ', err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(UNKNOWN_ERROR, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling global loading
+                        setGlobalLoading(false)
+
+                        // disbling the button and enabling loading
+                        setEditButtonDisable(false)
+                        setEditButtonLoading(false)
+                    }
+                })
+            })
+
+        } else {
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS, {
+                autoClose: 2500,
+                onClose: () => {
+                }
+            })
         }
     }
 
@@ -197,7 +409,7 @@ function EditProduct(props) {
     return (
         <section id="app-products__edit-product" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-products__edit-product">
+                <div className="app-products__edit-product position-relative">
                     {/* BACK BUTTON WRAPPER */}
                     <div className="back-button-wrapper mb-2">
                         <Link to="/catalog/products" className="text-decoration-none st-text-primary d-inline-flex align-items-center cursor-pointer st-fs-15">
@@ -208,7 +420,7 @@ function EditProduct(props) {
                             <span>Back to products</span>
                         </Link>
                     </div>
-                    
+
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
@@ -218,215 +430,74 @@ function EditProduct(props) {
                         </p>
                     </div>
 
-                    {/* CONTENT WRAPPER */}
                     <form
                         onSubmit={formik.handleSubmit}
                         noValidate
                         autoComplete="off">
-                        <div className="app-content-container">
-                        <Tabs defaultActiveKey="detailsFields" id="uncontrolled-tab-example">
-                                {/* tab item */}
-                                <Tab eventKey="detailsFields" title="Details" tabClassName={`${(
-                                    (formik.touched.productName && formik.errors.productName) ||
-                                    (formik.touched.SKU && formik.errors.SKU) ||
-                                    (formik.touched.status && formik.errors.status) ||
-                                    (formik.touched.categoryId && formik.errors.categoryId) ||
-                                    (formik.touched.brandId && formik.errors.brandId)) ?
-                                    "has-error"
-                                    : "no-error"
-                                    }`}>
-                                    {/* app card */}
-                                    <div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">Details</p>
-                                        </div>
+                        <div className="product-form-container">
+                            <div className="pfc-inner d-flex">
+                                {/* left bar view */}
+                                <ProductLeftBar
+                                    formik={formik}
+                                    parentProps={props}
+                                />
 
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                            <Col xs={12} md={9} lg={6} className="px-0">
-                                                <ProductDetailsFields
-                                                    setPageError={setDetailsTabHasError}
-                                                    formik={formik}
-                                                    parentCategories={parentCategories}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
+                                {/* content view */}
+                                <ProductContentView
+                                    formik={formik}
 
-                                {/* tab item */}
-                                <Tab eventKey="priceFields" title="Price" tabClassName={`${(
-                                    (formik.touched.costPrice && formik.errors.costPrice) ||
-                                    (formik.touched.price && formik.errors.price) ||
-                                    (formik.touched.promoPrice && formik.errors.promoPrice)) ?
-                                    "has-error"
-                                    : "no-error"
-                                    }`}>
-                                    {/* app card */}
-                                    < div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">Price</p>
-                                        </div>
+                                    parentProps={props}
 
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                            <Col xs={12} md={9} lg={6} className="px-0">
-                                                <ProductPriceFields
-                                                    setPageError={setPriceTabHasError}
-                                                    formik={formik}
-                                                    parentCategories={parentCategories}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
+                                    parentCategories={parentCategories}
 
-                                {/* tab item */}
-                                <Tab eventKey="descriptionFields" title="Description">
-                                    {/* app card */}
-                                    <div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">Description</p>
-                                        </div>
+                                    brands={brands}
 
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-                                            <Col xs={12} md={9} className="px-0">
-                                                <ProductDescriptionFields
-                                                    setPageError={setDescriptionTabHasError}
-                                                    formik={formik}
-                                                    defaultValueForShortDesc={shortDescription}
-                                                    defaultValueForLongDesc={longDescription}
-
-                                                    getShortDesc={getHTML_editorResultShortDesc}
-                                                    getLongDesc={getHTML_editorResultLongDesc}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
-
-                                {/* tab item */}
-                                <Tab eventKey="stockAndQuantityFields" title="StockAndQuantity" tabClassName={`${(
-                                    (formik.touched.stock && formik.errors.stock) ||
-                                    (formik.touched.lowStock && formik.errors.lowStock) ||
-                                    (formik.touched.maxOrderQuantity && formik.errors.maxOrderQuantity) ||
-                                    (formik.touched.minOrderQuantity && formik.errors.minOrderQuantity)) ?
-                                    "has-error"
-                                    : "no-error"
-                                    }`}>
-                                    {/* app card */}
-                                    <div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">Stock & Quantity</p>
-                                        </div>
-
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                            <Col xs={12} md={9} lg={6} className="px-0">
-                                                <ProductStockFields
-                                                    setPageError={setStockTabHasError}
-                                                    formik={formik}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
-
-                                {/* tab item */}
-                                <Tab eventKey="dimensionsFields" title="Dimensions" tabClassName={`${(
-                                    (formik.touched.weight && formik.errors.weight) ||
-                                    (formik.touched.width && formik.errors.width) ||
-                                    (formik.touched.height && formik.errors.height) ||
-                                    (formik.touched.depth && formik.errors.depth)) ?
-                                    "has-error"
-                                    : "no-error"
-                                    }`}>
-                                    {/* app card */}
-                                    <div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">Dimensions</p>
-                                        </div>
-
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                            <Col xs={12} md={9} lg={6} className="px-0">
-                                                <ProductDimensionsFields
-                                                    setPageError={setDimensionsTabHasError}
-                                                    formik={formik}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
-
-                                {/* tab item */}
-                                <Tab eventKey="SEOFields" title="SEO" tabClassName={`${(
-                                    (formik.touched.metaTitle && formik.errors.metaTitle) ||
-                                    (formik.touched.metaDescription && formik.errors.metaDescription)) ?
-                                    "has-error"
-                                    : "no-error"
-                                    }`}>
-                                    {/* app card */}
-                                    <div className="app-card mb-3 mb-lg-4">
-                                        {/* card heading */}
-                                        <div className="app-header-wrapper heading-sm mb-1">
-                                            {/* heading */}
-                                            <p className="app-heading text-capitalize">SEO</p>
-                                        </div>
-
-                                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                            <Col xs={12} md={9} lg={6} className="px-0">
-                                                <ProductSEOFields
-                                                    setPageError={setSEOTabHasError}
-                                                    formik={formik}
-                                                />
-                                            </Col>
-                                        </div>
-                                    </div>
-                                </Tab>
-                            </Tabs>
-
-                            {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
-                                    <Link to="/catalog/products" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
-                                        Cancel
-                                    </Link>
-                                    <button
-                                        type="submit"
-                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
-                                        disabled={editButtonDisable || Object.keys(formik.errors).length}
-                                        onClick={handleFormSubmission}>
-                                        {
-                                            editButtonLoading ? (
-                                                <Spinner animation="border" size="sm" />
-                                            ) : (
-                                                <span>Save Changes</span>
-                                            )
-                                        }
-                                    </button>
-                                </div>
+                                    defaultValueForShortDesc={shortDescription}
+                                    defaultValueForLongDesc={longDescription}
+                                    getShortDesc={getHTML_editorResultShortDesc}
+                                    getLongDesc={getHTML_editorResultLongDesc}
+                                />
                             </div>
                         </div>
+
+
+                        {/* submit button */}
                         <button type="submit" ref={submitButtonRef} className="d-none">submit</button>
                     </form>
 
+                    {/* app card : bottom-bar */}
+                    <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block d-flex align-items-center justify-content-end">
+                            <Link to="/catalog/products" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
+                                Cancel
+                            </Link>
+                            <button
+                                type="submit"
+                                className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                disabled={editButtonDisable || Object.keys(formik.errors).length}
+                                onClick={handleFormSubmission}>
+                                {
+                                    editButtonLoading ? (
+                                        <Spinner animation="border" size="sm" />
+                                    ) : (
+                                        <span>Save Changes</span>
+                                    )
+                                }
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </Container>
-        </section >
+        </section>
     )
 }
 
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

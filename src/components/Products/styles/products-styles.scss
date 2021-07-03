@@ -5,44 +5,73 @@
 // categories
 .app-products__create-product,
 .app-products__edit-product {
-    padding-bottom: 90px;
-    position: relative;
-    .action-btns {
-        position: absolute;
-        bottom: 0;
-        // left: $appLeftBarWidth;
-        // width: calc(100% - #{$appLeftBarWidth});
-        left: 0;
-        width: 100%;
-    }
+    .product-form-container {
+        margin-bottom: 50px;
+        .pfc-left-bar {
+            width: 180px;
+            margin-left: -5px;
+            margin-top: 4px;
+            position: sticky;
+            top: 5px;
 
-    .nav-tabs {
-        border-bottom: none;
-        margin-bottom: 10px;
-
-        .nav-link {
-            margin-bottom: 0;
-            border: none;
-            border-bottom: 2px solid transparent;
-            border-radius: 0;
-            padding: 0;
-            margin-right: 15px;
-            color: $text__dark-color;
-            font-size: 16px;
-            &.active {
-                color: $primary-color;
-                border-color: $primary-color;
+            .lb-head {
+                font-size: 15px;
+                text-transform: uppercase;
                 font-weight: 600;
-                background-color: transparent;
+                margin-bottom: 10px;
+                margin-left: 5px;
+                color: $text__dark-color;
             }
-
-            // if tab has error
-            &.has-error {
-                color: $text__danger-color;
+            .lb-link {
+                display: block;
+                text-decoration: none !important;
+                padding: 1px 0 1px 5px;
+                border-left: 2px solid transparent;
+                margin-bottom: 10px;
+                font-size: 15px;
+                color: $text__light-color;
+                @include transition;
+                .icon {
+                    margin-top: 4px;
+                }
+                &:hover,
+                &:active,
+                &:focus,
                 &.active {
-                    border-color: $text__danger-color;
+                    color: $primary-color;
+                    border-color: $primary-color;
+                }
+                &.has-error {
+                    color: $text__danger-color;
+                    &:hover {
+                        border-color: $text__danger-color;
+                    }
+                }
+                &.no-error {
+                    color: $text__success-color;
+                    &:hover {
+                        border-color: $text__success-color;
+                    }
                 }
             }
+        }
+
+        .pfc-content {
+            padding-left: 15px;
+        }
+    }
+
+    .action-btns {
+        position: fixed;
+        bottom: 0;
+        left: $appLeftBarWidthWhenShrunked + 25;
+        width: calc(100% - (#{$appLeftBarWidthWhenShrunked} + (30px * 2)));
+        &.sidebar-expanded {
+            left: $appLeftBarWidth + 25;
+            width: calc(100% - (#{$appLeftBarWidth} + (30px * 2)));
+        }
+        .app-card-content {
+            padding: 10px 15px;
         }
     }
 }

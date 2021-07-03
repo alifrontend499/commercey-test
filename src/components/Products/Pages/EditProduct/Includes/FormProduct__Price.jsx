@@ -5,10 +5,13 @@ export default function FormProduct__Price(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.costPrice && props.formik.errors.costPrice) ? "has-msg msg-error" : ""}`}>
-                <label>Cost Price <span>*</span></label>
+                <label>
+                    Cost Price
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Cost Price"
                         id="costPrice"
@@ -26,10 +29,13 @@ export default function FormProduct__Price(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.price && props.formik.errors.price) ? "has-msg msg-error" : ""}`}>
-                <label>Price <span>*</span></label>
+                <label>
+                    Price
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Price"
                         id="price"
@@ -47,10 +53,13 @@ export default function FormProduct__Price(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.promoPrice && props.formik.errors.promoPrice) ? "has-msg msg-error" : ""}`}>
-                <label>Promo Price <span>*</span></label>
+                <label>
+                    Promo Price
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Promo Price"
                         id="promoPrice"

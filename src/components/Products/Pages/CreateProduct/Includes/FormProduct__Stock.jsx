@@ -5,10 +5,13 @@ export default function FormProduct__Stock(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.stock && props.formik.errors.stock) ? "has-msg msg-error" : ""}`}>
-                <label>Stock <span>*</span></label>
+                <label>
+                    Stock 
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Stock"
                         id="stock"
@@ -26,10 +29,13 @@ export default function FormProduct__Stock(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.lowStock && props.formik.errors.lowStock) ? "has-msg msg-error" : ""}`}>
-                <label>Low Stock <span>*</span></label>
+                <label>
+                    Low Stock 
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Low Stock"
                         id="lowStock"
@@ -47,10 +53,13 @@ export default function FormProduct__Stock(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.maxOrderQuantity && props.formik.errors.maxOrderQuantity) ? "has-msg msg-error" : ""}`}>
-                <label>Max Order Quantity <span>*</span></label>
+                <label>
+                    Max Order Quantity 
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Max Order Quantity"
                         id="maxOrderQuantity"
@@ -68,10 +77,13 @@ export default function FormProduct__Stock(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.minOrderQuantity && props.formik.errors.minOrderQuantity) ? "has-msg msg-error" : ""}`}>
-                <label>Min Order Quantity <span>*</span></label>
+                <label>
+                    Min Order Quantity 
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
-                        type="text"
+                        type="number"
                         className="form-control"
                         placeholder="Min Order Quantity"
                         id="minOrderQuantity"

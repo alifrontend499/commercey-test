@@ -126,7 +126,7 @@ function EditEmail(props) {
             // enabling the global loading
             props.setGlobalLoading(true)
             // loading the user from the database
-            const emailId = props.match.params.id ?? props.match.params.id
+            const emailId = props.match.params.id ?? ""
 
             // getting single email details
             getEmailDetails(props.currentUser.userToken, emailId).then(res => {

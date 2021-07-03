@@ -5,7 +5,10 @@ export default function FormProduct__SEO(props) {
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.metaTitle && props.formik.errors.metaTitle) ? "has-msg msg-error" : ""}`}>
-                <label>Meta Title <span>*</span></label>
+                <label>
+                    Meta Title
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -26,7 +29,10 @@ export default function FormProduct__SEO(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap ${(props.formik.touched.metaDescription && props.formik.errors.metaDescription) ? "has-msg msg-error" : ""}`}>
-                <label>Meta Description <span>*</span></label>
+                <label>
+                    Meta Description
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <textarea
                         type="text"

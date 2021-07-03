@@ -1,12 +1,16 @@
 import React from 'react'
 
 export default function FormProduct__Details(props) {
-    const { parentCategories } = props
+    const { parentCategories, brands } = props
+
     return (
         <React.Fragment>
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.productName && props.formik.errors.productName) ? "has-msg msg-error" : ""}`}>
-                <label>Product Name <span>*</span></label>
+                <label>
+                    Product Name
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -27,7 +31,10 @@ export default function FormProduct__Details(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.SKU && props.formik.errors.SKU) ? "has-msg msg-error" : ""}`}>
-                <label>SKU <span>*</span></label>
+                <label>
+                    SKU
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <input
                         type="text"
@@ -48,7 +55,10 @@ export default function FormProduct__Details(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.status && props.formik.errors.status) ? "has-msg msg-error" : ""}`}>
-                <label>Status <span>*</span></label>
+                <label>
+                    Status
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
@@ -71,16 +81,21 @@ export default function FormProduct__Details(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.categoryId && props.formik.errors.categoryId) ? "has-msg msg-error" : ""}`}>
-                <label>Category <span>*</span></label>
+                <label>
+                    Category
+                    <span>*</span>
+                </label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
                         id="categoryId"
                         {...props.formik.getFieldProps('categoryId')}>
                         <option disabled value="">Select Category</option>
-                        <option value="1">Category 1</option>
-                        <option value="0">Category 2</option>
-                        <option value="0">Category 3</option>
+                        {
+                            (parentCategories && parentCategories.length) && parentCategories.map(item => (
+                                <option key={item.category_id} value={item.category_id}>{item.category_name}</option>
+                            ))
+                        }
                     </select>
                     {
                         /* form message */
@@ -95,16 +110,21 @@ export default function FormProduct__Details(props) {
 
             {/* form field */}
             <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.brandId && props.formik.errors.brandId) ? "has-msg msg-error" : ""}`}>
-                <label>Brand <span>*</span></label>
+                <label>
+                    Brand
+                    {/* <span>*</span> */}
+                </label>
                 <div className="media-body st-form-input-container">
                     <select
                         className="form-control"
                         id="brandId"
                         {...props.formik.getFieldProps('brandId')}>
                         <option disabled value="">Select Brand</option>
-                        <option value="1">Brand 1</option>
-                        <option value="0">Brand 2</option>
-                        <option value="0">Brand 3</option>
+                        {
+                            (brands && brands.length) && brands.map(item => (
+                                <option key={item.manufacturer_id} value={item.manufacturer_id}>{item.manufacturer_name}</option>
+                            ))
+                        }
                     </select>
                     {
                         /* form message */

@@ -1,11 +1,15 @@
 // ACTION CREATORS
 import {
     SET_GLOBAL_LOADING,
+    SET_SIDEBAR_STATUS,
+
+
     EMPTY_COMMON,
 } from "redux/actions/constants/action-types";
 
 const initialState = {
     globalLoading: false,
+    sideBarVisibility: false
 };
 
 function commonReducer(state = initialState, action) {
@@ -13,6 +17,13 @@ function commonReducer(state = initialState, action) {
         return {
             ...state,
             globalLoading: action.payload,
+        }
+    }
+
+    if (action.type === SET_SIDEBAR_STATUS) {
+        return {
+            ...state,
+            sideBarVisibility: action.payload,
         }
     }
 

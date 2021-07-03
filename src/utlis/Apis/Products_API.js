@@ -30,7 +30,7 @@ export async function getProducts(token, query = "") {
 export let cancelAddProductApi;
 export async function addProduct(token, productData) {
     if (token, productData) {
-        const emails = await axios.post(apiUrl_forProducts + "product",
+        const prods = await axios.post(apiUrl_forProducts + "product",
             {
                 product_name: productData.product_name,
                 sku: productData.sku,
@@ -65,7 +65,7 @@ export async function addProduct(token, productData) {
                 }),
             }
         );
-        return emails;
+        return prods;
     } else {
         console.log("Please add required parameters");
     }
@@ -94,16 +94,28 @@ export async function getProductDetails(token, prodId) {
 export let cancelEditProductApi;
 export async function editProduct(token, productData) {
     if (token, productData) {
-        const emails = await axios.put(apiUrl_forProducts + "product/" + productData.product_id,
+        const prods = await axios.put(apiUrl_forProducts + "product/" + productData.product_id,
             {
                 product_name: productData.product_name,
-                description: productData.description,
+                sku: productData.sku,
                 status: productData.status,
-                parent_id: productData.parent_id,
+                cost_price: productData.cost_price,
+                price: productData.price,
+                promo_price: productData.promo_price,
+                category_id: productData.category_id,
+                brand_id: productData.brand_id,
+                short_description: productData.short_description,
+                long_description: productData.long_description,
+                stock: productData.stock,
+                low_stock: productData.low_stock,
+                max_order_quantity: productData.max_order_quantity,
+                min_order_quantity: productData.min_order_quantity,
+                weight: productData.weight,
+                width: productData.width,
+                depth: productData.depth,
+                height: productData.height,
                 meta_title: productData.meta_title,
-                meta_keywords: productData.meta_keywords,
                 meta_description: productData.meta_description,
-                image: productData.image,
             },
             {
                 headers: {
@@ -117,7 +129,7 @@ export async function editProduct(token, productData) {
                 }),
             }
         );
-        return emails;
+        return prods;
     } else {
         console.log("Please add required parameters");
     }

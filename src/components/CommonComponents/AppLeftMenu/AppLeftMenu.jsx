@@ -15,9 +15,14 @@ import appLogo from 'assets/images/logo.png'
 // react router
 import { Link, NavLink } from 'react-router-dom';
 
-export default function AppLeftMenu() {
+// redux
+import { connect } from 'react-redux'
+
+// actions
+import { setSideBarStatus } from 'redux/actions/actionCommon'
+
+function AppLeftMenu(props) {
     const [openedDropdowns, setOpenedDropdowns] = useState([])
-    const [menuExpanded, setMenuExpanded] = useState(true)
 
     // toggle submenu in the left menu
     const handleSubMenuVisibility = (ev, dataId) => {
@@ -43,7 +48,7 @@ export default function AppLeftMenu() {
 
     // toggle menu expand or normal
     const handleMenuExpantion = () => {
-        setMenuExpanded(!menuExpanded)
+        props.setSideBarStatus(!props.sideBarVisibility)
 
         // closing all the opened dropdowns
         // setOpenedDropdowns([])
@@ -51,7 +56,7 @@ export default function AppLeftMenu() {
 
 
     const handleMenuButtonMouseEnter = ev => {
-        if (!menuExpanded) {
+        if (!props.sideBarVisibility) {
             ev.stopPropagation()
         }
     }
@@ -62,7 +67,7 @@ export default function AppLeftMenu() {
     }
 
     return (
-        <div className={`app-left-menu ${menuExpanded ? "shrunk" : "expanded"}`}>
+        <div className={`app-left-menu ${props.sideBarVisibility ? "shrunk" : "expanded"}`}>
             <div className="inner bg-white h-100">
                 {/* logo */}
                 <div className="st-logo d-flex align-items-center border-bottom st-border-light">
@@ -71,7 +76,7 @@ export default function AppLeftMenu() {
                     </Link>
 
                     <button
-                        className={`st-round-btn st-btn-transparent st-btn-sm d-flex align-items-center justify-content-center ${menuExpanded ? "menu-shrunk" : "expanded"}`}
+                        className={`st-round-btn st-btn-transparent st-btn-sm d-flex align-items-center justify-content-center ${props.sideBarVisibility ? "menu-shrunk" : "expanded"}`}
                         onMouseEnter={handleMenuButtonMouseEnter}
                         onClick={handleMenuExpantion}>
                         <FeatherIcon
@@ -385,3 +390,18 @@ export default function AppLeftMenu() {
         </div>
     )
 }
+
+
+const getDataFromStore = state => {
+    return {
+        sideBarVisibility: state.common.sideBarVisibility
+    };
+}
+
+const dispatchActionsToProps = dispatch => {
+    return {
+        setSideBarStatus: bool => dispatch(setSideBarStatus(bool)),
+    }
+}
+
+export default connect(getDataFromStore, dispatchActionsToProps)(AppLeftMenu)

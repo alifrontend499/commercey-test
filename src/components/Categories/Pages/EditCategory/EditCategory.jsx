@@ -122,7 +122,7 @@ function EditCategory(props) {
             // enabling the global loading
             props.setGlobalLoading(true)
             // loading the user from the database
-            const catId = props.match.params.id ?? props.match.params.id
+            const catId = props.match.params.id ?? ""
 
             // getting single category details
             getCategoryDetails(props.currentUser.userToken, catId).then(res => {

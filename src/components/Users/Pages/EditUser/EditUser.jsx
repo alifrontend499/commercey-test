@@ -122,7 +122,7 @@ function EditUser(props) {
             props.setGlobalLoading(true)
 
             // loading the user from the database
-            const userId = props.match.params.id ?? props.match.params.id
+            const userId = props.match.params.id ?? ""
 
             // getting single user details
             getUserDetails(props.currentUser.userToken, userId).then(res => {
