@@ -74,9 +74,6 @@ function AppRoot(props) {
                                 {/* HEADER */}
                                 <Header />
 
-                                {/* SCROLL TO TOP WHEN ROUTE CHANGES */}
-                                <ScrollToTop />
-
                                 {/* ALL ROUTES */}
                                 <AllRoutes authLoading={authLoading} />
 

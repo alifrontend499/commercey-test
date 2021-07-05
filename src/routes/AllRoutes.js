@@ -36,129 +36,137 @@ import PageNotFound from "components/PageNotFound";
 // protected routes
 import ProtectedRoute from "./ProtectedRoute";
 
+// scroll to top
+import ScrollToTop from './ScrollToTop'
+
 export default function AllRoutes(props) {
     return (
-        <Switch>
-            {/* <ProtectedRoute
+        <React.Fragment>
+            {/* SCROLL TO TOP WHEN ROUTE CHANGES */}
+            <ScrollToTop />
+
+            <Switch>
+                {/* <ProtectedRoute
                 authLoading={props.authLoading}
                 path="/"
                 component={Dashboard}
                 exact /> */}
-            <Route path="/" component={Login} exact />
+                <Route path="/" component={Login} exact />
 
-            {/* AUTH */}
-            <Route path="/login" component={Login} />
-            <Route path="/forgot-password" component={ForgotPassword} />
+                {/* AUTH */}
+                <Route path="/login" component={Login} />
+                <Route path="/forgot-password" component={ForgotPassword} />
 
-            {/* DASHBOARD */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/dashboard"
-                component={Dashboard}
-            />
+                {/* DASHBOARD */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/dashboard"
+                    component={Dashboard}
+                />
 
-            {/* USERS */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/users/"
-                component={Users}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/users/create"
-                component={CreateUser}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/users/edit/:id"
-                component={EditUser}
-                exact
-            />
+                {/* USERS */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/users/"
+                    component={Users}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/users/create"
+                    component={CreateUser}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/users/edit/:id"
+                    component={EditUser}
+                    exact
+                />
 
-            {/* EMAILS */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/emails/"
-                component={Emails}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/emails/create"
-                component={CreateEmail}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/settings/emails/edit/:id"
-                component={EditEmail}
-                exact
-            />
+                {/* EMAILS */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/emails/"
+                    component={Emails}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/emails/create"
+                    component={CreateEmail}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/settings/emails/edit/:id"
+                    component={EditEmail}
+                    exact
+                />
 
-            {/* CATALOG */}
-            {/* categories */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/categories/"
-                component={Categories}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/categories/create"
-                component={CreateCategory}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/categories/edit/:id"
-                component={EditCategory}
-                exact
-            />
+                {/* CATALOG */}
+                {/* categories */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/categories/"
+                    component={Categories}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/categories/create"
+                    component={CreateCategory}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/categories/edit/:id"
+                    component={EditCategory}
+                    exact
+                />
 
-            {/* brands */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/brands/"
-                component={Brands}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/brands/create"
-                component={CreateBrand}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/brands/edit/:id"
-                component={EditBrand}
-                exact
-            />
+                {/* brands */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/brands/"
+                    component={Brands}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/brands/create"
+                    component={CreateBrand}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/brands/edit/:id"
+                    component={EditBrand}
+                    exact
+                />
 
-            {/* products */}
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/products/"
-                component={Products}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/products/create"
-                component={CreateProduct}
-                exact
-            />
-            <ProtectedRoute
-                authLoading={props.authLoading}
-                path="/catalog/products/edit/:id"
-                component={EditProduct}
-                exact
-            />
+                {/* products */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/products/"
+                    component={Products}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/products/create"
+                    component={CreateProduct}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/products/edit/:id"
+                    component={EditProduct}
+                    exact
+                />
 
-            <Route path="**" component={PageNotFound} />
-        </Switch>
+                <Route path="**" component={PageNotFound} />
+            </Switch>
+        </React.Fragment>
     );
 }

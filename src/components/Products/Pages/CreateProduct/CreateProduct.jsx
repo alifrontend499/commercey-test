@@ -35,8 +35,6 @@ import { getBrands, cancelGetBrandsApi } from 'utlis/Apis/Brands_API'
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
-import { animateScroll as scroll } from "react-scroll";
-
 function CreateProduct(props) {
     // error and success messages
     const SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS = "Please make sure that all the required fields are filled"
