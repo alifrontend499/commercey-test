@@ -6,9 +6,6 @@ import AllRoutes from 'routes/AllRoutes'
 // bootstrap
 import { Spinner } from 'react-bootstrap'
 
-// scroll to top
-import ScrollToTop from './ScrollToTop';
-
 // redux
 import { connect } from 'react-redux'
 
@@ -86,9 +83,6 @@ function AppRoot(props) {
                 ) : (
                     // IF USER IS NOT AUTHENTICATED
                     <React.Fragment>
-                        {/* SCROLL TO TOP WHEN ROUTE CHANGES */}
-                        <ScrollToTop />
-
                         {/* ALL ROUTES */}
                         <AllRoutes authLoading={authLoading} />
                     </React.Fragment>

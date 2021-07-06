@@ -7,9 +7,18 @@
     }
 
     /* SIZES */
+    // sm
     &.heading-sm {
         .app-heading {
             font-size: 20px;
+            font-weight: 500;
+        }
+    }
+
+    /* md */
+    &.heading-md {
+        .app-heading {
+            font-size: 25px;
             font-weight: 500;
         }
     }

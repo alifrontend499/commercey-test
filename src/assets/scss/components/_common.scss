@@ -41,10 +41,10 @@
 
 // app main content
 .app-main-content {
-    height: 100vh;
+    // height: 100vh;
     margin-left: $appLeftBarWidth;
-    overflow: auto;
-    @include transition;
+    // overflow: auto;
+    // @include transition;
 }
 .app-left-menu.shrunk + .app-main-content {
     margin-left: $appLeftBarWidthWhenShrunked;
@@ -82,6 +82,8 @@
         padding: 12px;
         border-bottom: 1px solid $borderColor__light !important;
         color: $text__light-color;
+        line-height: normal;
+        vertical-align: top;
     }
     th {
         font-weight: 600;

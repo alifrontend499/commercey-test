@@ -92,6 +92,9 @@ function Categories(props) {
 
             const resData = res.data
 
+            // scroll the page to the top
+            window.scrollTo(0, 0)
+
             // if request succesfull
             if (resData && resData.success) {
                 // setting pagination links

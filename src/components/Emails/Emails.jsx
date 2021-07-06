@@ -91,6 +91,9 @@ function Emails(props) {
 
             const resData = res.data
 
+            // scroll the page to the top
+            window.scrollTo(0, 0)
+
             // if request succesfull
             if (resData && resData.success) {
                 // setting pagination links
@@ -167,9 +170,9 @@ function Emails(props) {
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
-                const deletedEmail = res.data
+                const deletedData = res.data
                 // if delete succesfully
-                if (deletedEmail.success) {
+                if (deletedData.success) {
                     // updating emails state after deleting an email.
                     const filtersEmailsList = emails.filter(item => item.template_id !== emailId)
 
@@ -186,7 +189,7 @@ function Emails(props) {
                 }
 
                 // if some error while deleting
-                if (deletedEmail.error) {
+                if (deletedData.error) {
                     console.log(ERROR_WHILE_DELETING_EMAIL, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();

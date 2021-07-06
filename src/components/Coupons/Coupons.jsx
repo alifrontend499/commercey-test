@@ -5,21 +5,21 @@ import { connect } from 'react-redux'
 
 // bootstrap
 import {
-    Container,
+    Container
 } from 'react-bootstrap'
 
-// users styles
-import "./styles/users-styles.scss"
+// coupons styles
+import "./styles/coupons-styles.scss"
 
-// user table
-import UserTableTopBar from './includes/UserTable/UserTableTopBar'
-import UserTable from './includes/UserTable/UserTable'
+// coupons table
+import CouponsTableTopBar from './includes/CouponsTable/CouponsTableTopBar'
+import CouponsTable from './includes/CouponsTable/CouponsTable'
 
 // react toastify
 import { toast } from 'react-toastify';
 
 // APIs
-import { getUsers, deleteUser } from 'utlis/Apis/AdminUsers_API'
+import { getCoupons, deleteCoupon } from 'utlis/Apis/Coupons_API'
 
 // section loading
 import SectionLoading from 'utlis/helpers/SectionLoading/SectionLoading'
@@ -33,45 +33,43 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
-// messages
-import {
-    ERROR_WHILE_FETCHING_USER,
-    USER_DELETED_SUCCESSFULLY,
-    NO_USER_FOUND_DELETING_USER,
-    ERROR_WHILE_DELETING_USER
-} from 'utlis/AppMessages/AppMessages'
-
-function Users(props) {
+function Coupons(props) {
     // messages
-
+    const ERROR_WHILE_FETCHING_COUPONS = "Unable to load Coupons. please try again."
+    const ERROR_WHILE_DELETING_COUPON = "No detail found"
+    const COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully."
+    const UNKNOWN_ERROR = "Unknown error occured. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const editColumnsType = "dropdown"  // dropdown or modal
 
     // refs
 
     // states
-    const [users, setUsers] = useState([])
+    const [coupons, setCoupons] = useState([])
     const [loading, setLoading] = useState(false)
 
     const [allCheckboxSelected, setAllCheckboxesSelected] = useState(false)
+    const [paginationLinks, setPaginationLinks] = useState([])
 
-    const [column__User, setColumn__User] = useState(true)
-    const [column__Email, setColumn__Email] = useState(true)
-    const [column__Type, setColumn__Type] = useState(true)
-    const [column__TwoFactors, setColumn__TwoFactors] = useState(true)
-    const [column__LastActive, setColumn__LastActive] = useState(true)
-    const [column__Status, setColumn__Status] = useState(true)
+    const [column__CouponCode, setColumn__CouponCode] = useState(true)
+    const [column__CouponFor, setColumn__CouponFor] = useState(true)
+    const [column__CouponDiscountPercent, setColumn__CouponDiscountPercent] = useState(true)
+    const [column__CouponDiscountValue, setColumn__CouponDiscountValue] = useState(true)
+    const [column__CouponExpiryDate, setColumn__CouponExpiryDate] = useState(true)
+    const [column__CouponFreeShipping, setColumn__CouponFreeShipping] = useState(true)
+    const [column__CouponStatus, setColumn__CouponStatus] = useState(true)
+    const [column__CouponSingleUse, setColumn__CouponSingleUse] = useState(true)
+    const [column__CouponSingleUsePerUser, setColumn__CouponSingleUsePerUser] = useState(true)
 
     const [sectionLoadingVisible, setSectionLoadingVisible] = useState(false)
-
-    const [paginationLinks, setPaginationLinks] = useState([])
 
     const [searchQuery, setSearchQuery] = useState("")
 
     let query = useQuery();
 
-    // useEffect: getting users data
+    // useEffect: getting coupons data
     useEffect(() => {
         let page = query.get('page')
         let keyword = query.get('keyword')
@@ -80,7 +78,7 @@ function Users(props) {
         let URLParams = `${(keyword) ? "keyword=" + keyword + "&" : ""}${page ? "page=" + page : ""}`
 
         // enabling loading types based on the data present or not
-        if (users && users.length) {
+        if (coupons && coupons.length) {
             // enabling section loading
             setSectionLoadingVisible(true)
         } else {
@@ -88,13 +86,15 @@ function Users(props) {
             setLoading(true)
         }
 
-        // getting admin users data
-        getUsers(props.currentUser.userId, URLParams).then(res => {
+        // getting data
+        getCoupons(props.currentUser.userToken, URLParams).then(res => {
             // disabling section loading & loading
             setSectionLoadingVisible(false)
             setLoading(false)
 
             const resData = res.data
+
+            console.log("resData from coupons ", resData)
 
             // scroll the page to the top
             window.scrollTo(0, 0)
@@ -104,8 +104,8 @@ function Users(props) {
                 // setting pagination links
                 setPaginationLinks(resData.links)
 
-                // settings users
-                setUsers(resData.data)
+                // settings coupons
+                setCoupons(resData.data)
             }
 
             // if request is not succesfull
@@ -114,18 +114,22 @@ function Users(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_USER, {
-                    autoClose: 3000
+                toast.error(ERROR_WHILE_FETCHING_COUPONS, {
+                    autoClose: 3000,
+                    onClose: () => {
+                        // disabling loading
+                        setLoading(false)
+                    }
                 })
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log('err while getCoupons api ', err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_USER, {
+            toast.error(UNKNOWN_ERROR, {
                 autoClose: 3000,
                 onClose: () => {
                     // disabling section loading & loading
@@ -134,14 +138,13 @@ function Users(props) {
                 }
             })
         })
-
     }, [props])
 
     // selecting all the columns
     const handleSelectAllChange = (ev) => {
         const checkboxes = document.getElementsByClassName('all-checkboxes-selector-checkbox')
 
-        // checking the checkbox and selecting all checkboxes
+        // checking the checkbox and selecting all the checkboxes
         setAllCheckboxesSelected(!allCheckboxSelected)
         setTimeout(() => {
             if (ev.target.checked) {
@@ -160,65 +163,63 @@ function Users(props) {
     };
 
     // deleting
-    const handleDelete = (ev, userId) => {
+    const handleDelete = (ev, couponId) => {
         ev.preventDefault()
-        // dismissing all the previous toasts first
-        toast.dismiss();
+        var confirmation = window.confirm('Are you sure you want to delete this coupon?')
 
-        var confirmation = window.confirm('Are you sure you want to delete this user?')
-        // if user confirms action
         if (confirmation) {
-            // enabling the global loading
+            // enabling the section loading
             setSectionLoadingVisible(true)
 
-            // deleting user from the api
-            deleteUser(props.currentUser.userId, userId).then(res => {
-                // disabling the global loading
+            // deleting data from the api
+            deleteCoupon(props.currentUser.userToken, couponId).then(res => {
+                // disabling the section loading
                 setSectionLoadingVisible(false)
 
                 const deletedData = res.data
-                // if user delete succesfully
+                // if delete succesfully
                 if (deletedData.success) {
-                    // updating user state after deleting a user.
-                    const filtersUsersList = users.filter(item => item.login_id !== userId)
+                    // updating coupons state after deleting an coupons.
+                    const filteredList = coupons.filter(item => item.coupon_id !== couponId)
 
-                    // settings updated users
-                    setUsers(filtersUsersList)
+                    // settings updated coupons
+                    setCoupons(filteredList)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(USER_DELETED_SUCCESSFULLY, {
+                    toast.success(COUPON_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
                         }
                     })
                 }
 
-                // if user delete succesfully
+                // if some error while deleting
                 if (deletedData.error) {
+                    console.log(ERROR_WHILE_DELETING_COUPON, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(NO_USER_FOUND_DELETING_USER, {
+                    toast.error(ERROR_WHILE_DELETING_COUPON, {
                         autoClose: 2500,
-                        onClose: () => {
-                        }
                     })
                 }
+
             }).catch(err => {
-                // disabling the global loading
+                console.log('err while getCoupons api ', err.message)
+
+                // disabling the section loading
                 setSectionLoadingVisible(false)
 
-                console.log('err ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_DELETING_USER, {
+                toast.error(UNKNOWN_ERROR, {
                     autoClose: 3000,
                     onClose: () => {
                     }
@@ -240,7 +241,7 @@ function Users(props) {
             setSearchQuery(searchQueryValue)
 
             // redirecting to products with search data
-            props.history.push(`/settings/users?keyword=${searchQueryValue}&page=1`)
+            props.history.push(`/catalog/coupons?keyword=${searchQueryValue}&page=1`)
         }
 
         // if serch query does not have length
@@ -249,18 +250,18 @@ function Users(props) {
             setSearchQuery("")
 
             // redirecting to products with search data
-            props.history.push(`/settings/users?page=1`)
+            props.history.push(`/catalog/coupons?page=1`)
         }
     }, 500)
 
     return (
-        <section id="app-users" className="st-def-mar-TB">
+        <section id="app-coupons" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-users">
+                <div className="app-coupons">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper d-flex mb-2">
                         {/* heading */}
-                        <p className="app-heading text-capitalize">users</p>
+                        <p className="app-heading text-capitalize">coupons</p>
                     </div>
 
                     {/* CONTENT WRAPPER */}
@@ -270,45 +271,55 @@ function Users(props) {
                             <div className="app-card-content bg-white border st-border-light st-default-rounded-block mb-3">
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
-                                    <UserTableTopBar
+                                    <CouponsTableTopBar
+                                        editColumnsType={editColumnsType}
 
-                                        column__User={column__User}
-                                        column__Email={column__Email}
-                                        column__Type={column__Type}
-                                        column__TwoFactors={column__TwoFactors}
-                                        column__LastActive={column__LastActive}
-                                        column__Status={column__Status}
+                                        column__CouponCode={column__CouponCode}
+                                        column__CouponFor={column__CouponFor}
+                                        column__CouponDiscountPercent={column__CouponDiscountPercent}
+                                        column__CouponDiscountValue={column__CouponDiscountValue}
+                                        column__CouponExpiryDate={column__CouponExpiryDate}
+                                        column__CouponFreeShipping={column__CouponFreeShipping}
+                                        column__CouponStatus={column__CouponStatus}
+                                        column__CouponSingleUse={column__CouponSingleUse}
+                                        column__CouponSingleUsePerUser={column__CouponSingleUsePerUser}
 
-                                        setColumn__User={bool => setColumn__User(bool)}
-                                        setColumn__Email={bool => setColumn__Email(bool)}
-                                        setColumn__Type={bool => setColumn__Type(bool)}
-                                        setColumn__TwoFactors={bool => setColumn__TwoFactors(bool)}
-                                        setColumn__LastActive={bool => setColumn__LastActive(bool)}
-                                        setColumn__Status={bool => setColumn__Status(bool)}
+                                        setColumn__CouponCode={setColumn__CouponCode}
+                                        setColumn__CouponFor={setColumn__CouponFor}
+                                        setColumn__CouponDiscountPercent={setColumn__CouponDiscountPercent}
+                                        setColumn__CouponDiscountValue={setColumn__CouponDiscountValue}
+                                        setColumn__CouponExpiryDate={setColumn__CouponExpiryDate}
+                                        setColumn__CouponFreeShipping={setColumn__CouponFreeShipping}
+                                        setColumn__CouponStatus={setColumn__CouponStatus}
+                                        setColumn__CouponSingleUse={setColumn__CouponSingleUse}
+                                        setColumn__CouponSingleUsePerUser={setColumn__CouponSingleUsePerUser}
 
                                         handleSearchChange={handleSearchChange}
                                     />
                                 </div>
 
                                 {/* table */}
-                                <div className="st-listing-table users-table">
-                                    <UserTable
+                                <div className="st-listing-table coupons-table">
+                                    <CouponsTable
                                         allCheckboxSelected={allCheckboxSelected}
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
-                                        column__User={column__User}
-                                        column__Email={column__Email}
-                                        column__Type={column__Type}
-                                        column__TwoFactors={column__TwoFactors}
-                                        column__LastActive={column__LastActive}
-                                        column__Status={column__Status}
+                                        column__CouponCode={column__CouponCode}
+                                        column__CouponFor={column__CouponFor}
+                                        column__CouponDiscountPercent={column__CouponDiscountPercent}
+                                        column__CouponDiscountValue={column__CouponDiscountValue}
+                                        column__CouponExpiryDate={column__CouponExpiryDate}
+                                        column__CouponFreeShipping={column__CouponFreeShipping}
+                                        column__CouponStatus={column__CouponStatus}
+                                        column__CouponSingleUse={column__CouponSingleUse}
+                                        column__CouponSingleUsePerUser={column__CouponSingleUsePerUser}
 
                                         loadingCount={loadingCount}
                                         loading={loading}
 
-                                        users={users}
+                                        coupons={coupons}
 
-                                        handleDelete={(ev, userId) => handleDelete(ev, userId)}
+                                        handleDelete={(ev, id) => handleDelete(ev, id)}
                                     />
 
                                     {
@@ -317,7 +328,6 @@ function Users(props) {
                                             <SectionLoading />
                                         )
                                     }
-
                                 </div>
                             </div>
 
@@ -325,12 +335,12 @@ function Users(props) {
                             <div className="pagination-container d-flex justify-content-end">
                                 <Pagination
                                     searchQuery={searchQuery}
-                                    routeName={"/settings/users"}
+                                    routeName={"/catalog/coupons"}
                                     paginationLinks={paginationLinks}
                                 />
                             </div>
-
                         </div>
+
                     </div>
                 </div>
             </Container>
@@ -347,8 +357,8 @@ const getDataFromStore = state => {
 
 // const dispatchActionsToProps = dispatch => {
 //     return {
-//         setGlobalLoading: bool => dispatch(setGlobalLoading(bool)),
+//         functionsData: (prop) => dispatch(functionsData(prop)),
 //     }
 // }
 
-export default connect(getDataFromStore, null)(Users)
+export default connect(getDataFromStore, null)(Coupons)

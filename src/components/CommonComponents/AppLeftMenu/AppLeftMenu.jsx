@@ -232,6 +232,16 @@ function AppLeftMenu(props) {
                                         Brands
                                     </NavLink>
                                 </div>
+
+                                {/* SUB NAV ITEM */}
+                                <div className="alm_sub-nav-item">
+                                    <NavLink
+                                        to="/catalog/coupons"
+                                        activeClassName="opened"
+                                        className="alm_sub-nav-link text-decoration-none d-flex align-items-center">
+                                        Coupons
+                                    </NavLink>
+                                </div>
                             </div>
                         )
                     }

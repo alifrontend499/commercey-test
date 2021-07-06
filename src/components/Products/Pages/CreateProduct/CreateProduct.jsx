@@ -35,6 +35,9 @@ import { getBrands, cancelGetBrandsApi } from 'utlis/Apis/Brands_API'
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// helpers
+import { isInViewport } from 'utlis/helpers/Common/CommonHelperFunctions'
+
 function CreateProduct(props) {
     // error and success messages
     const SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS = "Please make sure that all the required fields are filled"
@@ -339,8 +342,6 @@ function CreateProduct(props) {
         }
     }
 
-    const [scrollPosition, setPosition] = useState(0);
-
     // scrolling action for tabs
     useEffect(() => {
         window.addEventListener('scroll', handleWindowScroll, true)
@@ -350,12 +351,19 @@ function CreateProduct(props) {
     }, [])
 
     function handleWindowScroll() {
+        // console.log("window.pageYOffset ", window.scrollY)
+        // tabs cards
         const tabElems = document.querySelectorAll('.pfc-content > .inner > .app-card')
-        let linkToBeActive = ""
-        console.log("ev ", this)
         tabElems && tabElems.forEach(item => {
-            if (item.offsetTop === 0) {
-                console.log('item ', item)
+            if (isInViewport(item)) {
+                const elem = document.querySelector(`.pfc-left-bar .frac > [data-target="#${item.getAttribute('id')}"]`)
+                const otherElems = document.querySelectorAll(".pfc-left-bar .frac > a")
+
+                // removing class from other links
+                otherElems && otherElems.forEach(item => item.classList.remove('active'))
+
+                // adding class to clicked link
+                elem.classList.add('active')
             }
         })
     }
@@ -410,7 +418,7 @@ function CreateProduct(props) {
 
                     {/* app card : bottom-bar */}
                     <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
-                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block d-flex align-items-center justify-content-end">
+                        <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                             <Link to="/catalog/products" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                 Cancel
                             </Link>

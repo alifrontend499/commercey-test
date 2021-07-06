@@ -30,6 +30,10 @@ import Products from "components/Products";
 import CreateProduct from "components/Products/Pages/CreateProduct";
 import EditProduct from "components/Products/Pages/EditProduct";
 
+import Coupons from "components/Coupons";
+import CreateCoupon from "components/Coupons/Pages/CreateCoupon";
+import EditCoupon from "components/Coupons/Pages/EditCoupon";
+
 // page not found
 import PageNotFound from "components/PageNotFound";
 
@@ -162,6 +166,26 @@ export default function AllRoutes(props) {
                     authLoading={props.authLoading}
                     path="/catalog/products/edit/:id"
                     component={EditProduct}
+                    exact
+                />
+
+                {/* coupons */}
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/coupons/"
+                    component={Coupons}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/coupons/create"
+                    component={CreateCoupon}
+                    exact
+                />
+                <ProtectedRoute
+                    authLoading={props.authLoading}
+                    path="/catalog/coupons/edit/:id"
+                    component={EditCoupon}
                     exact
                 />
 

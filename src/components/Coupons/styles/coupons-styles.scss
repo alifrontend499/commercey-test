@@ -1,0 +1,21 @@
+// IMPORTANT SCSS FILES
+@import "/src/assets/scss/components/variables";
+@import "/src/assets/scss/components/mixins";
+
+// coupons
+.app-coupons__create-details,
+.app-coupons__edit-details {
+    padding-bottom: 90px;
+    position: relative;
+    .action-btns {
+        position: absolute;
+        bottom: 0;
+        // left: $appLeftBarWidth;
+        // width: calc(100% - #{$appLeftBarWidth});
+        left: 0;
+        width: 100%;
+    }
+}
+.app-coupons__edit-details {
+    
+}

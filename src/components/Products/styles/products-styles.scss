@@ -6,7 +6,7 @@
 .app-products__create-product,
 .app-products__edit-product {
     .product-form-container {
-        margin-bottom: 50px;
+        margin-bottom: 150px;
         .pfc-left-bar {
             width: 180px;
             margin-left: -5px;
@@ -28,15 +28,15 @@
                 padding: 1px 0 1px 5px;
                 border-left: 2px solid transparent;
                 margin-bottom: 10px;
-                font-size: 15px;
+                font-size: 16px;
                 color: $text__light-color;
                 @include transition;
                 .icon {
                     margin-top: 4px;
                 }
                 &:hover,
-                &:active,
-                &:focus,
+                // &:active,
+                // &:focus,
                 &.active {
                     color: $primary-color;
                     border-color: $primary-color;
@@ -62,13 +62,14 @@
     }
 
     .action-btns {
+        border-radius: 0;
         position: fixed;
         bottom: 0;
-        left: $appLeftBarWidthWhenShrunked + 25;
-        width: calc(100% - (#{$appLeftBarWidthWhenShrunked} + (30px * 2)));
+        left: $appLeftBarWidthWhenShrunked;
+        width: calc(100% - (#{$appLeftBarWidthWhenShrunked}));
         &.sidebar-expanded {
-            left: $appLeftBarWidth + 25;
-            width: calc(100% - (#{$appLeftBarWidth} + (30px * 2)));
+            left: $appLeftBarWidth;
+            width: calc(100% - (#{$appLeftBarWidth}));
         }
         .app-card-content {
             padding: 10px 15px;
