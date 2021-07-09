@@ -36,16 +36,19 @@ import { addCategories } from 'redux/actions/actionCatalog'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
-function Categories(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_CATEGORIES = "Unable to load Categories. please try again."
-    const ERROR_WHILE_DELETING_CATEGORY = "No detail found."
-    const CATEGORY_DELETED_SUCCESSFULLY = "Category deleted successfully."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again"
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_CATEGORIES,
+    ERROR_WHILE_DELETING_CATEGORY,
+    CATEGORY_DELETED_SUCCESSFULLY,
+    CONFIRMATION_BEFORE_DELETING_CATEGORY
+} from 'utlis/AppMessages/AppMessages'
 
-    // consts
+function Categories(props) {
+    // const
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
 
     // refs
 
@@ -114,22 +117,18 @@ function Categories(props) {
 
                 // showing the error message
                 toast.error(ERROR_WHILE_FETCHING_CATEGORIES, {
-                    autoClose: 3000,
-                    onClose: () => {
-                        // disabling loading
-                        setLoading(false)
-                    }
+                    autoClose: 3000
                 })
             }
         }).catch(err => {
-            console.log('err while getCategories api ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCategories `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(UNKNOWN_ERROR, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -165,8 +164,7 @@ function Categories(props) {
     // deleting
     const handleDelete = (ev, catId) => {
         ev.preventDefault()
-        console.log('catId ', catId)
-        var confirmation = window.confirm('Are you sure you want to delete this category?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_CATEGORY)
 
         if (confirmation) {
             // enabling the section loading
@@ -191,9 +189,7 @@ function Categories(props) {
 
                     // showing the error message
                     toast.success(CATEGORY_DELETED_SUCCESSFULLY, {
-                        autoClose: 2500,
-                        onClose: () => {
-                        }
+                        autoClose: 2500
                     })
                 }
 
@@ -210,19 +206,17 @@ function Categories(props) {
                 }
 
             }).catch(err => {
-                // disabling the section loading
-                setSectionLoadingVisible(false)
-
-                // console.log('err ', err)
-                console.log('err while deleteCategory api ', err.message)
+                console.log(`${ERROR_WHILE__NAME} deleteCategory `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
+                        // disabling the section loading
+                        setSectionLoadingVisible(false)
                     }
                 })
             })
@@ -273,8 +267,6 @@ function Categories(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <CategoriesTableTopBar
-                                        editColumnsType={editColumnsType}
-
                                         column__CategoryName={column__CategoryName}
                                         column__CategoryImg={column__CategoryImg}
                                         column__CategoryParentCategory={column__CategoryParentCategory}

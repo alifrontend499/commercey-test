@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function EditCategory__CategoryDetails(props) {
+export default function CreateCategory__CategoryDetails(props) {
     const { parentCategories } = props
     return (
         <React.Fragment>

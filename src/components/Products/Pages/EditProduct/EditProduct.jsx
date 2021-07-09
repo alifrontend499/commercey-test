@@ -38,13 +38,19 @@ import { getBrands, cancelGetBrandsApi } from 'utlis/Apis/Brands_API'
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// helpers
+import { isInViewport } from 'utlis/helpers/Common/CommonHelperFunctions'
+
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    PRODUCT_UPDATED_SUCCESSFULLY,
+    ERROR_WHILE_UPDATING_PRODUCT,
+    ERROR_WHILE_GETTING_PRODUCT_DETAILS,
+} from 'utlis/AppMessages/AppMessages'
+
 function EditProduct(props) {
-    // error and success messages
-    const SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS = "Please make sure that all the required fields are filled"
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
-    const PRODUCT_UPDATED_SUCCESSFULLY = "Product Updated successfully."
-    const ERROR_WHILE_ADDING_PRODUCT = "Error occured!! please check if all the required fields are filled correctly."
-    const ERROR_WHILE_GETTING_PRODUCT_DETAILS = "unable to get the user details. please try again"
 
     // refs
     const submitButtonRef = useRef(null)
@@ -145,7 +151,15 @@ function EditProduct(props) {
                 console.log('Error occured while loading parent categories!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCategories `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
+            })
         })
 
         return () => {
@@ -170,7 +184,15 @@ function EditProduct(props) {
                 console.log('Error occured while loading brands!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getBrands `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
+            })
         })
 
         return () => {
@@ -251,17 +273,29 @@ function EditProduct(props) {
 
                 // // if request is not succeed
                 if (prodDetRes.error) {
-                    console.log('Error occured while getting product details!', res)
+                    console.log(ERROR_WHILE_GETTING_PRODUCT_DETAILS, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
                     toast.error(ERROR_WHILE_GETTING_PRODUCT_DETAILS, {
-                        autoClose: 3000,
+                        autoClose: 3000
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} getProductDetails `, err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
+
+                // showing the error message
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
+                    onClose: () => {
+                        // disabling the global loading
+                        props.setGlobalLoading(false)
+                    }
+                })
             })
 
             return () => {
@@ -326,7 +360,6 @@ function EditProduct(props) {
                     toast.success(PRODUCT_UPDATED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
-
                             // redirecting to users
                             // props.history.push('/catalog/products', {
                             //     shouldReload: true
@@ -337,25 +370,25 @@ function EditProduct(props) {
 
                 // if request is not succeed
                 if (addingData.error) {
-                    console.log(ERROR_WHILE_ADDING_PRODUCT, res)
+                    console.log(ERROR_WHILE_UPDATING_PRODUCT, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_ADDING_PRODUCT, {
+                    toast.error(ERROR_WHILE_UPDATING_PRODUCT, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} editProduct `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -367,16 +400,6 @@ function EditProduct(props) {
                 })
             })
 
-        } else {
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS, {
-                autoClose: 2500,
-                onClose: () => {
-                }
-            })
         }
     }
 
@@ -404,6 +427,52 @@ function EditProduct(props) {
     const getHTML_editorResultShortDesc = (data) => {
         // short description
         setShortDescription(data)
+    }
+
+    // products left tab links click
+    const handleTabLinkClick = (ev, target) => {
+        ev.preventDefault()
+        const targetElem = document.querySelector(target)
+        const elem = document.querySelector(`.pfc-left-bar .frac > [data-target="${target}"]`)
+        const otherElems = document.querySelectorAll(".pfc-left-bar .frac > a")
+
+        if (targetElem) {
+            // removing class from other links
+            otherElems && otherElems.forEach(item => item.classList.remove('active'))
+
+            // adding class to clicked link
+            elem.classList.add('active')
+
+            // scrolling into element
+            targetElem.scrollIntoView()
+        }
+    }
+
+    // scrolling action for tabs
+    useEffect(() => {
+        window.addEventListener('scroll', handleWindowScroll, true)
+        return () => {
+            window.removeEventListener('scroll', handleWindowScroll, true)
+        }
+    }, [])
+
+    // handle window scroll
+    function handleWindowScroll() {
+        // console.log("window.pageYOffset ", window.scrollY)
+        // tabs cards
+        const tabElems = document.querySelectorAll('.pfc-content > .inner > .app-card')
+        tabElems && tabElems.forEach(item => {
+            if (isInViewport(item)) {
+                const elem = document.querySelector(`.pfc-left-bar .frac > [data-target="#${item.getAttribute('id')}"]`)
+                const otherElems = document.querySelectorAll(".pfc-left-bar .frac > a")
+
+                // removing class from other links
+                otherElems && otherElems.forEach(item => item.classList.remove('active'))
+
+                // adding class to clicked link
+                elem.classList.add('active')
+            }
+        })
     }
 
     return (
@@ -440,6 +509,7 @@ function EditProduct(props) {
                                 <ProductLeftBar
                                     formik={formik}
                                     parentProps={props}
+                                    handleTabLinkClick={(ev, target) => handleTabLinkClick(ev, target)}
                                 />
 
                                 {/* content view */}

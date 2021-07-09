@@ -35,11 +35,15 @@ import { getCategories, cancelGetCategoriesApi, addCategory } from 'utlis/Apis/C
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    CATEGORY_ADDED_SUCCESSFULLY,
+    ERROR_WHILE_CREATING_CATEGORY
+} from 'utlis/AppMessages/AppMessages'
+
 function CreateCategory(props) {
-    // error and success messages
-    const CATEGORY_ADDED_SUCCESSFULLY = "Category created successfully."
-    const ERROR_WHILE_CREATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
-    const UNKNOWN_ERROR = "unknown error occured. please try again"
 
     // refs
     const submitButtonRef = useRef(null)
@@ -47,15 +51,6 @@ function CreateCategory(props) {
     // states
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
-
-    const [categoryName, setCategoryName] = useState("")
-    const [status, setStatus] = useState("")
-    const [description, setDescription] = useState("")
-    const [parentCategoryName, setParentCategoryName] = useState("")
-    const [metaTitle, setMetaTitle] = useState("")
-    const [metaKeyword, setMetaKeyword] = useState("")
-    const [metaDescription, setMetaDescription] = useState("")
-    const [image, setImage] = useState("")
 
     const [parentCategories, setParentCategories] = useState([])
 
@@ -75,7 +70,15 @@ function CreateCategory(props) {
                 console.log('Error occured while loading parent categories!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCategories `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -86,13 +89,14 @@ function CreateCategory(props) {
 
     // initial form values
     const initialCreateFormValues = {
-        categoryName,
-        status,
-        parentCategoryName,
-        metaTitle,
-        metaKeyword,
-        metaDescription,
-        image,
+        categoryName: "",
+        status: "",
+        parentCategoryName: "",
+        description: "",
+        metaTitle: "",
+        metaKeyword: "",
+        metaDescription: "",
+        image: "",
     }
 
     // handle form validations
@@ -100,6 +104,7 @@ function CreateCategory(props) {
         categoryName: Yup.string().required('This field is required'),
         status: Yup.string(),
         parentCategoryName: Yup.string(),
+        description: Yup.string(),
         metaTitle: Yup.string(),
         metaKeyword: Yup.string(),
         metaDescription: Yup.string(),
@@ -119,9 +124,9 @@ function CreateCategory(props) {
             // saving the data in the database
             const dataToBeSaved = {
                 category_name: values.categoryName,
-                description: description,
                 status: values.status,
                 parent_id: values.parentCategoryName,
+                description: values.description,
                 meta_title: values.metaTitle,
                 meta_keywords: values.metaKeyword,
                 meta_description: values.metaDescription,
@@ -133,42 +138,41 @@ function CreateCategory(props) {
                 // disabling global loading
                 setGlobalLoading(false)
 
-                // disbling the button and enabling loading
-                setCreateButtonDisable(false)
-                setCreateButtonLoading(false)
-
                 const addingData = res.data
 
                 // if request is success
                 if (addingData.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
-                    // redirecting to users
-                    props.history.push('/catalog/categories', {
-                        shouldReload: true
-                    })
-
-
                     // showing the error message
                     toast.success(CATEGORY_ADDED_SUCCESSFULLY, {
-                        autoClose: 2500,
+                        autoClose: 2000,
+                        onClose: () => {
+                            // redirecting to categories
+                            props.history.push('/catalog/categories', {
+                                shouldReload: true
+                            })
+                        }
                     })
-
-                    // empty the fields
-                    setCategoryName("")
-                    setDescription("")
-                    setStatus("")
-                    setParentCategoryName("")
-                    setMetaTitle("")
-                    setMetaKeyword("")
-                    setMetaDescription("")
-                    setImage("")
                 }
 
                 // if request is not succeed
                 if (addingData.error) {
                     console.log(ERROR_WHILE_CREATING_CATEGORY, res)
+
+                    // enabling the button and disabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
@@ -179,14 +183,14 @@ function CreateCategory(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err while addCategory api ', err.message)
+                console.log(`${ERROR_WHILE__NAME} addCategory `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -218,8 +222,8 @@ function CreateCategory(props) {
 
     // html editor
     const getHTML_editorResult = (data) => {
-        // setting description
-        setDescription(data)
+        // setting the description value
+        formik.setFieldValue("description", data)
     }
 
     return (
@@ -271,7 +275,6 @@ function CreateCategory(props) {
                                     <Col xs={12} md={9} className="px-0">
                                         <CategoryDescriptionFields
                                             formik={formik}
-                                            defaultValue={description}
                                             getResult={getHTML_editorResult}
                                         />
                                     </Col>
@@ -296,14 +299,14 @@ function CreateCategory(props) {
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/categories" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(createButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
                                         disabled={createButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {
@@ -330,7 +333,8 @@ function CreateCategory(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

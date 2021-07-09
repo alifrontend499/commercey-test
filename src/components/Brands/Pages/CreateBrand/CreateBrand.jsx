@@ -33,12 +33,15 @@ import { addBrand } from 'utlis/Apis/Brands_API'
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    BRAND_ADDED_SUCCESSFULLY,
+    ERROR_WHILE_CREATING_BRAND,
+} from 'utlis/AppMessages/AppMessages'
+
 function CreateBrand(props) {
-    // error and success messages
-    const BRAND_ADDED_SUCCESSFULLY = "Brand created successfully."
-    const ERROR_WHILE_CREATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
-    
     // refs
     const submitButtonRef = useRef(null)
 
@@ -78,23 +81,30 @@ function CreateBrand(props) {
                 // disabling global loading
                 setGlobalLoading(false)
 
-                // disbling the button and enabling loading
-                setCreateButtonLoading(false)
-
                 const addingData = res.data
 
                 // if request is success
                 if (addingData.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
                     toast.success(BRAND_ADDED_SUCCESSFULLY, {
-                        autoClose: 2500,
+                        autoClose: 2000,
                         onClose: () => {
-                            // empty the fields
-                            setBrandName("")
-                            setCreateButtonDisable(false)
+                            // redirecting to brands
+                            props.history.push('/catalog/brands', {
+                                shouldReload: true
+                            })
                         }
                     })
                 }
@@ -102,6 +112,10 @@ function CreateBrand(props) {
                 // if request is not succeed
                 if (addingData.error) {
                     console.log(ERROR_WHILE_CREATING_BRAND, res)
+
+                    // enabling the button and disabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
@@ -116,14 +130,14 @@ function CreateBrand(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err while getBrandDetails api ', err.message)
+                console.log(`${ERROR_WHILE__NAME} addBrand `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -197,7 +211,7 @@ function CreateBrand(props) {
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(createButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
                                         disabled={createButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {

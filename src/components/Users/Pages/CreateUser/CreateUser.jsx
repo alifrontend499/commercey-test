@@ -40,17 +40,22 @@ import { getAdminGroups, cancelAdminUsersApi, createUser } from 'utlis/Apis/Admi
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    USER_ADDED_SUCCESSFULLY,
+    ERROR_WHILE_CREATING_USER,
+} from 'utlis/AppMessages/AppMessages'
+
 function CreateUser(props) {
-    // messages
-    const USER_CREATED_SUCCESSFULLY = "User has been created succesfully!"
-    const ERROR_WHILE_CREATING_USER = "Unable to create Users. please try again."
 
     // refs
     const submitButtonRef = useRef(null)
 
     // states
-    const [createUserButtonDisable, setCreateUserButtonDisable] = useState(false)
-    const [createUserButtonLoading, setCreateUserButtonLoading] = useState(false)
+    const [createButtonDisable, setCreateButtonDisable] = useState(false)
+    const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
     const [userFirstName, setUserFirstName] = useState("")
     const [userLastName, setUserLastName] = useState("")
@@ -76,10 +81,18 @@ function CreateUser(props) {
 
             // if there's some error
             if (adminGroups.error) {
-                console.log('Error occured!', res)
+                console.log('Error occured while loading admin groups!', res)
             }
         }).catch(err => {
-            console.log('err ', err)
+            console.log(`${ERROR_WHILE__NAME} getAdminGroups `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -115,8 +128,8 @@ function CreateUser(props) {
             setGlobalLoading(true)
 
             // enabling the button and enabling loading
-            setCreateUserButtonDisable(true)
-            setCreateUserButtonLoading(true)
+            setCreateButtonDisable(true)
+            setCreateButtonLoading(true)
 
             // saving the user in the database
             const userToBeSaved = {
@@ -127,34 +140,29 @@ function CreateUser(props) {
                 enable_two_factor: values.createUserTwoFactor,
             }
             createUser(props.currentUser.userToken, userToBeSaved).then(res => {
-                // disabling loading
-                setCreateUserButtonLoading(false)
-
                 // disabling global loading
                 setGlobalLoading(false)
 
-                const userCreated = res.data
+                const addingData = res.data
 
                 // if successfully created
-                if (userCreated.success) {
+                if (addingData.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing success message
-                    toast.success(USER_CREATED_SUCCESSFULLY, {
-                        autoClose: 3000,
+                    toast.success(USER_ADDED_SUCCESSFULLY, {
+                        autoClose: 2000,
                         onClose: () => {
-                            // enabling the button
-                            setCreateUserButtonDisable(false)
-
-                            // ressetting all the fields to default
-                            setUserFirstName("")
-                            setUserLastName("")
-                            setUserEmail("")
-                            setUserType("")
-                            setUserTwoFactor("")
-
                             // redirecting to users
                             props.history.push('/settings/users', {
                                 shouldReload: true
@@ -164,8 +172,13 @@ function CreateUser(props) {
                 }
 
                 // if some error
-                if (userCreated.error) {
-                    console.log("error while creating user ", res)
+                if (addingData.error) {
+                    console.log(ERROR_WHILE_CREATING_USER, res)
+
+                    // enabling the button and disabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
@@ -176,22 +189,21 @@ function CreateUser(props) {
                 }
 
             }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} createUser `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_CREATING_USER, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
 
                         // disbling the button and disbling loading
-                        setCreateUserButtonDisable(false)
-                        setCreateUserButtonLoading(false)
+                        setCreateButtonDisable(false)
+                        setCreateButtonLoading(false)
                     }
                 })
             })
@@ -1080,11 +1092,11 @@ function CreateUser(props) {
                                 </Link>
                                 <button
                                     type="submit"
-                                    className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                    disabled={createUserButtonDisable}
+                                    className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(createButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                    disabled={createButtonDisable}
                                     onClick={handleFormSubmission}>
                                     {
-                                        createUserButtonLoading ? (
+                                        createButtonLoading ? (
                                             <Spinner animation="border" size="sm" />
                                         ) : (
                                             <span>Create User</span>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 
 // redux
 import { connect } from 'react-redux'
@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 // bootstrap
 import {
     Container,
-    Col,
     Spinner
 } from 'react-bootstrap'
 
@@ -28,15 +27,15 @@ import { toast } from 'react-toastify';
 import CouponsFormView from './Includes/CouponsFormView'
 
 // APIs
-import { addBrand } from 'utlis/Apis/Brands_API'
+import { addCoupon } from 'utlis/Apis/Coupons_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
 function CreateCoupon(props) {
     // error and success messages
-    const BRAND_ADDED_SUCCESSFULLY = "Brand created successfully."
-    const ERROR_WHILE_CREATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
+    const COUPON_ADDED_SUCCESSFULLY = "Coupon created successfully."
+    const ERROR_WHILE_CREATING_COUPON = "Error occured!! please check if all the required fields are filled correctly."
     const UNKNOWN_ERROR = "Unknown error occured. please try again."
 
     // refs
@@ -46,38 +45,47 @@ function CreateCoupon(props) {
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
-    const [couponCode, setCouponCode] = useState("")
-    const [couponFor, setCouponFor] = useState("")
-    const [couponDiscountPercent, setCouponDiscountPercent] = useState("")
-    const [couponExpiryDate, setCouponExpiryDate] = useState("")
-    const [couponMinOrderAmount, setCouponMinOrderAmount] = useState("")
-    const [couponFreeShiping, setCouponFreeShiping] = useState(false)
-    const [couponStatus, setCouponStatus] = useState(false)
-    const [couponSingleUse, setCouponSingleUse] = useState(false)
-    const [couponSingleUsePerUser, setCouponSingleUsePerUser] = useState(false)
+    // const [couponCode, setCouponCode] = useState("")
+    // const [couponDiscountType, setCouponDiscountType] = useState("")
+    // const [couponDiscountPercent, setCouponDiscountPercent] = useState("")
+    // const [couponDiscountValue, setCouponDiscountValue] = useState("")
+    // const [couponExpiryDate, setCouponExpiryDate] = useState("")
+    // const [couponMinOrderAmount, setCouponMinOrderAmount] = useState("")
+    // const [couponFreeShiping, setCouponFreeShiping] = useState(false)
+    // const [couponStatus, setCouponStatus] = useState(false)
+    // const [couponSingleUse, setCouponSingleUse] = useState(false)
+    // const [couponSingleUsePerUser, setCouponSingleUsePerUser] = useState(false)
 
     // initial form values
     const initialCreateFormValues = {
-        couponCode,
-        couponFor,
-        couponDiscountPercent,
-        couponExpiryDate,
-        couponMinOrderAmount,
-        couponFreeShiping,
-        couponStatus,
-        couponSingleUse,
-        couponSingleUsePerUser,
+        couponCode: "",
+        couponDiscountType: "",
+        couponDiscountPercent: "",
+        couponDiscountValue: "",
+        couponExpiryDate: "",
+        couponMinOrderAmount: "",
+        couponStatus: "",
+        couponFreeShiping: false,
+        couponSingleUse: false,
+        couponSingleUsePerUser: false,
     }
 
     // handle form validations
     const createFormValidationSchema = Yup.object({
         couponCode: Yup.string().required('This field is required'),
-        couponFor: Yup.string().required('This field is required'),
-        couponDiscountPercent: Yup.string(),
+        couponDiscountType: Yup.string().required('This field is required'),
+        couponDiscountPercent: Yup.string().when('couponDiscountType', {
+            is: "percent",
+            then: Yup.string().required('This field is required')
+        }),
+        couponDiscountValue: Yup.string().when('couponDiscountType', {
+            is: "value",
+            then: Yup.string().required('This field is required')
+        }),
         couponExpiryDate: Yup.string().required('This field is required'),
         couponMinOrderAmount: Yup.string(),
         couponFreeShiping: Yup.string(),
-        couponStatus: Yup.bool(),
+        couponStatus: Yup.string(),
         couponSingleUse: Yup.bool(),
         couponSingleUsePerUser: Yup.bool(),
     })
@@ -94,44 +102,65 @@ function CreateCoupon(props) {
 
             // saving the data in the database
             const dataToBeSaved = {
-                brand_name: values.brandName,
+                coupon_code: values.couponCode,
+                discount_percent: values.couponDiscountPercent,
+                discount_value: values.couponDiscountValue,
+                expiry_date: values.couponExpiryDate,
+                minimum_order_amount: values.couponMinOrderAmount,
+                is_active: values.couponStatus,
+                free_shipping: values.couponFreeShiping,
+                single_use: values.couponSingleUse,
+                single_use_per_user: values.couponSingleUsePerUser,
             }
 
+            console.log("coupons data to be saved ", dataToBeSaved)
+
             // saving data
-            addBrand(props.currentUser.userToken, dataToBeSaved).then(res => {
+            addCoupon(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disabling global loading
                 setGlobalLoading(false)
-
-                // disbling the button and enabling loading
-                setCreateButtonLoading(false)
 
                 const addingData = res.data
 
                 // if request is success
                 if (addingData.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(BRAND_ADDED_SUCCESSFULLY, {
-                        autoClose: 2500,
+                    toast.success(COUPON_ADDED_SUCCESSFULLY, {
+                        autoClose: 2000,
                         onClose: () => {
-                            // empty the fields
-                            setCouponCode("")
-                            setCreateButtonDisable(false)
+                            // redirecting to coupons
+                            props.history.push('/catalog/coupons', {
+                                shouldReload: true
+                            })
                         }
                     })
                 }
 
                 // if request is not succeed
                 if (addingData.error) {
-                    console.log(ERROR_WHILE_CREATING_BRAND, res)
+                    console.log(ERROR_WHILE_CREATING_COUPON, res)
+
+                    // enabling the button and disabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_CREATING_BRAND, {
+                    toast.error(ERROR_WHILE_CREATING_COUPON, {
                         autoClose: 3000,
                         onClose: () => {
                             // enabling the button and disabling loading
@@ -140,7 +169,7 @@ function CreateCoupon(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err while getBrandDetails api ', err.message)
+                console.log('error while create category api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
@@ -177,6 +206,23 @@ function CreateCoupon(props) {
         submitButtonRef.current.click()
     }
 
+    // handle expiry date change
+    const handleDateChange = value => {
+        if (value) {
+            console.log("value ", value)
+            // const selectedDate = new Date(value)
+            // console.log("selectedDate ", selectedDate)
+            // let date = selectedDate.getDate()
+            // let month = selectedDate.getMonth() + 1
+            // let year = selectedDate.getFullYear()
+
+            // let finalDate = `${year}-${month}-${date}`
+
+            // setting the expiry date value in the hidden input
+            formik.setFieldValue("couponExpiryDate", value)
+        }
+    }
+
     return (
         <section id="app-blogs__create-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -199,6 +245,7 @@ function CreateCoupon(props) {
                             <CouponsFormView
                                 formik={formik}
                                 parentProps={props}
+                                handleDateChange={handleDateChange}
                             />
 
                             {/* app card : bottom-bar */}
@@ -209,7 +256,7 @@ function CreateCoupon(props) {
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(createButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
                                         disabled={createButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {

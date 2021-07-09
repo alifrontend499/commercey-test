@@ -33,16 +33,20 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
+// messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_EMAILS,
+    ERROR_WHILE_DELETING_EMAIL,
+    CONFIRMATION_BEFORE_DELETING_EMAIL,
+    EMAIL_DELETED_SUCCESSFULLY,
+} from 'utlis/AppMessages/AppMessages'
+
 function Emails(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_EMAILS = "Unable to load Email Templates. please try again."
-    const ERROR_WHILE_DELETING_EMAIL = "No detail found"
-    const UNKNOWN_ERROR = "Unable to delete the email. please try again."
-    const EMAIL_DELETED_SUCCESSFULLY = "Email template deleted successfully."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
 
     // refs
 
@@ -114,15 +118,14 @@ function Emails(props) {
                 })
             }
         }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getEmails `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_EMAILS, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -158,7 +161,7 @@ function Emails(props) {
     const handleDelete = (ev, emailId) => {
         ev.preventDefault()
 
-        var confirmation = window.confirm('Are you sure you want to delete this email?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_EMAIL)
 
         if (confirmation) {
             // enabling the section loading
@@ -203,19 +206,17 @@ function Emails(props) {
                 }
 
             }).catch(err => {
-                // disabling the section loading
-                setSectionLoadingVisible(false)
-
-                // console.log('err ', err)
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} deleteEmailTemplate `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
+                        // disabling the section loading
+                        setSectionLoadingVisible(false)
                     }
                 })
             })
@@ -266,8 +267,6 @@ function Emails(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <EmailsTableTopBar
-                                        editColumnsType={editColumnsType}
-
                                         column__TemplateName={column__TemplateName}
                                         column__Subject={column__Subject}
                                         column__Event={column__Event}

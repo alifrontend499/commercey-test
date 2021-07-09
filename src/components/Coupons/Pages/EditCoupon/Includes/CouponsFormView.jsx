@@ -9,7 +9,7 @@ import {
 import DetailsFields from './FormFields__Details'
 
 export default function CouponsFormView(props) {
-    const { formik, parentProps } = props
+    const { formik, parentProps, handleDateChange } = props
 
     return (
         <div className="form-content">
@@ -25,7 +25,10 @@ export default function CouponsFormView(props) {
                     <Col xs={12} md={9} lg={8} className="px-0">
                         <DetailsFields
                             formik={formik}
+
                             parentProps={parentProps}
+
+                            handleDateChange={handleDateChange}
                         />
                     </Col>
                 </div>

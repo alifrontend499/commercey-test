@@ -13,7 +13,7 @@ export default function ProductLeftBar(props) {
                 <div className="frac">
                     <p className="lb-head">product information</p>
                     {/* link */}
-                    <a href="#tab_basicInfo" data-target="#tab_basicInfo" onClick={ev => handleTabLinkClick(ev, "#tab_basicInfo")} className={`lb-link d-flex justify-content-between ${(
+                    <a href="#tab_basicInfo" data-target="#tab_basicInfo" onClick={ev => handleTabLinkClick(ev, "#tab_basicInfo")} className={`lb-link d-flex justify-content-between active ${(
                         (formik.touched.productName && formik.errors.productName) ||
                         (formik.touched.SKU && formik.errors.SKU) ||
                         (formik.touched.status && formik.errors.status) ||
@@ -115,6 +115,46 @@ export default function ProductLeftBar(props) {
                             ) : null
                         }
                     </a>
+                </div>
+
+                {/* fraction */}
+                <div className="frac">
+                    <p className="lb-head">PRODUCT OPTIONS</p>
+                    {/* link */}
+                    <a href="#tab_basicInfo" data-target="#tab_basicInfo" onClick={ev => handleTabLinkClick(ev, "#tab_basicInfo")} className={`lb-link d-flex justify-content-between ${(
+                        (formik.touched.productName && formik.errors.productName) ||
+                        (formik.touched.SKU && formik.errors.SKU) ||
+                        (formik.touched.status && formik.errors.status) ||
+                        (formik.touched.categoryId && formik.errors.categoryId) ||
+                        (formik.touched.brandId && formik.errors.brandId)) ?
+                        "has-error" : ""
+                        }`}>
+                        <span>Variations</span>
+                        {/* icon */}
+                        {
+                            (
+                                (formik.touched.productName && formik.errors.productName) ||
+                                (formik.touched.SKU && formik.errors.SKU) ||
+                                (formik.touched.status && formik.errors.status) ||
+                                (formik.touched.categoryId && formik.errors.categoryId) ||
+                                (formik.touched.brandId && formik.errors.brandId)
+                            ) ? (
+                                <FeatherIcon
+                                    icon="alert-circle"
+                                    size="14"
+                                    className="icon ml-auto" />
+                            ) : null
+                        }
+                    </a>
+                    {/* link */}
+                    <a href="#tab_images" data-target="#tab_images" onClick={ev => handleTabLinkClick(ev, "#tab_images")} className={`lb-link d-flex justify-content-between`}>
+                        <span>Customizations</span>
+                    </a>
+                </div>
+
+                {/* fraction */}
+                <div className="frac">
+                    <p className="lb-head">SEO</p>
                     {/* link */}
                     <a href="#tab_seo" data-target="#tab_seo" onClick={ev => handleTabLinkClick(ev, "#tab_seo")} className={`lb-link d-flex justify-content-between ${(
                         (formik.touched.metaTitle && formik.errors.metaTitle) ||

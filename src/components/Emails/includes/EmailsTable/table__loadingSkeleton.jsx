@@ -22,6 +22,9 @@ function table__loadingSkeleton() {
                 <Skeleton count={1} height={20} />
             </td>
             <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
                 <div className="d-flex justify-content-end">
                     <div className="me-2">
                         <Skeleton

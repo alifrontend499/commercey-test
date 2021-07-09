@@ -154,3 +154,12 @@ https://draftjs.org/docs/getting-started
 ```
 npm install draft-js
 ```
+
+## `14. react day picker`
+for date picker
+
+https://react-day-picker.js.org/
+
+```
+npm install react-day-picker --save
+```

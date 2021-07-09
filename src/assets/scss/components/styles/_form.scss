@@ -20,7 +20,7 @@ $bottomGap: 20px;
     select,
     textarea {
         border-radius: $input__border-radius;
-        border-color: $defaultInputBorderColor;
+        border: 1px solid $defaultInputBorderColor;
         padding: 5px 15px;
         color: $text__dark-color;
         font-size: 15px;
@@ -268,11 +268,30 @@ $bottomGap: 20px;
             @include min_width($md-min) {
                 width: 180px;
             }
-
-
         }
         > .st-form-input-container {
             position: relative;
+        }
+    }
+
+    // date picker
+    .date-picker-container {
+        > input {
+        }
+    }
+
+    // no right arrows on input type number
+    &.no-arrows {
+        input[type="number"] {
+            /* Chrome, Safari, Edge, Opera */
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            /* Firefox */
+            -moz-appearance: textfield;
         }
     }
 }

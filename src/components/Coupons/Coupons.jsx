@@ -33,19 +33,21 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_COUPONS,
+    ERROR_WHILE_DELETING_COUPON,
+    CONFIRMATION_BEFORE_DELETING_COUPON,
+    COUPON_DELETED_SUCCESSFULLY,
+} from 'utlis/AppMessages/AppMessages'
+
 function Coupons(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_COUPONS = "Unable to load Coupons. please try again."
-    const ERROR_WHILE_DELETING_COUPON = "No detail found"
-    const COUPON_DELETED_SUCCESSFULLY = "Coupon deleted successfully."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
 
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
-
-    // refs
-
+    
     // states
     const [coupons, setCoupons] = useState([])
     const [loading, setLoading] = useState(false)
@@ -54,9 +56,9 @@ function Coupons(props) {
     const [paginationLinks, setPaginationLinks] = useState([])
 
     const [column__CouponCode, setColumn__CouponCode] = useState(true)
-    const [column__CouponFor, setColumn__CouponFor] = useState(true)
     const [column__CouponDiscountPercent, setColumn__CouponDiscountPercent] = useState(true)
     const [column__CouponDiscountValue, setColumn__CouponDiscountValue] = useState(true)
+    const [column__CouponMinOrderAmount, setColumn__CouponMinOrderAmount] = useState(true)
     const [column__CouponExpiryDate, setColumn__CouponExpiryDate] = useState(true)
     const [column__CouponFreeShipping, setColumn__CouponFreeShipping] = useState(true)
     const [column__CouponStatus, setColumn__CouponStatus] = useState(true)
@@ -123,14 +125,14 @@ function Coupons(props) {
                 })
             }
         }).catch(err => {
-            console.log('err while getCoupons api ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCoupons `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(UNKNOWN_ERROR, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -165,7 +167,7 @@ function Coupons(props) {
     // deleting
     const handleDelete = (ev, couponId) => {
         ev.preventDefault()
-        var confirmation = window.confirm('Are you sure you want to delete this coupon?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_COUPON)
 
         if (confirmation) {
             // enabling the section loading
@@ -179,6 +181,7 @@ function Coupons(props) {
                 const deletedData = res.data
                 // if delete succesfully
                 if (deletedData.success) {
+                    console.log("filteredList ", filteredList)
                     // updating coupons state after deleting an coupons.
                     const filteredList = coupons.filter(item => item.coupon_id !== couponId)
 
@@ -191,8 +194,6 @@ function Coupons(props) {
                     // showing the error message
                     toast.success(COUPON_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
-                        onClose: () => {
-                        }
                     })
                 }
 
@@ -209,19 +210,17 @@ function Coupons(props) {
                 }
 
             }).catch(err => {
-                console.log('err while getCoupons api ', err.message)
-
-                // disabling the section loading
-                setSectionLoadingVisible(false)
-
+                console.log(`${ERROR_WHILE__NAME} deleteCoupon `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
+                        // disabling the section loading
+                        setSectionLoadingVisible(false)
                     }
                 })
             })
@@ -272,12 +271,10 @@ function Coupons(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <CouponsTableTopBar
-                                        editColumnsType={editColumnsType}
-
                                         column__CouponCode={column__CouponCode}
-                                        column__CouponFor={column__CouponFor}
                                         column__CouponDiscountPercent={column__CouponDiscountPercent}
                                         column__CouponDiscountValue={column__CouponDiscountValue}
+                                        column__CouponMinOrderAmount={column__CouponMinOrderAmount}
                                         column__CouponExpiryDate={column__CouponExpiryDate}
                                         column__CouponFreeShipping={column__CouponFreeShipping}
                                         column__CouponStatus={column__CouponStatus}
@@ -285,9 +282,9 @@ function Coupons(props) {
                                         column__CouponSingleUsePerUser={column__CouponSingleUsePerUser}
 
                                         setColumn__CouponCode={setColumn__CouponCode}
-                                        setColumn__CouponFor={setColumn__CouponFor}
                                         setColumn__CouponDiscountPercent={setColumn__CouponDiscountPercent}
                                         setColumn__CouponDiscountValue={setColumn__CouponDiscountValue}
+                                        setColumn__CouponMinOrderAmount={setColumn__CouponMinOrderAmount}
                                         setColumn__CouponExpiryDate={setColumn__CouponExpiryDate}
                                         setColumn__CouponFreeShipping={setColumn__CouponFreeShipping}
                                         setColumn__CouponStatus={setColumn__CouponStatus}
@@ -305,9 +302,9 @@ function Coupons(props) {
                                         handleSelectAllChange={ev => handleSelectAllChange(ev)}
 
                                         column__CouponCode={column__CouponCode}
-                                        column__CouponFor={column__CouponFor}
                                         column__CouponDiscountPercent={column__CouponDiscountPercent}
                                         column__CouponDiscountValue={column__CouponDiscountValue}
+                                        column__CouponMinOrderAmount={column__CouponMinOrderAmount}
                                         column__CouponExpiryDate={column__CouponExpiryDate}
                                         column__CouponFreeShipping={column__CouponFreeShipping}
                                         column__CouponStatus={column__CouponStatus}

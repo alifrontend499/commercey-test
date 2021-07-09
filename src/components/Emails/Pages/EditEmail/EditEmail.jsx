@@ -39,12 +39,16 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 // html editor
 import HTML_Editor from 'utlis/helpers/HTML_Editor'
 
-function EditEmail(props) {
-    // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to load the email template. please try again."
-    const EMAIL_UPDATED_SUCCESSFULLY = "email template detail updated successfully."
-    const ERROR_WHILE_LOADING_EMAIL = "No detail found."
+// messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    EMAIL_UPDATED_SUCCESSFULLY,
+    ERROR_WHILE_UPDATING_EMAIL,
+    ERROR_WHILE_GETTING_EMAIL_DETAILS,
+} from 'utlis/AppMessages/AppMessages'
 
+function EditEmail(props) {
     // refs
     const submitButtonRef = useRef(null)
 
@@ -89,7 +93,15 @@ function EditEmail(props) {
                 console.log('Error occured while loading email events!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getEmailEvents `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -105,16 +117,15 @@ function EditEmail(props) {
         // if state with the email exists in the location
         if (locState) {
             const email = locState.emailDetails
-            setEmailTemplateId(email && email.template_id)
-            setEmailTemplateName(email && email.template_title)
-            setEmailEventTitle(email && email.event_id)
-            setEmailTo(email && email.send_email_to)
-            setEmailFrom(email && email.email_from)
-            setEmailSubject(email && email.email_subject)
-            setEmailCC(email && email.cc_email)
-            setEmailBCC(email && email.bcc_email)
-            setEmailContent(email && email.email_body)
-
+            setEmailTemplateId(email?.template_id)
+            setEmailTemplateName(email?.template_title)
+            setEmailEventTitle(email?.event_id)
+            setEmailTo(email?.send_email_to)
+            setEmailFrom(email?.email_from)
+            setEmailSubject(email?.email_subject)
+            setEmailCC(email?.cc_email)
+            setEmailBCC(email?.bcc_email)
+            setEmailContent(email?.email_body)
         }
     }, [props])
 
@@ -137,40 +148,41 @@ function EditEmail(props) {
 
                 // if request is success
                 if (email.success) {
-                    setEmailTemplateId(email.data && email.data.template_id)
-                    setEmailTemplateName(email.data && email.data.template_title)
-                    setEmailEventTitle(email.data && email.data.event_id)
-                    setEmailTo(email.data && email.data.send_email_to)
-                    setEmailFrom(email.data && email.data.email_from)
-                    setEmailSubject(email.data && email.data.email_subject)
-                    setEmailCC(email.data && email.data.cc_email)
-                    setEmailBCC(email.data && email.data.bcc_email)
-                    setEmailContent(email.data && email.data.email_body)
+                    setEmailTemplateId(email?.data?.template_id)
+                    setEmailTemplateName(email?.data?.template_title)
+                    setEmailEventTitle(email?.data?.event_id)
+                    setEmailTo(email?.data?.send_email_to)
+                    setEmailFrom(email?.data?.email_from)
+                    setEmailSubject(email?.data?.email_subject)
+                    setEmailCC(email?.data?.cc_email)
+                    setEmailBCC(email?.data?.bcc_email)
+                    setEmailContent(email?.data?.email_body)
                 }
                 // if request is not succeed
                 if (email.error) {
-                    console.log(ERROR_WHILE_LOADING_EMAIL, res)
+                    console.log(ERROR_WHILE_GETTING_EMAIL_DETAILS, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_LOADING_EMAIL, {
+                    toast.error(ERROR_WHILE_GETTING_EMAIL_DETAILS, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
-
-                // disabling the global loading
-                props.setGlobalLoading(false)
+                console.log(`${ERROR_WHILE__NAME} getEmailDetails `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
+                    onClose: () => {
+                        // disabling the global loading
+                        props.setGlobalLoading(false)
+                    }
                 })
             })
 
@@ -224,7 +236,7 @@ function EditEmail(props) {
             setEditEmailButtonLoading(true)
 
             // saving the email in the database
-            const emailToBeSaved = {
+            const dataToBeSaved = {
                 template_id: emailTemplateId,
                 template_title: values.emailTemplateName,
                 email_subject: values.emailSubject,
@@ -237,7 +249,7 @@ function EditEmail(props) {
             }
 
             // updating the user details from the database
-            editEmailTemplate(props.currentUser.userToken, emailToBeSaved).then(res => {
+            editEmailTemplate(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disabling global loading
                 setGlobalLoading(false)
 
@@ -261,24 +273,24 @@ function EditEmail(props) {
 
                 // if some error
                 if (emailUpdated.error) {
-                    console.log(SOME_ERROR_OCCURED, res)
+                    console.log(ERROR_WHILE_UPDATING_EMAIL, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(SOME_ERROR_OCCURED, {
+                    toast.error(ERROR_WHILE_UPDATING_EMAIL, {
                         autoClose: 3000
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} editEmailTemplate `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)

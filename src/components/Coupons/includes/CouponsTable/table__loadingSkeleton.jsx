@@ -7,7 +7,28 @@ function table__loadingSkeleton() {
     return (
         <tr>
             <td>
-                <Skeleton count={1} height={20} width={20} />
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
+            </td>
+            <td>
+                <Skeleton count={1} height={20} />
             </td>
             <td>
                 <Skeleton count={1} height={20} />

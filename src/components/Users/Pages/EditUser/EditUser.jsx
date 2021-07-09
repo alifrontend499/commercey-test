@@ -40,12 +40,16 @@ import { getUserDetails, cancelGetUserDetailsApi, getAdminGroups, cancelAdminUse
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
-function EditUser(props) {
-    // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to load the User. please try again."    
-    const USER_UPDATED_SUCCESSFULLY = "User detail updated successfully."
-    const ERROR_WHILE_UPDATING_USER = "No detail found."
+// messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    USER_UPDATED_SUCCESSFULLY,
+    ERROR_WHILE_UPDATING_USER,
+    ERROR_WHILE_GETTING_USER_DETAILS
+} from 'utlis/AppMessages/AppMessages'
 
+function EditUser(props) {
     // refs
     const submitButtonRef = useRef(null)
 
@@ -69,7 +73,7 @@ function EditUser(props) {
     useEffect(() => {
         const userIdFromUrl = props.match.params;
         // setting user id from the url
-        if(userIdFromUrl) {
+        if (userIdFromUrl) {
             setUserId(userIdFromUrl.id)
         }
 
@@ -79,15 +83,23 @@ function EditUser(props) {
 
             // if there's no error
             if (adminGroupsData.success) {
-                setAdminGroups(adminGroupsData.data)
+                setAdminGroups(adminGroupsData.data.data)
             }
 
             // if there's some error
             if (adminGroups.error) {
-                console.log('Error occured!', res)
+                console.log('Error occured while loading admin groups!', res)
             }
         }).catch(err => {
-            console.log('err ', err)
+            console.log(`${ERROR_WHILE__NAME} getAdminGroups `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -100,15 +112,14 @@ function EditUser(props) {
     useEffect(() => {
         const locState = props.location.state ?? props.location.state
         // if state with the user exists in the location
-        // console.log('locState ', locState)
         if (locState) {
             const user = locState.userDetails
-            setUserFirstName(user && user.first_name.toString())
-            setUserLastName(user && user.last_name.toString())
-            setUserEmail(user && user.email.toString())
-            setUserType(user && user.group_id.toString())
-            setUserTwoFactor(user && user.enable_two_factor.toString())
-            setUserStatus(user && user.user_status.toString())
+            setUserFirstName(user?.first_name?.toString() ?? "")
+            setUserLastName(user?.last_name?.toString() ?? "")
+            setUserEmail(user?.email?.toString() ?? "")
+            setUserType(user?.group_id?.toString() ?? "")
+            setUserTwoFactor(user?.enable_two_factor?.toString() ?? "")
+            setUserStatus(user?.user_status?.toString() ?? "")
         }
     }, [props])
 
@@ -116,7 +127,6 @@ function EditUser(props) {
     useEffect(() => {
         const locState = props.location.state ?? props.location.state
         // if state with the user exists in the location
-        // console.log('locState ', locState)
         if (!locState) {
             // enabling the global loading
             props.setGlobalLoading(true)
@@ -127,24 +137,44 @@ function EditUser(props) {
             // getting single user details
             getUserDetails(props.currentUser.userToken, userId).then(res => {
                 const user = res.data
+
                 // disabling the global loading
                 props.setGlobalLoading(false)
-
-                if (user) {
-                    setUserFirstName(user && user.first_name.toString())
-                    setUserLastName(user && user.last_name.toString().toString())
-                    setUserEmail(user && user.email.toString())
-                    setUserType(user && user.group_id.toString())
-                    setUserTwoFactor(user && user.enable_two_factor.toString())
-                    setUserStatus(user && user.user_status.toString())
+                // if request is success
+                if (user.success) {
+                    setUserFirstName(user?.data?.first_name?.toString() ?? "")
+                    setUserLastName(user?.data?.last_name?.toString().toString() ?? "")
+                    setUserEmail(user?.data?.email?.toString() ?? "")
+                    setUserType(user?.data?.group_id?.toString() ?? "")
+                    setUserTwoFactor(user?.data?.enable_two_factor?.toString() ?? "")
+                    setUserStatus(user?.data?.user_status?.toString() ?? "")
                 }
+
+                // if request is not succeed
+                if (user.error) {
+                    console.log(ERROR_WHILE_GETTING_USER_DETAILS, res)
+                    // dismissing all the previous toasts first
+                    toast.dismiss();
+
+                    // showing the error message
+                    toast.error(ERROR_WHILE_GETTING_USER_DETAILS, {
+                        autoClose: 3000,
+                    })
+                }
+
             }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} getUserDetails `, err.message)
+
+                // dismissing all the previous toasts first
+                toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
+                    onClose: () => {
+                        // disabling the global loading
+                        props.setGlobalLoading(false)
+                    }
                 })
             })
 
@@ -189,7 +219,7 @@ function EditUser(props) {
             setEditUserButtonLoading(true)
 
             // saving the user in the database
-            const userToBeSaved = {
+            const dataToBeSaved = {
                 login_id: userId,
                 first_name: values.editUserFirstName,
                 last_name: values.editUserLastName,
@@ -199,10 +229,8 @@ function EditUser(props) {
                 user_status: values.editUserStatus,
             }
 
-            // console.log("userToBeSaved ", userToBeSaved)
-
             // updating the user details from the database
-            editUser(props.currentUser.userToken, userToBeSaved).then(res => {
+            editUser(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disbling the button and enabling loading
                 setEditUserButtonDisable(false)
                 setEditUserButtonLoading(false)
@@ -236,18 +264,15 @@ function EditUser(props) {
                     })
                 }
 
-                // console.log('edited user results ', userEdited)
-
             }).catch(err => {
-                // console.log('err ', err)
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} editUser `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -258,8 +283,6 @@ function EditUser(props) {
                     }
                 })
             })
-
-
         }
     }
 

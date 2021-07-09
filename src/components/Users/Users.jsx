@@ -35,16 +35,15 @@ import useQuery from 'utlis/CustomHooks/useQueryHook'
 
 // messages
 import {
-    ERROR_WHILE_FETCHING_USER,
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_USERS,
+    ERROR_WHILE_DELETING_USER,
+    CONFIRMATION_BEFORE_DELETING_USER,
     USER_DELETED_SUCCESSFULLY,
-    NO_USER_FOUND_DELETING_USER,
-    ERROR_WHILE_DELETING_USER
 } from 'utlis/AppMessages/AppMessages'
 
 function Users(props) {
-    // messages
-
-
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -114,19 +113,19 @@ function Users(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_FETCHING_USER, {
+                toast.error(ERROR_WHILE_FETCHING_USERS, {
                     autoClose: 3000
                 })
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getUsers `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_USER, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -165,7 +164,7 @@ function Users(props) {
         // dismissing all the previous toasts first
         toast.dismiss();
 
-        var confirmation = window.confirm('Are you sure you want to delete this user?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_USER)
         // if user confirms action
         if (confirmation) {
             // enabling the global loading
@@ -190,37 +189,35 @@ function Users(props) {
 
                     // showing the error message
                     toast.success(USER_DELETED_SUCCESSFULLY, {
-                        autoClose: 2500,
-                        onClose: () => {
-                        }
+                        autoClose: 2500
                     })
                 }
 
                 // if user delete succesfully
                 if (deletedData.error) {
+                    console.log(ERROR_WHILE_DELETING_USER, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(NO_USER_FOUND_DELETING_USER, {
+                    toast.error(ERROR_WHILE_DELETING_USER, {
                         autoClose: 2500,
                         onClose: () => {
                         }
                     })
                 }
             }).catch(err => {
-                // disabling the global loading
-                setSectionLoadingVisible(false)
-
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} deleteUser `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(ERROR_WHILE_DELETING_USER, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
+                        // disabling the global loading
+                        setSectionLoadingVisible(false)
                     }
                 })
             })

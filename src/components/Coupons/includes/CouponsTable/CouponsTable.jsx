@@ -54,16 +54,6 @@ export default function CouponsTable(props) {
                     }
 
                     {
-                        props.column__CouponFor && (
-                            <th>
-                                <p className="text-capitalize">
-                                    for
-                                </p>
-                            </th>
-                        )
-                    }
-
-                    {
                         props.column__CouponDiscountPercent && (
                             <th>
                                 <p className="text-capitalize">
@@ -84,20 +74,20 @@ export default function CouponsTable(props) {
                     }
 
                     {
-                        props.column__CouponExpiryDate && (
+                        props.column__CouponMinOrderAmount && (
                             <th>
                                 <p className="text-capitalize">
-                                    expiry date
+                                    minimum order amount
                                 </p>
                             </th>
                         )
                     }
 
                     {
-                        props.column__CouponFreeShipping && (
-                            <th>
+                        props.column__CouponExpiryDate && (
+                            <th width={100}>
                                 <p className="text-capitalize">
-                                    free shipping
+                                    expiry date
                                 </p>
                             </th>
                         )
@@ -108,6 +98,16 @@ export default function CouponsTable(props) {
                             <th>
                                 <p className="text-capitalize">
                                     status
+                                </p>
+                            </th>
+                        )
+                    }
+
+                    {
+                        props.column__CouponFreeShipping && (
+                            <th>
+                                <p className="text-capitalize">
+                                    free shipping
                                 </p>
                             </th>
                         )
@@ -180,16 +180,6 @@ export default function CouponsTable(props) {
                             }
 
                             {
-                                props.column__CouponFor && (
-                                    <td className="column__CouponFor">
-                                        <p className="">
-                                            {item.coupon_for}
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
                                 props.column__CouponDiscountPercent && (
                                     <td className="column__CouponDiscountPercent">
                                         <p className="">
@@ -203,7 +193,17 @@ export default function CouponsTable(props) {
                                 props.column__CouponDiscountValue && (
                                     <td className="column__CouponDiscountValue">
                                         <p className="">
-                                            {item.discount_value}
+                                            ${item.discount_value}
+                                        </p>
+                                    </td>
+                                )
+                            }
+
+                            {
+                                props.column__CouponMinOrderAmount && (
+                                    <td className="column__CouponMinOrderAmount">
+                                        <p className="">
+                                            {item.minimum_order_amount}
                                         </p>
                                     </td>
                                 )
@@ -214,19 +214,9 @@ export default function CouponsTable(props) {
                                     <td className="column__CouponExpiryDate">
                                         <p className="">
                                             <Moment
-                                                format="MMMM DD, YYYY hh:mm a"
+                                                format="MMM DD, YYYY"
                                                 date={item.expiry_date}
                                             />
-                                        </p>
-                                    </td>
-                                )
-                            }
-
-                            {
-                                props.column__CouponFreeShipping && (
-                                    <td className="column__CouponFreeShipping">
-                                        <p className="">
-                                            {item.free_shipping ? "Active" : 'Inactive'}
                                         </p>
                                     </td>
                                 )
@@ -237,6 +227,16 @@ export default function CouponsTable(props) {
                                     <td className="column__CouponStatus">
                                         <p className="">
                                             {item.is_active ? "Active" : 'Inactive'}
+                                        </p>
+                                    </td>
+                                )
+                            }
+
+                            {
+                                props.column__CouponFreeShipping && (
+                                    <td className="column__CouponFreeShipping">
+                                        <p className="">
+                                            {item.free_shipping ? "Active" : 'Inactive'}
                                         </p>
                                     </td>
                                 )

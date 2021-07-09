@@ -73,24 +73,6 @@ export default function CouponsTableTopBar(props) {
                                 </span>
                                 <span className="text ms-2">Code</span>
                             </label>
-
-                            {/* label item */}
-                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="d-none"
-                                    defaultChecked={props.column__CouponFor}
-                                    onChange={ev => {
-                                        (ev.target.checked) ? props.setColumn__CouponFor(true) : props.setColumn__CouponFor(false)
-                                    }} />
-                                <span className="box d-flex align-items-center justify-content-center border">
-                                    <FeatherIcon
-                                        icon="check"
-                                        size="15"
-                                        className="icon position-relative" />
-                                </span>
-                                <span className="text ms-2">For</span>
-                            </label>
                             
                             {/* label item */}
                             <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
@@ -126,6 +108,24 @@ export default function CouponsTableTopBar(props) {
                                         className="icon position-relative" />
                                 </span>
                                 <span className="text ms-2">Discount Value</span>
+                            </label>
+
+                            {/* label item */}
+                            <label className="dropdown-item st-checkbox d-inline-flex cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    className="d-none"
+                                    defaultChecked={props.column__CouponMinOrderAmount}
+                                    onChange={ev => {
+                                        (ev.target.checked) ? props.setColumn__CouponMinOrderAmount(true) : props.setColumn__CouponMinOrderAmount(false)
+                                    }} />
+                                <span className="box d-flex align-items-center justify-content-center border">
+                                    <FeatherIcon
+                                        icon="check"
+                                        size="15"
+                                        className="icon position-relative" />
+                                </span>
+                                <span className="text ms-2">Minimum Order Amount</span>
                             </label>
 
                             {/* label item */}

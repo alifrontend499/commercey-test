@@ -4,7 +4,7 @@ export default function FormProduct__Price(props) {
     return (
         <React.Fragment>
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.costPrice && props.formik.errors.costPrice) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.costPrice && props.formik.errors.costPrice) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Cost Price
                     {/* <span>*</span> */}
@@ -28,7 +28,7 @@ export default function FormProduct__Price(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.price && props.formik.errors.price) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.price && props.formik.errors.price) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Price
                     <span>*</span>
@@ -52,7 +52,7 @@ export default function FormProduct__Price(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.promoPrice && props.formik.errors.promoPrice) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.promoPrice && props.formik.errors.promoPrice) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Promo Price
                     {/* <span>*</span> */}

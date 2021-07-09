@@ -7,15 +7,28 @@
 .app-categories__edit-details {
     padding-bottom: 90px;
     position: relative;
+    // .action-btns {
+    //     position: absolute;
+    //     bottom: 0;
+    //     // left: $appLeftBarWidth;
+    //     // width: calc(100% - #{$appLeftBarWidth});
+    //     left: 0;
+    //     width: 100%;
+    // }
     .action-btns {
-        position: absolute;
+        border-radius: 0;
+        position: fixed;
         bottom: 0;
-        // left: $appLeftBarWidth;
-        // width: calc(100% - #{$appLeftBarWidth});
-        left: 0;
-        width: 100%;
+        left: $appLeftBarWidthWhenShrunked;
+        width: calc(100% - (#{$appLeftBarWidthWhenShrunked}));
+        &.sidebar-expanded {
+            left: $appLeftBarWidth;
+            width: calc(100% - (#{$appLeftBarWidth}));
+        }
+        .app-card-content {
+            padding: 10px 15px;
+        }
     }
 }
 .app-categories__edit-details {
-    
 }

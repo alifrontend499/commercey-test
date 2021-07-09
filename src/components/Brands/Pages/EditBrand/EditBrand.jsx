@@ -36,13 +36,16 @@ import { editBrand, getBrandDetails, cancelGetBrandDetailsApi } from 'utlis/Apis
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    BRAND_UPDATED_SUCCESSFULLY,
+    ERROR_WHILE_UPDATING_BRAND,
+    ERROR_WHILE_GETTING_BRAND_DETAILS,
+} from 'utlis/AppMessages/AppMessages'
+
 function EditBrand(props) {
-    // error and success messages
-    const BRAND_UPDATED_SUCCESSFULLY = "Brand updated successfully."
-    const ERROR_WHILE_UPDATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
-    const ERROR_WHILE_LOADING_BRAND = "No detail found."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
-    
     // refs
     const submitButtonRef = useRef(null)
 
@@ -98,28 +101,29 @@ function EditBrand(props) {
                 }
                 // if request is not succeed
                 if (brand.error) {
-                    console.log(ERROR_WHILE_LOADING_BRAND, res)
+                    console.log(ERROR_WHILE_GETTING_BRAND_DETAILS, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_LOADING_BRAND, {
+                    toast.error(ERROR_WHILE_GETTING_BRAND_DETAILS, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err while getBrandDetails api ', err.message)
-
-                // disabling the global loading
-                props.setGlobalLoading(false)
+                console.log(`${ERROR_WHILE__NAME} getBrandDetails `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
+                    onClose: () => {
+                        // disabling the global loading
+                        props.setGlobalLoading(false)
+                    }
                 })
             })
 
@@ -194,14 +198,14 @@ function EditBrand(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err while editBrand api ', err.message)
+                console.log(`${ERROR_WHILE__NAME} editBrand `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)

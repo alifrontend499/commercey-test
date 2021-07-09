@@ -3,10 +3,6 @@ import React, { useState, useEffect } from 'react'
 // redux
 import { connect } from 'react-redux'
 
-import {
-    useLocation
-} from "react-router-dom";
-
 // bootstrap
 import {
     Container
@@ -37,18 +33,19 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
-function Products(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_PRODUCTS = "Unable to load Products. please try again."
-    const ERROR_WHILE_DELETING_PRODUCTS = "No detail found"
-    const PRODUCT_DELETED_SUCCESSFULLY = "Product template deleted successfully."
-    const UNKNOWN_ERROR = "Unable to delete the Product. please try again."
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_PRODUCTS,
+    ERROR_WHILE_DELETING_PRODUCTS,
+    CONFIRMATION_BEFORE_DELETING_PRODUCT,
+    PRODUCT_DELETED_SUCCESSFULLY,
+} from 'utlis/AppMessages/AppMessages'
 
+function Products(props) {
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
-
-    // refs
 
     // states
     const [products, setProducts] = useState([])
@@ -120,14 +117,14 @@ function Products(props) {
                 })
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getProducts `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(ERROR_WHILE_FETCHING_PRODUCTS, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -156,13 +153,12 @@ function Products(props) {
                 });
             }
         }, 50);
-
     };
 
     // deleting
     const handleDelete = (ev, prodId) => {
         ev.preventDefault()
-        var confirmation = window.confirm('Are you sure you want to delete this product?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_PRODUCT)
 
         if (confirmation) {
             // enabling the section loading
@@ -188,8 +184,6 @@ function Products(props) {
                     // showing the error message
                     toast.success(PRODUCT_DELETED_SUCCESSFULLY, {
                         autoClose: 2500,
-                        onClose: () => {
-                        }
                     })
                 }
 
@@ -204,8 +198,9 @@ function Products(props) {
                         autoClose: 2500,
                     })
                 }
-
             }).catch(err => {
+                console.log(`${ERROR_WHILE__NAME} deleteProduct `, err.message)
+
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
@@ -216,10 +211,8 @@ function Products(props) {
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
-                    onClose: () => {
-                    }
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500
                 })
             })
         }
@@ -269,8 +262,6 @@ function Products(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <ProductsTableTopBar
-                                        editColumnsType={editColumnsType}
-
                                         column__ProductName={column__ProductName}
                                         column__ProductImg={column__ProductImg}
                                         column__ProductSKU={column__ProductSKU}

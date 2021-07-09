@@ -38,28 +38,22 @@ import { getCategories, cancelGetCategoriesApi, getCategoryDetails, cancelGetCat
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
-function EditCategory(props) {
-    // error and success messages
-    const CATEGORY_UPDATED_SUCCESSFULLY = "Category updated successfully."
-    const ERROR_WHILE_UPDATING_CATEGORY = "Error occured!! please check if all the required fields are filled correctly."
-    const ERROR_WHILE_LOADING_CATEGORY_DETAILS = "No detail found."
-    const UNKNOWN_ERROR = "unknown error occured. please try again"
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    CATEGORY_UPDATED_SUCCESSFULLY,
+    ERROR_WHILE_UPDATING_CATEGORY,
+    ERROR_WHILE_GETTING_CATEGORY_DETAILS,
+} from 'utlis/AppMessages/AppMessages'
 
+function EditCategory(props) {
     // refs
     const submitButtonRef = useRef(null)
 
     // states
     const [editButtonDisable, setEditButtonDisable] = useState(false)
     const [editButtonLoading, setEditButtonLoading] = useState(false)
-
-    const [categoryName, setCategoryName] = useState("")
-    const [status, setStatus] = useState("")
-    const [description, setDescription] = useState("")
-    const [parentCategoryName, setParentCategoryName] = useState("")
-    const [metaTitle, setMetaTitle] = useState("")
-    const [metaKeyword, setMetaKeyword] = useState("")
-    const [metaDescription, setMetaDescription] = useState("")
-    const [image, setImage] = useState("")
 
     const [parentCategories, setParentCategories] = useState([])
 
@@ -87,7 +81,15 @@ function EditCategory(props) {
                 console.log('Error occured while loading parent categories!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCategories `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -103,14 +105,17 @@ function EditCategory(props) {
         // if state with the category exists in the location
         if (locState) {
             const category = locState.categoryDetails
-            setCategoryName((category && category.category_name) && category.category_name.toString())
-            setStatus((category && category.status) && category.status.toString())
-            setDescription((category && category.description) && category.description.toString())
-            setParentCategoryName((category && category.parent_id) && category.parent_id.toString())
-            setMetaTitle((category && category.meta_title) && category.meta_title.toString())
-            setMetaKeyword((category && category.meta_keywords) && category.meta_keywords.toString())
-            setMetaDescription((category && category.meta_description) && category.meta_description.toString())
-            setImage((category && category.image) && category.image.toString())
+            setTimeout(() => {
+                // setting the fields values
+                formik.setFieldValue("categoryName", category?.category_name?.toString() ?? "")
+                formik.setFieldValue("status", category?.status?.toString() ?? "")
+                formik.setFieldValue("description", category?.description?.toString() ?? "")
+                formik.setFieldValue("parentCategoryName", category?.parent_id?.toString() ?? "")
+                formik.setFieldValue("metaTitle", category?.meta_title?.toString() ?? "")
+                formik.setFieldValue("metaKeyword", category?.meta_keywords?.toString() ?? "")
+                formik.setFieldValue("metaDescription", category?.meta_description?.toString() ?? "")
+                formik.setFieldValue("image", category?.image?.toString() ?? "")
+            }, 0);
         }
     }, [props])
 
@@ -134,39 +139,41 @@ function EditCategory(props) {
                 // if request is success
                 if (category.success) {
                     const catData = category.data
-                    setCategoryName((catData && catData.category_name) && catData.category_name.toString())
-                    setStatus((catData && catData.status) && catData.status.toString())
-                    setDescription((catData && catData.description) && catData.description.toString())
-                    setParentCategoryName((catData && catData.parent_id) && catData.parent_id.toString())
-                    setMetaTitle((catData && catData.meta_title) && catData.meta_title.toString())
-                    setMetaKeyword((catData && catData.meta_keywords) && catData.meta_keywords.toString())
-                    setMetaDescription((catData && catData.meta_description) && catData.meta_description.toString())
-                    setImage((catData && catData.image) && catData.image.toString())
+                    // setting the fields values
+                    formik.setFieldValue("categoryName", catData?.category_name?.toString() ?? "")
+                    formik.setFieldValue("status", catData?.status?.toString() ?? "")
+                    formik.setFieldValue("description", catData?.description?.toString() ?? "")
+                    formik.setFieldValue("parentCategoryName", catData?.parent_id?.toString() ?? "")
+                    formik.setFieldValue("metaTitle", catData?.meta_title?.toString() ?? "")
+                    formik.setFieldValue("metaKeyword", catData?.meta_keywords?.toString() ?? "")
+                    formik.setFieldValue("metaDescription", catData?.meta_description?.toString() ?? "")
+                    formik.setFieldValue("image", catData?.image?.toString() ?? "")
                 }
                 // if request is not succeed
                 if (category.error) {
-                    console.log(ERROR_WHILE_LOADING_CATEGORY_DETAILS, res)
+                    console.log(ERROR_WHILE_GETTING_CATEGORY_DETAILS, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_LOADING_CATEGORY_DETAILS, {
+                    toast.error(ERROR_WHILE_GETTING_CATEGORY_DETAILS, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err while getCategoryDetails api ', err.message)
-
-                // disabling the global loading
-                props.setGlobalLoading(false)
+                console.log(`${ERROR_WHILE__NAME} getCategoryDetails `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
+                    onClose: () => {
+                        // disabling the global loading
+                        props.setGlobalLoading(false)
+                    }
                 })
             })
 
@@ -182,13 +189,14 @@ function EditCategory(props) {
 
     // initial form values
     const initialEditFormValues = {
-        categoryName,
-        status,
-        parentCategoryName,
-        metaTitle,
-        metaKeyword,
-        metaDescription,
-        image,
+        categoryName: "",
+        status: "",
+        parentCategoryName: "",
+        description: "",
+        metaTitle: "",
+        metaKeyword: "",
+        metaDescription: "",
+        image: "",
     }
 
     // handle form validations
@@ -196,6 +204,7 @@ function EditCategory(props) {
         categoryName: Yup.string().required('This field is required'),
         status: Yup.string(),
         parentCategoryName: Yup.string(),
+        description: Yup.string(),
         metaTitle: Yup.string(),
         metaKeyword: Yup.string(),
         metaDescription: Yup.string(),
@@ -204,8 +213,6 @@ function EditCategory(props) {
 
     // handle form submmision
     const onEditFormSubmit = values => {
-        console.log("onEditFormSubmit")
-
         if (values) {
             // enabling global loading
             setGlobalLoading(true)
@@ -218,7 +225,7 @@ function EditCategory(props) {
             const dataToBeSaved = {
                 category_id: categoryId,
                 category_name: values.categoryName,
-                description: description,
+                description: values.description,
                 status: values.status,
                 parent_id: values.parentCategoryName,
                 meta_title: values.metaTitle,
@@ -262,14 +269,14 @@ function EditCategory(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err while editCategory api ', err.message)
+                console.log(`${ERROR_WHILE__NAME} editCategory `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -301,8 +308,8 @@ function EditCategory(props) {
 
     // html editor
     const getHTML_editorResult = (data) => {
-        // setting description
-        setDescription(data)
+        // setting the description value
+        formik.setFieldValue("description", data)
     }
 
     return (
@@ -365,7 +372,6 @@ function EditCategory(props) {
                                     <Col xs={12} md={9} className="px-0">
                                         <CategoryDescriptionFields
                                             formik={formik}
-                                            defaultValue={description}
                                             getResult={getHTML_editorResult}
                                         />
                                     </Col>
@@ -390,15 +396,16 @@ function EditCategory(props) {
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/categories" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
 
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        // className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
                                         disabled={editButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {
@@ -425,7 +432,8 @@ function EditCategory(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

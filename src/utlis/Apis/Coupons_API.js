@@ -29,10 +29,19 @@ export async function getCoupons(token, query = "") {
 // add coupon
 export let cancelAddCouponApi;
 export async function addCoupon(token, couponData) {
+    console.log("coupon data in side api ", couponData)
     if (token, couponData) {
         const emails = await axios.post(apiUrl_forCoupons + "coupon",
             {
-                manufacturer_name: couponData.coupon_name,
+                coupon_code: couponData.coupon_code,
+                discount_percent: couponData.discount_percent,
+                discount_value: couponData.discount_value,
+                expiry_date: couponData.expiry_date,
+                minimum_order_amount: couponData.minimum_order_amount,
+                is_active: couponData.is_active,
+                free_shipping: couponData.free_shipping,
+                single_use: couponData.single_use,
+                single_use_per_user: couponData.single_use_per_user,
             },
             {
                 headers: {
@@ -77,7 +86,15 @@ export async function editCoupon(token, couponData) {
     if (token, couponData) {
         const emails = await axios.put(apiUrl_forCoupons + "coupon/" + couponData.coupon_id,
             {
-                manufacturer_name: couponData.coupon_name,
+                coupon_code: couponData.coupon_code,
+                discount_percent: couponData.discount_percent,
+                discount_value: couponData.discount_value,
+                expiry_date: couponData.expiry_date,
+                minimum_order_amount: couponData.minimum_order_amount,
+                is_active: couponData.is_active,
+                free_shipping: couponData.free_shipping,
+                single_use: couponData.single_use,
+                single_use_per_user: couponData.single_use_per_user,
             },
             {
                 headers: {

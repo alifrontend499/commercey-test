@@ -36,12 +36,15 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 // html editor
 import HTML_Editor from 'utlis/helpers/HTML_Editor'
 
-function CreateEmail(props) {
-    // error and success messages
-    const SOME_ERROR_OCCURED = "Unable to create the email template. please try again."
-    const EMAIL_CREATED_SUCCESSFULLY = "Email template created successfully."
-    const ERROR_WHILE_CREATING_EMAIL = "Error occured!! please check if all the required fields are filled correctly."
+// messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    EMAIL_ADDED_SUCCESSFULLY,
+    ERROR_WHILE_CREATING_EMAIL,
+} from 'utlis/AppMessages/AppMessages'
 
+function CreateEmail(props) {
     // refs
     const submitButtonRef = useRef(null)
 
@@ -76,8 +79,15 @@ function CreateEmail(props) {
                 console.log('Error occured while loading email events!', res)
             }
         }).catch(err => {
-            // console.log('err ', err)
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getEmailEvents `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500
+            })
         })
 
         return () => {
@@ -119,7 +129,7 @@ function CreateEmail(props) {
             setCreateButtonLoading(true)
 
             // saving the email in the database
-            const emailToBeSaved = {
+            const dataToBeSaved = {
                 template_title: values.emailTemplateName,
                 email_subject: values.emailSubject,
                 email_from: values.emailFrom,
@@ -131,36 +141,31 @@ function CreateEmail(props) {
             }
 
             // saving email template
-            addEmailTemplate(props.currentUser.userToken, emailToBeSaved).then(res => {
+            addEmailTemplate(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disabling global loading
                 setGlobalLoading(false)
-
-                // disbling the button and enabling loading
-                setCreateButtonDisable(false)
-                setCreateButtonLoading(false)
 
                 const addingEmail = res.data
 
                 // if request is success
                 if (addingEmail.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(EMAIL_CREATED_SUCCESSFULLY, {
-                        autoClose: 2500,
+                    toast.success(EMAIL_ADDED_SUCCESSFULLY, {
+                        autoClose: 2000,
                         onClose: () => {
-                            // empty the fields
-                            setEmailTemplateName("")
-                            setEmailEventTitle("")
-                            setEmailTo("")
-                            setEmailFrom("")
-                            setEmailSubject("")
-                            setEmailCC("")
-                            setEmailBCC("")
-                            setEmailContent("")
-
-                            // redirecting to users
+                            // redirecting to emails
                             props.history.push('/settings/emails', {
                                 shouldReload: true
                             })
@@ -172,6 +177,10 @@ function CreateEmail(props) {
                 if (addingEmail.error) {
                     console.log(ERROR_WHILE_CREATING_EMAIL, res)
 
+                    // enabling the button and disabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
@@ -181,14 +190,14 @@ function CreateEmail(props) {
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} getEmailEvents `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(SOME_ERROR_OCCURED, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -292,7 +301,7 @@ function CreateEmail(props) {
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(createButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
                                         disabled={createButtonDisable}
                                         onClick={handleFormSubmission}>
                                         {

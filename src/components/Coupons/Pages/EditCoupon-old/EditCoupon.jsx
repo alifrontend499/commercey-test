@@ -30,21 +30,17 @@ import { toast } from 'react-toastify';
 import CouponsFormView from './Includes/CouponsFormView'
 
 // APIs
-import { getCouponDetails, cancelGetCouponDetailsApi, editCoupon } from 'utlis/Apis/Coupons_API'
+import { addBrand } from 'utlis/Apis/Brands_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
 
-// app messages
-import {
-    UNKNOWN_ERROR_OCCURED,
-    ERROR_WHILE__NAME,
-    COUPON_UPDATED_SUCCESSFULLY,
-    ERROR_WHILE_UPDATING_COUPON,
-    ERROR_WHILE_GETTING_COUPON_DETAILS
-} from 'utlis/AppMessages/AppMessages'
-
 function EditCoupon(props) {
+    // error and success messages
+    const BRAND_ADDED_SUCCESSFULLY = "Brand edited successfully."
+    const ERROR_WHILE_CREATING_BRAND = "Error occured!! please check if all the required fields are filled correctly."
+    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+
     // refs
     const submitButtonRef = useRef(null)
 
@@ -53,28 +49,24 @@ function EditCoupon(props) {
     const [editButtonLoading, setEditButtonLoading] = useState(false)
 
     const [couponCode, setCouponCode] = useState("")
-    const [couponDiscountType, setCouponDiscountType] = useState("")
+    const [couponFor, setCouponFor] = useState("")
     const [couponDiscountPercent, setCouponDiscountPercent] = useState("")
-    const [couponDiscountValue, setCouponDiscountValue] = useState("")
     const [couponExpiryDate, setCouponExpiryDate] = useState("")
     const [couponMinOrderAmount, setCouponMinOrderAmount] = useState("")
-    const [couponStatus, setCouponStatus] = useState("")
     const [couponFreeShiping, setCouponFreeShiping] = useState(false)
+    const [couponStatus, setCouponStatus] = useState(false)
     const [couponSingleUse, setCouponSingleUse] = useState(false)
     const [couponSingleUsePerUser, setCouponSingleUsePerUser] = useState(false)
-
-    const [couponId, setCouponId] = useState("")
 
     // initial form values
     const initialEditFormValues = {
         couponCode,
-        couponDiscountType,
+        couponFor,
         couponDiscountPercent,
-        couponDiscountValue,
         couponExpiryDate,
         couponMinOrderAmount,
-        couponStatus,
         couponFreeShiping,
+        couponStatus,
         couponSingleUse,
         couponSingleUsePerUser,
     }
@@ -82,119 +74,15 @@ function EditCoupon(props) {
     // handle form validations
     const editFormValidationSchema = Yup.object({
         couponCode: Yup.string().required('This field is required'),
-        couponDiscountType: Yup.string().required('This field is required'),
-        couponDiscountPercent: Yup.string().when('couponDiscountType', {
-            is: "percent",
-            then: Yup.string().required('This field is required')
-        }),
-        couponDiscountValue: Yup.string().when('couponDiscountType', {
-            is: "value",
-            then: Yup.string().required('This field is required')
-        }),
+        couponFor: Yup.string().required('This field is required'),
+        couponDiscountPercent: Yup.string(),
         couponExpiryDate: Yup.string().required('This field is required'),
         couponMinOrderAmount: Yup.string(),
         couponFreeShiping: Yup.string(),
-        couponStatus: Yup.string(),
+        couponStatus: Yup.bool(),
         couponSingleUse: Yup.bool(),
         couponSingleUsePerUser: Yup.bool(),
     })
-
-    // getting coupon id from the url
-    useEffect(() => {
-        const idFromUrl = props.match.params;
-        // setting user id from the url
-        if (idFromUrl) {
-            setCouponId(idFromUrl.id)
-        }
-    }, [])
-
-    // getting coupon details from the location state 
-    useEffect(() => {
-        const locState = props.location.state ?? props.location.state
-        // if state with the coupon data exists in the location state
-        if (locState) {
-            const couponData = locState.couponDetails
-            // setting values
-            setCouponCode(couponData?.coupon_code ?? "")
-            // setCouponDiscountType(couponData?.something ?? "")
-            setCouponDiscountPercent(couponData?.discount_percent ?? "")
-            setCouponDiscountValue(couponData?.discount_value ?? "")
-            setCouponExpiryDate(couponData?.expiry_date ?? "")
-            setCouponMinOrderAmount(couponData?.minimum_order_amount ?? "")
-            setCouponStatus(couponData?.is_active ?? "")
-            setCouponFreeShiping(couponData?.free_shipping ? true : false ?? false)
-            setCouponSingleUse(couponData?.single_use ? true : false ?? false)
-            setCouponSingleUsePerUser(couponData?.single_use_per_user ? true : false ?? false)
-        }
-    }, [props])
-
-    // getting coupon details from the database with the id from the url
-    useEffect(() => {
-        const locState = props.location.state ?? props.location.state
-        // if state with the coupon data does not exist in the location state
-
-        if (!locState) {
-            // enabling the global loading
-            props.setGlobalLoading(true)
-
-            // getting the coupon from the database
-            const couponId = props.match.params.id ?? ""
-
-            // getting coupon details
-            getCouponDetails(props.currentUser.userToken, couponId).then(res => {
-                console.log("res ", res)
-                const couponData = res.data
-                // disabling the global loading
-                props.setGlobalLoading(false)
-
-                // if request is success
-                if (couponData.success) {
-                    // setting values
-                    setCouponCode(couponData?.data.coupon_code ?? "")
-                    // setCouponDiscountType(couponData?.data.something ?? "")
-                    setCouponDiscountPercent(couponData?.data.discount_percent ?? "")
-                    setCouponDiscountValue(couponData?.data.discount_value ?? "")
-                    setCouponExpiryDate(couponData?.data.expiry_date ?? "")
-                    setCouponMinOrderAmount(couponData?.data.minimum_order_amount ?? "")
-                    setCouponStatus(couponData?.data.is_active ?? "")
-                    setCouponFreeShiping(couponData?.data.free_shipping ? true : false ?? false)
-                    setCouponSingleUse(couponData?.data.single_use ? true : false ?? false)
-                    setCouponSingleUsePerUser(couponData?.data.single_use_per_user ? true : false ?? false)
-                }
-
-                // // if request is not succeed
-                if (couponData.error) {
-                    console.log(ERROR_WHILE_GETTING_COUPON_DETAILS, res)
-                    // dismissing all the previous toasts first
-                    toast.dismiss();
-
-                    // showing the error message
-                    toast.error(ERROR_WHILE_GETTING_COUPON_DETAILS, {
-                        autoClose: 3000,
-                    })
-                }
-            }).catch(err => {
-                console.log(`${ERROR_WHILE__NAME} getCouponDetails `, err.message)
-
-                // dismissing all the previous toasts first
-                toast.dismiss();
-
-                // showing the error message
-                toast.error(UNKNOWN_ERROR_OCCURED, {
-                    autoClose: 2500,
-                    onClose: () => {
-                        // disabling the global loading
-                        props.setGlobalLoading(false)
-                    }
-                })
-            })
-
-            return () => {
-                // canceling get coupon api when user leaves the component
-                cancelGetCouponDetailsApi()
-            }
-        }
-    }, [])
 
     // handle form submmision
     const onEditFormSubmit = values => {
@@ -208,25 +96,15 @@ function EditCoupon(props) {
 
             // saving the data in the database
             const dataToBeSaved = {
-                coupon_id: couponId,
-                coupon_code: values.couponCode,
-                discount_percent: values.couponDiscountPercent,
-                discount_value: values.couponDiscountValue,
-                expiry_date: values.couponExpiryDate,
-                minimum_order_amount: values.couponMinOrderAmount,
-                is_active: values.couponStatus,
-                free_shipping: values.couponFreeShiping,
-                single_use: values.couponSingleUse,
-                single_use_per_user: values.couponSingleUsePerUser,
+                brand_name: values.brandName,
             }
 
             // saving data
-            editCoupon(props.currentUser.userToken, dataToBeSaved).then(res => {
+            addBrand(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disabling global loading
                 setGlobalLoading(false)
 
-                // enabling the button and disabling loading
-                setEditButtonDisable(false)
+                // disbling the button and enabling loading
                 setEditButtonLoading(false)
 
                 const addingData = res.data
@@ -237,10 +115,11 @@ function EditCoupon(props) {
                     toast.dismiss();
 
                     // showing the error message
-                    toast.success(COUPON_UPDATED_SUCCESSFULLY, {
+                    toast.success(BRAND_ADDED_SUCCESSFULLY, {
                         autoClose: 2500,
                         onClose: () => {
-                            // enabling the edit button
+                            // empty the fields
+                            setCouponCode("")
                             setEditButtonDisable(false)
                         }
                     })
@@ -248,13 +127,13 @@ function EditCoupon(props) {
 
                 // if request is not succeed
                 if (addingData.error) {
-                    console.log(ERROR_WHILE_UPDATING_COUPON, res)
+                    console.log(ERROR_WHILE_CREATING_BRAND, res)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_UPDATING_COUPON, {
+                    toast.error(ERROR_WHILE_CREATING_BRAND, {
                         autoClose: 3000,
                         onClose: () => {
                             // enabling the button and disabling loading
@@ -263,14 +142,14 @@ function EditCoupon(props) {
                     })
                 }
             }).catch(err => {
-                console.log(`${ERROR_WHILE__NAME} editCoupon `, err.message)
+                console.log('err while getBrandDetails api ', err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR_OCCURED, {
-                    autoClose: 2500,
+                toast.error(UNKNOWN_ERROR, {
+                    autoClose: 3000,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -300,23 +179,6 @@ function EditCoupon(props) {
         submitButtonRef.current.click()
     }
 
-    // handle expiry date change
-    const handleDateChange = value => {
-        if (value) {
-            console.log("value ", value)
-            // const selectedDate = new Date(value)
-            // console.log("selectedDate ", selectedDate)
-            // let date = selectedDate.getDate()
-            // let month = selectedDate.getMonth() + 1
-            // let year = selectedDate.getFullYear()
-
-            // let finalDate = `${year}-${month}-${date}`
-
-            // setting the expiry date value in the hidden input
-            formik.setFieldValue("couponExpiryDate", value)
-        }
-    }
-
     return (
         <section id="app-blogs__edit-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
@@ -328,7 +190,7 @@ function EditCoupon(props) {
                                 icon="arrow-left"
                                 size="14"
                                 className="icon me-1" />
-                            <span>Back to coupons</span>
+                            <span>Back to Coupons</span>
                         </Link>
                     </div>
 
@@ -336,7 +198,7 @@ function EditCoupon(props) {
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
                         <p className="app-heading text-capitalize">Edit Coupon</p>
-                        <p className="app-desc">
+                        <p className="app-desc"> 
                             Edit a Coupon.
                         </p>
                     </div>
@@ -350,7 +212,6 @@ function EditCoupon(props) {
                             <CouponsFormView
                                 formik={formik}
                                 parentProps={props}
-                                handleDateChange={handleDateChange}
                             />
 
                             {/* app card : bottom-bar */}
@@ -368,7 +229,7 @@ function EditCoupon(props) {
                                             editButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
-                                                <span>Save Changes</span>
+                                                <span>Edit Coupon</span>
                                             )
                                         }
                                     </button>

@@ -33,16 +33,19 @@ import { debounce } from 'utlis/helpers/Common/CommonHelperFunctions'
 // custom hooks
 import useQuery from 'utlis/CustomHooks/useQueryHook'
 
-function Brands(props) {
-    // messages
-    const ERROR_WHILE_FETCHING_BRANDS = "Unable to load Brands. please try again."
-    const ERROR_WHILE_DELETING_BRAND = "No detail found"
-    const BRAND_DELETED_SUCCESSFULLY = "Brand deleted successfully."
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    ERROR_WHILE_FETCHING_BRANDS,
+    ERROR_WHILE_DELETING_BRAND,
+    CONFIRMATION_BEFORE_DELETING_BRAND,
+    BRAND_DELETED_SUCCESSFULLY,
+} from 'utlis/AppMessages/AppMessages'
 
+function Brands(props) {
     // consts
     const loadingCount = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    const editColumnsType = "dropdown"  // dropdown or modal
 
     // refs
 
@@ -101,6 +104,7 @@ function Brands(props) {
 
             // if request is not succesfull
             if (resData && resData.error) {
+                console.log(ERROR_WHILE_FETCHING_BRANDS, err)
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
@@ -114,14 +118,14 @@ function Brands(props) {
                 })
             }
         }).catch(err => {
-            console.log('err while getBrands api ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getBrands `, err.message)
 
             // dismissing all the previous toasts first
             toast.dismiss();
 
             // showing the error message
-            toast.error(UNKNOWN_ERROR, {
-                autoClose: 3000,
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
                 onClose: () => {
                     // disabling section loading & loading
                     setSectionLoadingVisible(false)
@@ -156,7 +160,7 @@ function Brands(props) {
     // deleting
     const handleDelete = (ev, brandId) => {
         ev.preventDefault()
-        var confirmation = window.confirm('Are you sure you want to delete this brand?')
+        var confirmation = window.confirm(CONFIRMATION_BEFORE_DELETING_BRAND)
 
         if (confirmation) {
             // enabling the section loading
@@ -200,19 +204,17 @@ function Brands(props) {
                 }
 
             }).catch(err => {
-                console.log('err while getBrands api ', err.message)
-
-                // disabling the section loading
-                setSectionLoadingVisible(false)
-
+                console.log(`${ERROR_WHILE__NAME} deleteBrand `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
+                        // disabling the section loading
+                        setSectionLoadingVisible(false)
                     }
                 })
             })
@@ -263,8 +265,6 @@ function Brands(props) {
                                 {/* top bar */}
                                 <div className="acc_top-bar border-bottom st-border-light">
                                     <BrandsTableTopBar
-                                        editColumnsType={editColumnsType}
-
                                         column__ManufacturerName={column__ManufacturerName}
                                         column__ManufacturerUrl={column__ManufacturerUrl}
 

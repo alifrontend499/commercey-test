@@ -38,13 +38,15 @@ import { setGlobalLoading } from 'redux/actions/actionCommon'
 // helpers
 import { isInViewport } from 'utlis/helpers/Common/CommonHelperFunctions'
 
-function CreateProduct(props) {
-    // error and success messages
-    const SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS = "Please make sure that all the required fields are filled"
-    const UNKNOWN_ERROR = "Unknown error occured. please try again."
-    const PRODUCT_ADDED_SUCCESSFULLY = "Product added successfully."
-    const ERROR_WHILE_ADDING_PRODUCT = "Error occured!! please check if all the required fields are filled correctly."
+// app messages
+import {
+    UNKNOWN_ERROR_OCCURED,
+    ERROR_WHILE__NAME,
+    PRODUCT_ADDED_SUCCESSFULLY,
+    ERROR_WHILE_CREATING_PRODUCT
+} from 'utlis/AppMessages/AppMessages'
 
+function CreateProduct(props) {
     // refs
     const submitButtonRef = useRef(null)
 
@@ -136,7 +138,15 @@ function CreateProduct(props) {
                 console.log('Error occured while loading parent categories!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getCategories `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
+            })
         })
 
         return () => {
@@ -161,7 +171,15 @@ function CreateProduct(props) {
                 console.log('Error occured while loading brands!', res)
             }
         }).catch(err => {
-            console.log('err ', err.message)
+            console.log(`${ERROR_WHILE__NAME} getBrands `, err.message)
+
+            // dismissing all the previous toasts first
+            toast.dismiss();
+
+            // showing the error message
+            toast.error(UNKNOWN_ERROR_OCCURED, {
+                autoClose: 2500,
+            })
         })
 
         return () => {
@@ -209,42 +227,27 @@ function CreateProduct(props) {
                 // disabling global loading
                 setGlobalLoading(false)
 
-                // disbling the loading
-                setCreateButtonDisable(false)
                 const addingData = res.data
 
                 // if request is success
                 if (addingData.success) {
+                    // disabling the button loading
+                    setCreateButtonLoading(false)
+
+                    // scrolling the window to top
+                    window.scrollTo(0, 0)
+
+                    // resetting the form
+                    formik.resetForm()
+
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
                     toast.success(PRODUCT_ADDED_SUCCESSFULLY, {
-                        autoClose: 2500,
+                        autoClose: 2000,
                         onClose: () => {
-                            // empty the fields
-                            setProductName("")
-                            setSKU("")
-                            setStatus("")
-                            setCostPrice("")
-                            setPrice("")
-                            setPromoPrice("")
-                            setCategoryId("")
-                            setBrandId("")
-                            setShortDescription("")
-                            setLongDescription("")
-                            setStock("")
-                            setLowStock("")
-                            setMaxOrderQuantity("")
-                            setMinOrderQuantity("")
-                            setWeight("")
-                            setWidth("")
-                            setDepth("")
-                            setHeight("")
-                            setMetaTitle("")
-                            setMetaDescription("")
-
-                            // redirecting to users
+                            // redirecting to products
                             props.history.push('/catalog/products', {
                                 shouldReload: true
                             })
@@ -254,25 +257,29 @@ function CreateProduct(props) {
 
                 // if request is not succeed
                 if (addingData.error) {
-                    console.log(ERROR_WHILE_ADDING_PRODUCT, res)
+                    console.log(ERROR_WHILE_CREATING_PRODUCT, res)
+
+                    // disbling the button and enabling loading
+                    setCreateButtonDisable(false)
+                    setCreateButtonLoading(false)
 
                     // dismissing all the previous toasts first
                     toast.dismiss();
 
                     // showing the error message
-                    toast.error(ERROR_WHILE_ADDING_PRODUCT, {
+                    toast.error(ERROR_WHILE_CREATING_PRODUCT, {
                         autoClose: 3000,
                     })
                 }
             }).catch(err => {
-                console.log('err ', err.message)
+                console.log(`${ERROR_WHILE__NAME} addProduct `, err.message)
 
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
-                toast.error(UNKNOWN_ERROR, {
-                    autoClose: 3000,
+                toast.error(UNKNOWN_ERROR_OCCURED, {
+                    autoClose: 2500,
                     onClose: () => {
                         // disabling global loading
                         setGlobalLoading(false)
@@ -284,16 +291,6 @@ function CreateProduct(props) {
                 })
             })
 
-        } else {
-            // dismissing all the previous toasts first
-            toast.dismiss();
-
-            // showing the error message
-            toast.error(SUBMITTING_WITHOUT_FILLING_REQUIRED_FIELDS, {
-                autoClose: 2500,
-                onClose: () => {
-                }
-            })
         }
     }
 
@@ -350,6 +347,7 @@ function CreateProduct(props) {
         }
     }, [])
 
+    // handle window scroll
     function handleWindowScroll() {
         // console.log("window.pageYOffset ", window.scrollY)
         // tabs cards

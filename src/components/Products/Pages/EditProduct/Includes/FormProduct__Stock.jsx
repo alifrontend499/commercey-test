@@ -4,7 +4,7 @@ export default function FormProduct__Stock(props) {
     return (
         <React.Fragment>
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.stock && props.formik.errors.stock) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.stock && props.formik.errors.stock) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Stock 
                     <span>*</span>
@@ -28,7 +28,7 @@ export default function FormProduct__Stock(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.lowStock && props.formik.errors.lowStock) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.lowStock && props.formik.errors.lowStock) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Low Stock 
                     {/* <span>*</span> */}
@@ -52,7 +52,7 @@ export default function FormProduct__Stock(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.maxOrderQuantity && props.formik.errors.maxOrderQuantity) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.maxOrderQuantity && props.formik.errors.maxOrderQuantity) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Max Order Quantity 
                     {/* <span>*</span> */}
@@ -76,7 +76,7 @@ export default function FormProduct__Stock(props) {
             </div>
 
             {/* form field */}
-            <div className={`st-form st-form-with-label-left d-flex flex-wrap align-items-center ${(props.formik.touched.minOrderQuantity && props.formik.errors.minOrderQuantity) ? "has-msg msg-error" : ""}`}>
+            <div className={`st-form st-form-with-label-left no-arrows d-flex flex-wrap align-items-center ${(props.formik.touched.minOrderQuantity && props.formik.errors.minOrderQuantity) ? "has-msg msg-error" : ""}`}>
                 <label>
                     Min Order Quantity 
                     {/* <span>*</span> */}
