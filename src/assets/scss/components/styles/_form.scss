@@ -152,6 +152,15 @@ $bottomGap: 20px;
         }
     }
 
+    // label
+    label {
+        .required {
+            color: $text__danger-color;
+            position: relative;
+            left: 3px;
+        }
+    }
+
     /* SELECT NO ICON */
     select:not([multiple]) {
         -webkit-appearance: none;

@@ -27,8 +27,8 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import ProductLeftBar from './Includes/ProductLeftBar'
-import ProductContentView from './Includes/ProductContentView'
+import ProductLeftBar from './Includes/ProductsFormLeftBar'
+import ProductContentView from './Includes/ProductsFormContentView'
 
 // APIs
 import { editProduct, getProductDetails, cancelGetProductDetailsApi } from 'utlis/Apis/Products_API'
@@ -59,27 +59,6 @@ function EditProduct(props) {
     const [editButtonDisable, setEditButtonDisable] = useState(false)
     const [editButtonLoading, setEditButtonLoading] = useState(false)
 
-    const [productName, setProductName] = useState("")
-    const [SKU, setSKU] = useState("")
-    const [status, setStatus] = useState("")
-    const [costPrice, setCostPrice] = useState("")
-    const [price, setPrice] = useState("")
-    const [promoPrice, setPromoPrice] = useState("")
-    const [categoryId, setCategoryId] = useState("")
-    const [brandId, setBrandId] = useState("")
-    const [shortDescription, setShortDescription] = useState("")
-    const [longDescription, setLongDescription] = useState("")
-    const [stock, setStock] = useState("")
-    const [lowStock, setLowStock] = useState("")
-    const [maxOrderQuantity, setMaxOrderQuantity] = useState("")
-    const [minOrderQuantity, setMinOrderQuantity] = useState("")
-    const [weight, setWeight] = useState("")
-    const [width, setWidth] = useState("")
-    const [depth, setDepth] = useState("")
-    const [height, setHeight] = useState("")
-    const [metaTitle, setMetaTitle] = useState("")
-    const [metaDescription, setMetaDescription] = useState("")
-
     const [parentCategories, setParentCategories] = useState([])
     const [brands, setBrands] = useState([])
 
@@ -87,24 +66,26 @@ function EditProduct(props) {
 
     // initial form values
     const initialEditFormValues = {
-        productName,
-        SKU,
-        status,
-        costPrice,
-        price,
-        promoPrice,
-        categoryId,
-        brandId,
-        stock,
-        lowStock,
-        maxOrderQuantity,
-        minOrderQuantity,
-        weight,
-        width,
-        depth,
-        height,
-        metaTitle,
-        metaDescription
+        productName: "",
+        SKU: "",
+        status: "",
+        costPrice: "",
+        price: "",
+        promoPrice: "",
+        categoryId: "",
+        brandId: "",
+        longDescription: "",
+        shortDescription: "",
+        stock: "",
+        lowStock: "",
+        maxOrderQuantity: "",
+        minOrderQuantity: "",
+        weight: "",
+        width: "",
+        depth: "",
+        height: "",
+        metaTitle: "",
+        metaDescription: "",
     }
 
     // handle form validations
@@ -117,6 +98,8 @@ function EditProduct(props) {
         promoPrice: Yup.string(),
         categoryId: Yup.string().required('This field is required'),
         brandId: Yup.string(),
+        longDescription: Yup.string(),
+        shortDescription: Yup.string(),
         stock: Yup.string().required('This field is required'),
         lowStock: Yup.string(),
         maxOrderQuantity: Yup.string(),
@@ -204,30 +187,29 @@ function EditProduct(props) {
     // // getting product details from the location state 
     // useEffect(() => {
     //     const locState = props.location.state ?? props.location.state
-    //     // console.log("locState ", locState)
     //     // if state with the product data exists in the location state
     //     if (locState) {
     //         const prodData = locState.productDetails
-    //         setProductName(prodData?.product_name ?? "")
-    //         setSKU(prodData?.sku ?? "")
-    //         setStatus(prodData?.status ?? "")
-    //         setCostPrice(prodData?.cost_price ?? "")
-    //         setPrice(prodData?.price ?? "")
-    //         setPromoPrice(prodData?.promo_price ?? "")
-    //         setCategoryId(prodData?.category_id ?? "")
-    //         setBrandId(prodData?.brand_id ?? "")
-    //         setShortDescription(prodData?.short_description ?? "")
-    //         setLongDescription(prodData?.long_description ?? "")
-    //         setStock(prodData?.stock ?? "")
-    //         setLowStock(prodData?.low_stock ?? "")
-    //         setMaxOrderQuantity(prodData?.max_order_quantity ?? "")
-    //         setMinOrderQuantity(prodData?.min_order_quantity ?? "")
-    //         setWeight(prodData?.weight ?? "")
-    //         setWidth(prodData?.width ?? "")
-    //         setDepth(prodData?.depth ?? "")
-    //         setHeight(prodData?.height ?? "")
-    //         setMetaTitle(prodData?.meta_title ?? "")
-    //         setMetaDescription(prodData?.meta_description ?? "")
+    // formik.setFieldValue("productName", prodData?.product_name ?? "")
+    // formik.setFieldValue("SKU", prodData?.sku ?? "")
+    // formik.setFieldValue("status", prodData?.active ?? "")
+    // formik.setFieldValue("costPrice", prodData?.cost_price ?? "")
+    // formik.setFieldValue("price", prodData?.price ?? "")
+    // formik.setFieldValue("promoPrice", prodData?.promo_price ?? "")
+    // formik.setFieldValue("categoryId", prodData?.category_id ?? "")
+    // formik.setFieldValue("brandId", prodData?.brand_id ?? "")
+    // formik.setFieldValue("longDescription", prodData?.long_description ?? "")
+    // formik.setFieldValue("shortDescription", prodData?.short_description ?? "")
+    // formik.setFieldValue("stock", prodData?.stock ?? "")
+    // formik.setFieldValue("lowStock", prodData?.low_stock ?? "")
+    // formik.setFieldValue("maxOrderQuantity", prodData?.max_order_quantity ?? "")
+    // formik.setFieldValue("minOrderQuantity", prodData?.min_order_quantity ?? "")
+    // formik.setFieldValue("weight", prodData?.weight ?? "")
+    // formik.setFieldValue("width", prodData?.width ?? "")
+    // formik.setFieldValue("depth", prodData?.depth ?? "")
+    // formik.setFieldValue("height", prodData?.height ?? "")
+    // formik.setFieldValue("metaTitle", prodData?.meta_title ?? "")
+    // formik.setFieldValue("metaDescription", prodData?.meta_description ?? "")
     //     }
     // }, [props])
 
@@ -243,36 +225,37 @@ function EditProduct(props) {
 
             // getting product details
             getProductDetails(props.currentUser.userToken, productId).then(res => {
-                const prodDetRes = res.data
+                const prodData = res.data
+
                 // disabling the global loading
                 props.setGlobalLoading(false)
 
                 // if request is success
-                if (prodDetRes.success) {
-                    setProductName(prodDetRes?.data.product_name ?? "")
-                    setSKU(prodDetRes?.data.sku ?? "")
-                    setStatus(prodDetRes?.data.active ?? "")
-                    setCostPrice(prodDetRes?.data.cost_price ?? "")
-                    setPrice(prodDetRes?.data.price ?? "")
-                    setPromoPrice(prodDetRes?.data.promo_price ?? "")
-                    setCategoryId(prodDetRes?.data.category_id ?? "")
-                    setBrandId(prodDetRes?.data.brand_id ?? "")
-                    setShortDescription(prodDetRes?.data.short_description ?? "")
-                    setLongDescription(prodDetRes?.data.long_description ?? "")
-                    setStock(prodDetRes?.data.stock ?? "")
-                    setLowStock(prodDetRes?.data.low_stock ?? "")
-                    setMaxOrderQuantity(prodDetRes?.data.max_order_quantity ?? "")
-                    setMinOrderQuantity(prodDetRes?.data.min_order_quantity ?? "")
-                    setWeight(prodDetRes?.data.weight ?? "")
-                    setWidth(prodDetRes?.data.width ?? "")
-                    setDepth(prodDetRes?.data.depth ?? "")
-                    setHeight(prodDetRes?.data.height ?? "")
-                    setMetaTitle(prodDetRes?.data.meta_title ?? "")
-                    setMetaDescription(prodDetRes?.data.meta_description ?? "")
+                if (prodData.success) {
+                    formik.setFieldValue("productName", prodData?.data?.product_name ?? "")
+                    formik.setFieldValue("SKU", prodData?.data?.sku ?? "")
+                    formik.setFieldValue("status", prodData?.data?.active ?? "")
+                    formik.setFieldValue("costPrice", prodData?.data?.cost_price ?? "")
+                    formik.setFieldValue("price", prodData?.data?.price ?? "")
+                    formik.setFieldValue("promoPrice", prodData?.data?.promo_price ?? "")
+                    formik.setFieldValue("categoryId", prodData?.data?.category_id ?? "")
+                    formik.setFieldValue("brandId", prodData?.data?.brand_id ?? "")
+                    formik.setFieldValue("longDescription", prodData?.data?.long_description ?? "")
+                    formik.setFieldValue("shortDescription", prodData?.data?.short_description ?? "")
+                    formik.setFieldValue("stock", prodData?.data?.stock ?? "")
+                    formik.setFieldValue("lowStock", prodData?.data?.low_stock ?? "")
+                    formik.setFieldValue("maxOrderQuantity", prodData?.data?.max_order_quantity ?? "")
+                    formik.setFieldValue("minOrderQuantity", prodData?.data?.min_order_quantity ?? "")
+                    formik.setFieldValue("weight", prodData?.data?.weight ?? "")
+                    formik.setFieldValue("width", prodData?.data?.width ?? "")
+                    formik.setFieldValue("depth", prodData?.data?.depth ?? "")
+                    formik.setFieldValue("height", prodData?.data?.height ?? "")
+                    formik.setFieldValue("metaTitle", prodData?.data?.meta_title ?? "")
+                    formik.setFieldValue("metaDescription", prodData?.data?.meta_description ?? "")
                 }
 
                 // // if request is not succeed
-                if (prodDetRes.error) {
+                if (prodData.error) {
                     console.log(ERROR_WHILE_GETTING_PRODUCT_DETAILS, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
@@ -326,8 +309,8 @@ function EditProduct(props) {
                 promo_price: values.promoPrice,
                 category_id: values.categoryId,
                 brand_id: values.brandId,
-                short_description: shortDescription,
-                long_description: longDescription,
+                short_description: values.shortDescription,
+                long_description: values.longDescription,
                 stock: values.stock,
                 low_stock: values.lowStock,
                 max_order_quantity: values.maxOrderQuantity,
@@ -421,12 +404,12 @@ function EditProduct(props) {
 
     // html editor
     const getHTML_editorResultLongDesc = (data) => {
-        // long description
-        setLongDescription(data)
+        // setting the long description value
+        formik.setFieldValue("longDescription", data)
     }
     const getHTML_editorResultShortDesc = (data) => {
-        // short description
-        setShortDescription(data)
+        // setting the short description value
+        formik.setFieldValue("shortDescription", data)
     }
 
     // products left tab links click
@@ -458,7 +441,6 @@ function EditProduct(props) {
 
     // handle window scroll
     function handleWindowScroll() {
-        // console.log("window.pageYOffset ", window.scrollY)
         // tabs cards
         const tabElems = document.querySelectorAll('.pfc-content > .inner > .app-card')
         tabElems && tabElems.forEach(item => {
@@ -522,8 +504,6 @@ function EditProduct(props) {
 
                                     brands={brands}
 
-                                    defaultValueForShortDesc={shortDescription}
-                                    defaultValueForLongDesc={longDescription}
                                     getShortDesc={getHTML_editorResultShortDesc}
                                     getLongDesc={getHTML_editorResultLongDesc}
                                 />
@@ -537,7 +517,7 @@ function EditProduct(props) {
 
                     {/* app card : bottom-bar */}
                     <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
-                        <div className="app-card-content bg-white border st-border-light st-default-rounded-block d-flex align-items-center justify-content-end">
+                        <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                             <Link to="/catalog/products" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                 Cancel
                             </Link>

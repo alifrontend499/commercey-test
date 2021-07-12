@@ -204,9 +204,6 @@ function Products(props) {
                 // disabling the section loading
                 setSectionLoadingVisible(false)
 
-                // console.log('err ', err)
-                console.log('err ', err.message)
-
                 // dismissing all the previous toasts first
                 toast.dismiss();
 

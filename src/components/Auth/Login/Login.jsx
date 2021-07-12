@@ -75,7 +75,6 @@ function Login(props) {
             // validating user details
             userLogin(values.loginEmail, values.loginPassword).then(res => {
                 const resData = res.data
-                // console.log('res ', res)
 
                 // disbling the loading
                 setLoginButtonLoading(false)

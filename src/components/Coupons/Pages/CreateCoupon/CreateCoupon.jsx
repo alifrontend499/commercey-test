@@ -45,17 +45,6 @@ function CreateCoupon(props) {
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
-    // const [couponCode, setCouponCode] = useState("")
-    // const [couponDiscountType, setCouponDiscountType] = useState("")
-    // const [couponDiscountPercent, setCouponDiscountPercent] = useState("")
-    // const [couponDiscountValue, setCouponDiscountValue] = useState("")
-    // const [couponExpiryDate, setCouponExpiryDate] = useState("")
-    // const [couponMinOrderAmount, setCouponMinOrderAmount] = useState("")
-    // const [couponFreeShiping, setCouponFreeShiping] = useState(false)
-    // const [couponStatus, setCouponStatus] = useState(false)
-    // const [couponSingleUse, setCouponSingleUse] = useState(false)
-    // const [couponSingleUsePerUser, setCouponSingleUsePerUser] = useState(false)
-
     // initial form values
     const initialCreateFormValues = {
         couponCode: "",
@@ -224,9 +213,9 @@ function CreateCoupon(props) {
     }
 
     return (
-        <section id="app-blogs__create-details" className="st-def-mar-TB">
+        <section id="app-coupons__create-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-blogs__create-details">
+                <div className="app-coupons__create-details">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
@@ -249,8 +238,8 @@ function CreateCoupon(props) {
                             />
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/coupons" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
@@ -283,7 +272,8 @@ function CreateCoupon(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

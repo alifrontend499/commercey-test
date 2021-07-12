@@ -52,31 +52,20 @@ function EditCoupon(props) {
     const [editButtonDisable, setEditButtonDisable] = useState(false)
     const [editButtonLoading, setEditButtonLoading] = useState(false)
 
-    const [couponCode, setCouponCode] = useState("")
-    const [couponDiscountType, setCouponDiscountType] = useState("")
-    const [couponDiscountPercent, setCouponDiscountPercent] = useState("")
-    const [couponDiscountValue, setCouponDiscountValue] = useState("")
-    const [couponExpiryDate, setCouponExpiryDate] = useState("")
-    const [couponMinOrderAmount, setCouponMinOrderAmount] = useState("")
-    const [couponStatus, setCouponStatus] = useState("")
-    const [couponFreeShiping, setCouponFreeShiping] = useState(false)
-    const [couponSingleUse, setCouponSingleUse] = useState(false)
-    const [couponSingleUsePerUser, setCouponSingleUsePerUser] = useState(false)
-
     const [couponId, setCouponId] = useState("")
 
     // initial form values
     const initialEditFormValues = {
-        couponCode,
-        couponDiscountType,
-        couponDiscountPercent,
-        couponDiscountValue,
-        couponExpiryDate,
-        couponMinOrderAmount,
-        couponStatus,
-        couponFreeShiping,
-        couponSingleUse,
-        couponSingleUsePerUser,
+        couponCode: "",
+        couponDiscountType: "",
+        couponDiscountPercent: "",
+        couponDiscountValue: "",
+        couponExpiryDate: "",
+        couponMinOrderAmount: "",
+        couponStatus: "",
+        couponFreeShiping: false,
+        couponSingleUse: false,
+        couponSingleUsePerUser: false,
     }
 
     // handle form validations
@@ -114,17 +103,17 @@ function EditCoupon(props) {
         // if state with the coupon data exists in the location state
         if (locState) {
             const couponData = locState.couponDetails
-            // setting values
-            setCouponCode(couponData?.coupon_code ?? "")
-            // setCouponDiscountType(couponData?.something ?? "")
-            setCouponDiscountPercent(couponData?.discount_percent ?? "")
-            setCouponDiscountValue(couponData?.discount_value ?? "")
-            setCouponExpiryDate(couponData?.expiry_date ?? "")
-            setCouponMinOrderAmount(couponData?.minimum_order_amount ?? "")
-            setCouponStatus(couponData?.is_active ?? "")
-            setCouponFreeShiping(couponData?.free_shipping ? true : false ?? false)
-            setCouponSingleUse(couponData?.single_use ? true : false ?? false)
-            setCouponSingleUsePerUser(couponData?.single_use_per_user ? true : false ?? false)
+            // setting the form fields
+            formik.setFieldValue("couponCode", couponData?.coupon_code ?? "")
+            formik.setFieldValue("couponDiscountType", couponData?.discount_type ?? "")
+            formik.setFieldValue("couponDiscountPercent", couponData?.discount_percent ?? "")
+            formik.setFieldValue("couponDiscountValue", couponData?.discount_value ?? "")
+            formik.setFieldValue("couponExpiryDate", couponData?.expiry_date ?? "")
+            formik.setFieldValue("couponMinOrderAmount", couponData?.minimum_order_amount ?? "")
+            formik.setFieldValue("couponStatus", couponData?.is_active ?? "")
+            formik.setFieldValue("couponFreeShiping", couponData?.free_shipping ? true : false ?? false)
+            formik.setFieldValue("couponSingleUse", couponData?.single_use ? true : false ?? false)
+            formik.setFieldValue("couponSingleUsePerUser", couponData?.single_use_per_user ? true : false ?? false)
         }
     }, [props])
 
@@ -149,17 +138,17 @@ function EditCoupon(props) {
 
                 // if request is success
                 if (couponData.success) {
-                    // setting values
-                    setCouponCode(couponData?.data.coupon_code ?? "")
-                    // setCouponDiscountType(couponData?.data.something ?? "")
-                    setCouponDiscountPercent(couponData?.data.discount_percent ?? "")
-                    setCouponDiscountValue(couponData?.data.discount_value ?? "")
-                    setCouponExpiryDate(couponData?.data.expiry_date ?? "")
-                    setCouponMinOrderAmount(couponData?.data.minimum_order_amount ?? "")
-                    setCouponStatus(couponData?.data.is_active ?? "")
-                    setCouponFreeShiping(couponData?.data.free_shipping ? true : false ?? false)
-                    setCouponSingleUse(couponData?.data.single_use ? true : false ?? false)
-                    setCouponSingleUsePerUser(couponData?.data.single_use_per_user ? true : false ?? false)
+                    // setting the form fields
+                    formik.setFieldValue("couponCode", couponData?.data?.coupon_code ?? "")
+                    formik.setFieldValue("couponDiscountType", couponData?.data?.discount_type ?? "")
+                    formik.setFieldValue("couponDiscountPercent", couponData?.data?.discount_percent ?? "")
+                    formik.setFieldValue("couponDiscountValue", couponData?.data?.discount_value ?? "")
+                    formik.setFieldValue("couponExpiryDate", couponData?.data?.expiry_date ?? "")
+                    formik.setFieldValue("couponMinOrderAmount", couponData?.data?.minimum_order_amount ?? "")
+                    formik.setFieldValue("couponStatus", couponData?.data?.is_active ?? "")
+                    formik.setFieldValue("couponFreeShiping", couponData?.data?.free_shipping ? true : false ?? false)
+                    formik.setFieldValue("couponSingleUse", couponData?.data?.single_use ? true : false ?? false)
+                    formik.setFieldValue("couponSingleUsePerUser", couponData?.data?.single_use_per_user ? true : false ?? false)
                 }
 
                 // // if request is not succeed
@@ -318,9 +307,9 @@ function EditCoupon(props) {
     }
 
     return (
-        <section id="app-blogs__edit-details" className="st-def-mar-TB">
+        <section id="app-coupons__edit-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-blogs__edit-details">
+                <div className="app-coupons__edit-details">
                     {/* BACK BUTTON WRAPPER */}
                     <div className="back-button-wrapper mb-2">
                         <Link to="/catalog/coupons" className="text-decoration-none st-text-primary d-inline-flex align-items-center cursor-pointer st-fs-15">
@@ -354,15 +343,15 @@ function EditCoupon(props) {
                             />
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/coupons" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                        disabled={editButtonDisable}
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                        disabled={editButtonDisable || Object.keys(formik.errors).length}
                                         onClick={handleFormSubmission}>
                                         {
                                             editButtonLoading ? (
@@ -388,7 +377,8 @@ function EditCoupon(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

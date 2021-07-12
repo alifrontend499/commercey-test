@@ -32,7 +32,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import UserDetails from './Includes/CreateUser__UserDetails'
+import UserDetails from './Includes/FormUsers__Details'
 
 // APIs
 import { getAdminGroups, cancelAdminUsersApi, createUser } from 'utlis/Apis/AdminUsers_API'
@@ -56,13 +56,6 @@ function CreateUser(props) {
     // states
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
-
-    const [userFirstName, setUserFirstName] = useState("")
-    const [userLastName, setUserLastName] = useState("")
-    const [userEmail, setUserEmail] = useState("")
-    const [userType, setUserType] = useState("")
-    const [userTwoFactor, setUserTwoFactor] = useState("")
-    // const [userStatus, setUserStatus] = useState("")
 
     const [activePermissionTabId, setActivePermissionTabId] = useState("2")
 
@@ -103,12 +96,11 @@ function CreateUser(props) {
 
     // initial create user form values
     const initialCreateUserFormValues = {
-        createUserFirstName: userFirstName,
-        createUserLastName: userLastName,
-        createUserEmail: userEmail,
-        createUserType: userType,
-        createUserTwoFactor: userTwoFactor,
-        // createUserStatus: userStatus
+        createUserFirstName: "",
+        createUserLastName: "",
+        createUserEmail: "",
+        createUserType: "",
+        createUserTwoFactor: "",
     }
 
     // handle create user form validations
@@ -118,7 +110,6 @@ function CreateUser(props) {
         createUserEmail: Yup.string().email('Invalid email address').required('This field is required'),
         createUserType: Yup.string().required('This field is required'),
         createUserTwoFactor: Yup.string().required('This field is required'),
-        // createUserStatus: Yup.string().required('This field is required'),
     })
 
     // handle create user form submmision

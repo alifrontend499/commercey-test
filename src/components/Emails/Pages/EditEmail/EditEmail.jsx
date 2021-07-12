@@ -28,16 +28,14 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import EmailDetails from './Includes/EditEmail__EmailDetails'
+import EmailDetails from './Includes/FormEmails__Details'
+import EmailDescription from './Includes/FormEmails__Description'
 
 // APIs
 import { getEmailDetails, cancelGetEmailDetailsApi, getEmailEvents, cancelGetEmailEventsApi, editEmailTemplate } from 'utlis/Apis/Emails_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
-
-// html editor
-import HTML_Editor from 'utlis/helpers/HTML_Editor'
 
 // messages
 import {
@@ -55,17 +53,8 @@ function EditEmail(props) {
     // states
     const [emailId, setEmailId] = useState("")
 
-    const [editEmailButtonDisable, setEditEmailButtonDisable] = useState(false)
-    const [editEmailButtonLoading, setEditEmailButtonLoading] = useState(false)
-
-    const [emailTemplateName, setEmailTemplateName] = useState("")
-    const [emailEventName, setEmailEventTitle] = useState("")
-    const [emailTo, setEmailTo] = useState("")
-    const [emailFrom, setEmailFrom] = useState("")
-    const [emailSubject, setEmailSubject] = useState("")
-    const [emailCC, setEmailCC] = useState("")
-    const [emailBCC, setEmailBCC] = useState("")
-    const [emailContent, setEmailContent] = useState("")
+    const [editButtonDisable, setEditButtonDisable] = useState(false)
+    const [editButtonLoading, setEditButtonLoading] = useState(false)
 
     const [emailEvents, setEmailEvents] = useState([])
 
@@ -116,16 +105,17 @@ function EditEmail(props) {
 
         // if state with the email exists in the location
         if (locState) {
-            const email = locState.emailDetails
-            setEmailTemplateId(email?.template_id)
-            setEmailTemplateName(email?.template_title)
-            setEmailEventTitle(email?.event_id)
-            setEmailTo(email?.send_email_to)
-            setEmailFrom(email?.email_from)
-            setEmailSubject(email?.email_subject)
-            setEmailCC(email?.cc_email)
-            setEmailBCC(email?.bcc_email)
-            setEmailContent(email?.email_body)
+            const emailData = locState.emailDetails
+            setEmailTemplateId(emailData?.template_id)
+            // setting the form fields
+            formik.setFieldValue("emailTemplateName", emailData?.template_title ?? "")
+            formik.setFieldValue("emailEventName", emailData?.event_id ?? "")
+            formik.setFieldValue("emailTo", emailData?.send_email_to ?? "")
+            formik.setFieldValue("emailFrom", emailData?.email_from ?? "")
+            formik.setFieldValue("emailSubject", emailData?.email_subject ?? "")
+            formik.setFieldValue("emailCC", emailData?.cc_email ?? "")
+            formik.setFieldValue("emailBCC", emailData?.bcc_email ?? "")
+            formik.setFieldValue("emailContent", emailData?.email_body ?? "")
         }
     }, [props])
 
@@ -141,25 +131,26 @@ function EditEmail(props) {
 
             // getting single email details
             getEmailDetails(props.currentUser.userToken, emailId).then(res => {
-                const email = res.data
+                const emailData = res.data
 
                 // disabling the global loading
                 props.setGlobalLoading(false)
 
                 // if request is success
-                if (email.success) {
-                    setEmailTemplateId(email?.data?.template_id)
-                    setEmailTemplateName(email?.data?.template_title)
-                    setEmailEventTitle(email?.data?.event_id)
-                    setEmailTo(email?.data?.send_email_to)
-                    setEmailFrom(email?.data?.email_from)
-                    setEmailSubject(email?.data?.email_subject)
-                    setEmailCC(email?.data?.cc_email)
-                    setEmailBCC(email?.data?.bcc_email)
-                    setEmailContent(email?.data?.email_body)
+                if (emailData.success) {
+                    setEmailTemplateId(emailData?.data?.template_id)
+                    // setting the form fields
+                    formik.setFieldValue("emailTemplateName", emailData?.data?.template_title ?? "")
+                    formik.setFieldValue("emailEventName", emailData?.data?.event_id ?? "")
+                    formik.setFieldValue("emailTo", emailData?.data?.send_email_to ?? "")
+                    formik.setFieldValue("emailFrom", emailData?.data?.email_from ?? "")
+                    formik.setFieldValue("emailSubject", emailData?.data?.email_subject ?? "")
+                    formik.setFieldValue("emailCC", emailData?.data?.cc_email ?? "")
+                    formik.setFieldValue("emailBCC", emailData?.data?.bcc_email ?? "")
+                    formik.setFieldValue("emailContent", emailData?.data?.email_body ?? "")
                 }
                 // if request is not succeed
-                if (email.error) {
+                if (emailData.error) {
                     console.log(ERROR_WHILE_GETTING_EMAIL_DETAILS, res)
 
                     // dismissing all the previous toasts first
@@ -200,18 +191,19 @@ function EditEmail(props) {
     // html editor
     const getHTML_editorResult = (data) => {
         // setting email content
-        setEmailContent(data)
+        formik.setFieldValue("emailContent", data)
     }
 
     // initial edit email form values
     const initialEditFormValues = {
-        emailTemplateName,
-        emailEventName,
-        emailTo,
-        emailFrom,
-        emailSubject,
-        emailCC,
-        emailBCC,
+        emailTemplateName: "",
+        emailEventName: "",
+        emailTo: "",
+        emailFrom: "",
+        emailSubject: "",
+        emailCC: "",
+        emailBCC: "",
+        emailContent: "",
     }
 
     // handle edit email form validations
@@ -223,6 +215,7 @@ function EditEmail(props) {
         emailSubject: Yup.string().required('This field is required'),
         emailCC: Yup.string(),
         emailBCC: Yup.string(),
+        emailContent: Yup.string(),
     })
 
     // handle edit email form submmision
@@ -232,8 +225,8 @@ function EditEmail(props) {
             setGlobalLoading(true)
 
             // disabling the button and enabling loading
-            setEditEmailButtonDisable(true)
-            setEditEmailButtonLoading(true)
+            setEditButtonDisable(true)
+            setEditButtonLoading(true)
 
             // saving the email in the database
             const dataToBeSaved = {
@@ -243,7 +236,7 @@ function EditEmail(props) {
                 email_from: values.emailFrom,
                 cc_email: values.emailCC,
                 bcc_email: values.emailBCC,
-                email_body: emailContent,
+                email_body: values.emailContent,
                 send_email_to: values.emailTo,
                 event_id: values.emailEventName,
             }
@@ -254,8 +247,8 @@ function EditEmail(props) {
                 setGlobalLoading(false)
 
                 // enabling the button and disabling loading
-                setEditEmailButtonDisable(false)
-                setEditEmailButtonLoading(false)
+                setEditButtonDisable(false)
+                setEditButtonLoading(false)
 
                 const emailUpdated = res.data
 
@@ -296,8 +289,8 @@ function EditEmail(props) {
                         setGlobalLoading(false)
 
                         // enabling the button and disabling loading
-                        setEditEmailButtonDisable(false)
-                        setEditEmailButtonLoading(false)
+                        setEditButtonDisable(false)
+                        setEditButtonLoading(false)
                     }
                 })
             })
@@ -377,33 +370,27 @@ function EditEmail(props) {
                                 </div>
                                 <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
                                     <Col xs={12} md={9} lg={10} className="px-0">
-                                        {/* form field */}
-                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap`}>
-                                            <label>Content</label>
-                                            <div className="media-body">
-                                                <HTML_Editor
-                                                    defaultValue={emailContent}
-                                                    getResult={data => getHTML_editorResult(data)}
-                                                />
-                                            </div>
-                                        </div>
+                                        <EmailDescription
+                                            formik={formik}
+                                            getResult={getHTML_editorResult}
+                                        />
                                     </Col>
                                 </div>
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/settings/emails" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                        disabled={editEmailButtonDisable}
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                        disabled={editButtonDisable || Object.keys(formik.errors).length}
                                         onClick={handleFormSubmission}>
                                         {
-                                            editEmailButtonLoading ? (
+                                            editButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
                                                 <span>Save Changes</span>
@@ -425,7 +412,8 @@ function EditEmail(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

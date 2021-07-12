@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap'
 
 // fields
-import DetailsFields from './FormFields__Details'
+import DetailsFields from './FormCoupons__Details'
 
 export default function CouponsFormView(props) {
     const { formik, parentProps, handleDateChange } = props

@@ -32,7 +32,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import UserDetails from './Includes/EditUser__UserDetails'
+import UserDetails from './Includes/FormUsers__Details'
 
 // APIs
 import { getUserDetails, cancelGetUserDetailsApi, getAdminGroups, cancelAdminUsersApi, editUser } from 'utlis/Apis/AdminUsers_API'
@@ -54,16 +54,10 @@ function EditUser(props) {
     const submitButtonRef = useRef(null)
 
     // states
-    const [editUserButtonDisable, setEditUserButtonDisable] = useState(false)
-    const [editUserButtonLoading, setEditUserButtonLoading] = useState(false)
+    const [editButtonDisable, setEditButtonDisable] = useState(false)
+    const [editButtonLoading, setUserButtonLoading] = useState(false)
 
     const [userId, setUserId] = useState("")
-    const [userFirstName, setUserFirstName] = useState("")
-    const [userLastName, setUserLastName] = useState("")
-    const [userEmail, setUserEmail] = useState("")
-    const [userType, setUserType] = useState("")
-    const [userTwoFactor, setUserTwoFactor] = useState("")
-    const [userStatus, setUserStatus] = useState("")
 
     const [activePermissionTabId, setActivePermissionTabId] = useState("2")
 
@@ -113,13 +107,14 @@ function EditUser(props) {
         const locState = props.location.state ?? props.location.state
         // if state with the user exists in the location
         if (locState) {
-            const user = locState.userDetails
-            setUserFirstName(user?.first_name?.toString() ?? "")
-            setUserLastName(user?.last_name?.toString() ?? "")
-            setUserEmail(user?.email?.toString() ?? "")
-            setUserType(user?.group_id?.toString() ?? "")
-            setUserTwoFactor(user?.enable_two_factor?.toString() ?? "")
-            setUserStatus(user?.user_status?.toString() ?? "")
+            const userData = locState.userDetails
+            // setting the form fields
+            formik.setFieldValue("editUserFirstName", userData?.first_name?.toString() ?? "")
+            formik.setFieldValue("editUserLastName", userData?.last_name?.toString() ?? "")
+            formik.setFieldValue("editUserEmail", userData?.email?.toString() ?? "")
+            formik.setFieldValue("editUserType", userData?.group_id?.toString() ?? "")
+            formik.setFieldValue("editUserTwoFactor", userData?.enable_two_factor?.toString() ?? "")
+            formik.setFieldValue("editUserStatus", userData?.user_status?.toString() ?? "")
         }
     }, [props])
 
@@ -136,22 +131,23 @@ function EditUser(props) {
 
             // getting single user details
             getUserDetails(props.currentUser.userToken, userId).then(res => {
-                const user = res.data
+                const userData = res.data
 
                 // disabling the global loading
                 props.setGlobalLoading(false)
                 // if request is success
-                if (user.success) {
-                    setUserFirstName(user?.data?.first_name?.toString() ?? "")
-                    setUserLastName(user?.data?.last_name?.toString().toString() ?? "")
-                    setUserEmail(user?.data?.email?.toString() ?? "")
-                    setUserType(user?.data?.group_id?.toString() ?? "")
-                    setUserTwoFactor(user?.data?.enable_two_factor?.toString() ?? "")
-                    setUserStatus(user?.data?.user_status?.toString() ?? "")
+                if (userData.success) {
+                    // setting the form fields
+                    formik.setFieldValue("editUserFirstName", userData?.data?.first_name?.toString() ?? "")
+                    formik.setFieldValue("editUserLastName", userData?.data?.last_name?.toString() ?? "")
+                    formik.setFieldValue("editUserEmail", userData?.data?.email?.toString() ?? "")
+                    formik.setFieldValue("editUserType", userData?.data?.group_id?.toString() ?? "")
+                    formik.setFieldValue("editUserTwoFactor", userData?.data?.enable_two_factor?.toString() ?? "")
+                    formik.setFieldValue("editUserStatus", userData?.data?.user_status?.toString() ?? "")
                 }
 
                 // if request is not succeed
-                if (user.error) {
+                if (userData.error) {
                     console.log(ERROR_WHILE_GETTING_USER_DETAILS, res)
                     // dismissing all the previous toasts first
                     toast.dismiss();
@@ -161,7 +157,6 @@ function EditUser(props) {
                         autoClose: 3000,
                     })
                 }
-
             }).catch(err => {
                 console.log(`${ERROR_WHILE__NAME} getUserDetails `, err.message)
 
@@ -190,12 +185,12 @@ function EditUser(props) {
 
     // initial edit user form values
     const initialEditUserFormValues = {
-        editUserFirstName: userFirstName,
-        editUserLastName: userLastName,
-        editUserEmail: userEmail,
-        editUserType: userType,
-        editUserTwoFactor: userTwoFactor,
-        editUserStatus: userStatus
+        editUserFirstName: "",
+        editUserLastName: "",
+        editUserEmail: "",
+        editUserType: "",
+        editUserTwoFactor: "",
+        editUserStatus: ""
     }
 
     // handle edit user form validations
@@ -215,8 +210,8 @@ function EditUser(props) {
             setGlobalLoading(true)
 
             // enabling the button and enabling loading
-            setEditUserButtonDisable(true)
-            setEditUserButtonLoading(true)
+            setEditButtonDisable(true)
+            setUserButtonLoading(true)
 
             // saving the user in the database
             const dataToBeSaved = {
@@ -232,8 +227,8 @@ function EditUser(props) {
             // updating the user details from the database
             editUser(props.currentUser.userToken, dataToBeSaved).then(res => {
                 // disbling the button and enabling loading
-                setEditUserButtonDisable(false)
-                setEditUserButtonLoading(false)
+                setEditButtonDisable(false)
+                setUserButtonLoading(false)
 
                 // disabling global loading
                 setGlobalLoading(false)
@@ -278,8 +273,8 @@ function EditUser(props) {
                         setGlobalLoading(false)
 
                         // disbling the button and disbling loading
-                        setEditUserButtonDisable(true)
-                        setEditUserButtonLoading(true)
+                        setEditButtonDisable(true)
+                        setUserButtonLoading(true)
                     }
                 })
             })
@@ -1170,18 +1165,18 @@ function EditUser(props) {
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/settings/users" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                        disabled={editUserButtonDisable}
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                        disabled={editButtonDisable || Object.keys(formik.errors).length}
                                         onClick={handleFormSubmission}>
                                         {
-                                            editUserButtonLoading ? (
+                                            editButtonLoading ? (
                                                 <Spinner animation="border" size="sm" />
                                             ) : (
                                                 <span>Save Details</span>
@@ -1204,7 +1199,8 @@ function EditUser(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

@@ -28,9 +28,9 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import CategoryDetailsFields from './Includes/EditCategory__CategoryDetails'
-import CategoryDescriptionFields from './Includes/EditCategory__Description'
-import CategorySEOFields from './Includes/EditCategory__SEO'
+import CategoryDetailsFields from './Includes/FormCategories__Details'
+import CategoryDescriptionFields from './Includes/FormCategories__Description'
+import CategorySEOFields from './Includes/FormCategories__SEO'
 
 // APIs
 import { getCategories, cancelGetCategoriesApi, getCategoryDetails, cancelGetCategoryDetailsApi, editCategory } from 'utlis/Apis/Categories_API'
@@ -104,17 +104,17 @@ function EditCategory(props) {
 
         // if state with the category exists in the location
         if (locState) {
-            const category = locState.categoryDetails
+            const catData = locState.categoryDetails
             setTimeout(() => {
                 // setting the fields values
-                formik.setFieldValue("categoryName", category?.category_name?.toString() ?? "")
-                formik.setFieldValue("status", category?.status?.toString() ?? "")
-                formik.setFieldValue("description", category?.description?.toString() ?? "")
-                formik.setFieldValue("parentCategoryName", category?.parent_id?.toString() ?? "")
-                formik.setFieldValue("metaTitle", category?.meta_title?.toString() ?? "")
-                formik.setFieldValue("metaKeyword", category?.meta_keywords?.toString() ?? "")
-                formik.setFieldValue("metaDescription", category?.meta_description?.toString() ?? "")
-                formik.setFieldValue("image", category?.image?.toString() ?? "")
+                formik.setFieldValue("categoryName", catData?.category_name?.toString() ?? "")
+                formik.setFieldValue("status", catData?.status?.toString() ?? "")
+                formik.setFieldValue("description", catData?.description?.toString() ?? "")
+                formik.setFieldValue("parentCategoryName", catData?.parent_id?.toString() ?? "")
+                formik.setFieldValue("metaTitle", catData?.meta_title?.toString() ?? "")
+                formik.setFieldValue("metaKeyword", catData?.meta_keywords?.toString() ?? "")
+                formik.setFieldValue("metaDescription", catData?.meta_description?.toString() ?? "")
+                formik.setFieldValue("image", catData?.image?.toString() ?? "")
             }, 0);
         }
     }, [props])

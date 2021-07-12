@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 // bootstrap
 import {
     Container,
-    Col,
     Spinner
 } from 'react-bootstrap'
 
@@ -24,16 +23,14 @@ import * as Yup from 'yup'
 // react toastify
 import { toast } from 'react-toastify';
 
-// includes
-import CategoryDetailsFields from './Includes/CreateCategory__CategoryDetails'
-import CategoryDescriptionFields from './Includes/CreateCategory__Description'
-import CategorySEOFields from './Includes/CreateCategory__SEO'
-
 // APIs
 import { getCategories, cancelGetCategoriesApi, addCategory } from 'utlis/Apis/Categories_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
+
+// includes
+import CategoriesFormContentView from './Includes/CategoriesFormContentView'
 
 // app messages
 import {
@@ -245,58 +242,13 @@ function CreateCategory(props) {
                         noValidate
                         autoComplete="off">
                         <div className="app-content-container">
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">Details</p>
-                                </div>
+                            <CategoriesFormContentView
+                                formik={formik}
 
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        <CategoryDetailsFields
-                                            formik={formik}
-                                            parentCategories={parentCategories}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
+                                parentCategories={parentCategories}
 
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">Description</p>
-                                </div>
-
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-                                    <Col xs={12} md={9} className="px-0">
-                                        <CategoryDescriptionFields
-                                            formik={formik}
-                                            getResult={getHTML_editorResult}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
-
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">SEO</p>
-                                </div>
-
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        <CategorySEOFields
-                                            formik={formik}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
+                                getResult={getHTML_editorResult}
+                            />
 
                             {/* app card : bottom-bar */}
                             <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>

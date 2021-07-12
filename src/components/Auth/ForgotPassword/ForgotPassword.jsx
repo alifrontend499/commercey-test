@@ -53,8 +53,6 @@ function ForgotPassword(props) {
             setforgotPasswordButtonLoading(true)
             setForgotPasswordButtonDisable(true)
 
-            console.log(values)
-
             setTimeout(() => {
                 if (values.forgotPasswordEmail === tempUserEmail) {
                     // disbling the loading

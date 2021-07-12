@@ -8,23 +8,28 @@
     padding-bottom: 90px;
     position: relative;
     .action-btns {
-        position: absolute;
+        border-radius: 0;
+        position: fixed;
         bottom: 0;
-        // left: $appLeftBarWidth;
-        // width: calc(100% - #{$appLeftBarWidth});
-        left: 0;
-        width: 100%;
+        left: $appLeftBarWidthWhenShrunked;
+        width: calc(100% - (#{$appLeftBarWidthWhenShrunked}));
+        &.sidebar-expanded {
+            left: $appLeftBarWidth;
+            width: calc(100% - (#{$appLeftBarWidth}));
+        }
+        .app-card-content {
+            padding: 10px 15px;
+        }
     }
 }
 .app-users__edit-details {
-    
 }
 
 // app user permissions
 .app-user-permissions {
     .aup_lt {
         @include min_width($md-min) {
-            width: 200px
+            width: 200px;
         }
         .inner {
         }
@@ -33,7 +38,7 @@
             margin-bottom: 5px;
             border-radius: $common-border-radius;
             @include transition;
-        
+
             &:hover,
             &.active {
                 color: $primary-color !important;
@@ -44,7 +49,6 @@
                 margin-top: 4px;
             }
             span {
-
             }
         }
     }
@@ -58,5 +62,4 @@
             }
         }
     }
-    
 }

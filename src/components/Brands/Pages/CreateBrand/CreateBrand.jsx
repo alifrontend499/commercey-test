@@ -25,7 +25,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import BrandDetailsFields from './Includes/CreateBrand__BrandDetails'
+import BrandDetailsFields from './Includes/FormBrands__Details'
 
 // APIs
 import { addBrand } from 'utlis/Apis/Brands_API'
@@ -49,11 +49,9 @@ function CreateBrand(props) {
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
-    const [brandName, setBrandName] = useState("")
-
     // initial form values
     const initialCreateFormValues = {
-        brandName
+        brandName: ""
     }
 
     // handle form validations
@@ -168,9 +166,9 @@ function CreateBrand(props) {
     }
 
     return (
-        <section id="app-blogs__create-details" className="st-def-mar-TB">
+        <section id="app-brands__create-details" className="st-def-mar-TB">
             <Container fluid className="st-container">
-                <div className="app-blogs__create-details">
+                <div className="app-brands__create-details">
                     {/* HEADING WRAPPER */}
                     <div className="app-header-wrapper mb-3">
                         {/* heading */}
@@ -204,8 +202,8 @@ function CreateBrand(props) {
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/brands" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
@@ -238,7 +236,8 @@ function CreateBrand(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

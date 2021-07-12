@@ -25,16 +25,14 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import EmailDetails from './Includes/CreateEmail__EmailDetails'
+import EmailDetails from './Includes/FormEmails__Details'
+import EmailDescription from './Includes/FormEmails__Description'
 
 // APIs
 import { getEmailEvents, cancelGetEmailEventsApi, addEmailTemplate } from 'utlis/Apis/Emails_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
-
-// html editor
-import HTML_Editor from 'utlis/helpers/HTML_Editor'
 
 // messages
 import {
@@ -51,15 +49,6 @@ function CreateEmail(props) {
     // states
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
-
-    const [emailTemplateName, setEmailTemplateName] = useState("")
-    const [emailEventName, setEmailEventTitle] = useState("")
-    const [emailTo, setEmailTo] = useState("")
-    const [emailFrom, setEmailFrom] = useState("")
-    const [emailSubject, setEmailSubject] = useState("")
-    const [emailCC, setEmailCC] = useState("")
-    const [emailBCC, setEmailBCC] = useState("")
-    const [emailContent, setEmailContent] = useState("")
 
     const [emailEvents, setEmailEvents] = useState([])
 
@@ -98,13 +87,14 @@ function CreateEmail(props) {
 
     // initial create email form values
     const initialCreateFormValues = {
-        emailTemplateName,
-        emailEventName,
-        emailTo,
-        emailFrom,
-        emailSubject,
-        emailCC,
-        emailBCC
+        emailTemplateName: "",
+        emailEventName: "",
+        emailTo: "",
+        emailFrom: "",
+        emailSubject: "",
+        emailCC: "",
+        emailBCC: "",
+        emailContent: "",
     }
 
     // handle create email form validations
@@ -116,6 +106,7 @@ function CreateEmail(props) {
         emailSubject: Yup.string().required('This field is required'),
         emailCC: Yup.string(),
         emailBCC: Yup.string(),
+        emailContent: Yup.string(),
     })
 
     // handle create email form submmision
@@ -135,7 +126,7 @@ function CreateEmail(props) {
                 email_from: values.emailFrom,
                 cc_email: values.emailCC,
                 bcc_email: values.emailBCC,
-                email_body: emailContent,
+                email_body: values.emailContent,
                 send_email_to: values.emailTo,
                 event_id: values.emailEventName,
             }
@@ -230,7 +221,7 @@ function CreateEmail(props) {
     // html editor
     const getHTML_editorResult = (data) => {
         // setting email content
-        setEmailContent(data)
+        formik.setFieldValue("emailContent", data)
     }
 
     return (
@@ -278,24 +269,18 @@ function CreateEmail(props) {
                                     <p className="app-heading text-capitalize">Email Content</p>
                                 </div>
                                 <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-
                                     <Col xs={12} md={9} lg={10} className="px-0">
-                                        {/* form field */}
-                                        <div className={`st-form st-form-with-label-left d-flex flex-wrap`}>
-                                            <label>Content</label>
-                                            <div className="media-body">
-                                                <HTML_Editor
-                                                    getResult={getHTML_editorResult}
-                                                />
-                                            </div>
-                                        </div>
+                                        <EmailDescription
+                                            formik={formik}
+                                            getResult={getHTML_editorResult}
+                                        />
                                     </Col>
                                 </div>
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/settings/emails" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
@@ -328,7 +313,8 @@ function CreateEmail(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

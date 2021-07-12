@@ -28,7 +28,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import BrandDetailsFields from './Includes/EditBrand__BrandDetails'
+import BrandDetailsFields from './Includes/FormBrands__Details'
 
 // APIs
 import { editBrand, getBrandDetails, cancelGetBrandDetailsApi } from 'utlis/Apis/Brands_API'
@@ -53,8 +53,6 @@ function EditBrand(props) {
     const [editButtonDisable, setEditButtonDisable] = useState(false)
     const [editButtonLoading, setEditButtonLoading] = useState(false)
 
-    const [brandName, setBrandName] = useState("")
-
     const [brandId, setBrandId] = useState([])
 
     // geting form values from the url
@@ -72,15 +70,17 @@ function EditBrand(props) {
 
         // if state with the brand exists in the location
         if (locState) {
-            const brand = locState.brandsDetails
-            setBrandName((brand && brand.manufacturer_name) && brand.manufacturer_name.toString())
+            const brandsData = locState.brandsDetails
+
+            // setting the form fields
+            formik.setFieldValue("brandName", brandsData?.manufacturer_name?.toString() ?? "")
         }
     }, [props])
 
     // geting form values from the database if not found in the url
     useEffect(() => {
         const locState = props.location.state
-        // if state with the user exists in the location
+        // if state with the user does not exists in the location
         if (!locState) {
             // enabling the global loading
             props.setGlobalLoading(true)
@@ -89,18 +89,18 @@ function EditBrand(props) {
 
             // getting single brand details
             getBrandDetails(props.currentUser.userToken, brandId).then(res => {
-                const brand = res.data
+                const brandsData = res.data
 
                 // disabling the global loading
                 props.setGlobalLoading(false)
 
                 // if request is success
-                if (brand.success) {
-                    const brandsData = brand.data
-                    setBrandName((brandsData && brandsData.manufacturer_name) && brandsData.manufacturer_name.toString())
+                if (brandsData.success) {
+                    // setting the form fields
+                    formik.setFieldValue("brandName", brandsData?.manufacturer_name?.toString() ?? "")
                 }
                 // if request is not succeed
-                if (brand.error) {
+                if (brandsData.error) {
                     console.log(ERROR_WHILE_GETTING_BRAND_DETAILS, res)
 
                     // dismissing all the previous toasts first
@@ -139,7 +139,7 @@ function EditBrand(props) {
 
     // initial form values
     const initialEditFormValues = {
-        brandName
+        brandName: "",
     }
 
     // handle form validations
@@ -283,15 +283,15 @@ function EditBrand(props) {
                             </div>
 
                             {/* app card : bottom-bar */}
-                            <div className="app-card action-btns">
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-15 d-flex align-items-center justify-content-end">
+                            <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>
+                                <div className="app-card-content bg-white border-top st-border-light d-flex align-items-center justify-content-end">
                                     <Link to="/catalog/brands" className="st-btn st-btn-link no-min-width d-flex align-items-center justify-content-center me-1">
                                         Cancel
                                     </Link>
                                     <button
                                         type="submit"
-                                        className="st-btn st-btn-primary d-flex align-items-center justify-content-center"
-                                        disabled={editButtonDisable}
+                                        className={`st-btn st-btn-primary d-flex align-items-center justify-content-center ${(editButtonDisable || Object.keys(formik.errors).length) ? "disabled" : ""}`}
+                                        disabled={editButtonDisable || Object.keys(formik.errors).length}
                                         onClick={handleFormSubmission}>
                                         {
                                             editButtonLoading ? (
@@ -317,7 +317,8 @@ function EditBrand(props) {
 
 const getDataFromStore = state => {
     return {
-        currentUser: state.auth.currentUser
+        currentUser: state.auth.currentUser,
+        sideBarVisibility: state.common.sideBarVisibility
     };
 }
 

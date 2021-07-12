@@ -24,8 +24,8 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import ProductLeftBar from './Includes/ProductLeftBar'
-import ProductContentView from './Includes/ProductContentView'
+import ProductLeftBar from './Includes/ProductsFormLeftBar'
+import ProductContentView from './Includes/ProductsFormContentView'
 
 // APIs
 import { addProduct } from 'utlis/Apis/Products_API'
@@ -54,50 +54,31 @@ function CreateProduct(props) {
     const [createButtonDisable, setCreateButtonDisable] = useState(false)
     const [createButtonLoading, setCreateButtonLoading] = useState(false)
 
-    const [productName, setProductName] = useState("")
-    const [SKU, setSKU] = useState("")
-    const [status, setStatus] = useState("")
-    const [costPrice, setCostPrice] = useState("")
-    const [price, setPrice] = useState("")
-    const [promoPrice, setPromoPrice] = useState("")
-    const [categoryId, setCategoryId] = useState("")
-    const [brandId, setBrandId] = useState("")
-    const [shortDescription, setShortDescription] = useState("")
-    const [longDescription, setLongDescription] = useState("")
-    const [stock, setStock] = useState("")
-    const [lowStock, setLowStock] = useState("")
-    const [maxOrderQuantity, setMaxOrderQuantity] = useState("")
-    const [minOrderQuantity, setMinOrderQuantity] = useState("")
-    const [weight, setWeight] = useState("")
-    const [width, setWidth] = useState("")
-    const [depth, setDepth] = useState("")
-    const [height, setHeight] = useState("")
-    const [metaTitle, setMetaTitle] = useState("")
-    const [metaDescription, setMetaDescription] = useState("")
-
     const [parentCategories, setParentCategories] = useState([])
     const [brands, setBrands] = useState([])
 
     // initial form values
     const initialCreateFormValues = {
-        productName,
-        SKU,
-        status,
-        costPrice,
-        price,
-        promoPrice,
-        categoryId,
-        brandId,
-        stock,
-        lowStock,
-        maxOrderQuantity,
-        minOrderQuantity,
-        weight,
-        width,
-        depth,
-        height,
-        metaTitle,
-        metaDescription
+        productName: "",
+        SKU: "",
+        status: "",
+        costPrice: "",
+        price: "",
+        promoPrice: "",
+        categoryId: "",
+        brandId: "",
+        longDescription: "",
+        shortDescription: "",
+        stock: "",
+        lowStock: "",
+        maxOrderQuantity: "",
+        minOrderQuantity: "",
+        weight: "",
+        width: "",
+        depth: "",
+        height: "",
+        metaTitle: "",
+        metaDescription: "",
     }
 
     // handle form validations
@@ -110,6 +91,8 @@ function CreateProduct(props) {
         promoPrice: Yup.string(),
         categoryId: Yup.string().required('This field is required'),
         brandId: Yup.string(),
+        longDescription: Yup.string(),
+        shortDescription: Yup.string(),
         stock: Yup.string().required('This field is required'),
         lowStock: Yup.string(),
         maxOrderQuantity: Yup.string(),
@@ -208,8 +191,8 @@ function CreateProduct(props) {
                 promo_price: values.promoPrice,
                 category_id: values.categoryId,
                 brand_id: values.brandId,
-                short_description: shortDescription,
-                long_description: longDescription,
+                short_description: values.shortDescription,
+                long_description: values.longDescription,
                 stock: values.stock,
                 low_stock: values.lowStock,
                 max_order_quantity: values.maxOrderQuantity,
@@ -248,9 +231,9 @@ function CreateProduct(props) {
                         autoClose: 2000,
                         onClose: () => {
                             // redirecting to products
-                            props.history.push('/catalog/products', {
-                                shouldReload: true
-                            })
+                            // props.history.push('/catalog/products', {
+                            //     shouldReload: true
+                            // })
                         }
                     })
                 }
@@ -312,12 +295,12 @@ function CreateProduct(props) {
 
     // html editor
     const getHTML_editorResultLongDesc = (data) => {
-        // long description
-        setLongDescription(data)
+        // setting the long description value
+        formik.setFieldValue("longDescription", data)
     }
     const getHTML_editorResultShortDesc = (data) => {
-        // short description
-        setShortDescription(data)
+        // setting the short description value
+        formik.setFieldValue("shortDescription", data)
     }
 
     // products left tab links click
@@ -349,7 +332,6 @@ function CreateProduct(props) {
 
     // handle window scroll
     function handleWindowScroll() {
-        // console.log("window.pageYOffset ", window.scrollY)
         // tabs cards
         const tabElems = document.querySelectorAll('.pfc-content > .inner > .app-card')
         tabElems && tabElems.forEach(item => {
@@ -402,8 +384,6 @@ function CreateProduct(props) {
 
                                     brands={brands}
 
-                                    defaultValueForShortDesc={shortDescription}
-                                    defaultValueForLongDesc={longDescription}
                                     getShortDesc={getHTML_editorResultShortDesc}
                                     getLongDesc={getHTML_editorResultLongDesc}
                                 />
