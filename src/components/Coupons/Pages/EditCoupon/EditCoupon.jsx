@@ -27,7 +27,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import CouponsFormView from './Includes/CouponsFormView'
+import CouponsFormContentView from './Includes/CouponsFormContentView'
 
 // APIs
 import { getCouponDetails, cancelGetCouponDetailsApi, editCoupon } from 'utlis/Apis/Coupons_API'
@@ -165,16 +165,15 @@ function EditCoupon(props) {
             }).catch(err => {
                 console.log(`${ERROR_WHILE__NAME} getCouponDetails `, err.message)
 
+                // disabling the global loading
+                props.setGlobalLoading(false)
+
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
                 // showing the error message
                 toast.error(UNKNOWN_ERROR_OCCURED, {
                     autoClose: 2500,
-                    onClose: () => {
-                        // disabling the global loading
-                        props.setGlobalLoading(false)
-                    }
                 })
             })
 
@@ -336,7 +335,7 @@ function EditCoupon(props) {
                         noValidate
                         autoComplete="off">
                         <div className="app-content-container">
-                            <CouponsFormView
+                            <CouponsFormContentView
                                 formik={formik}
                                 parentProps={props}
                                 handleDateChange={handleDateChange}

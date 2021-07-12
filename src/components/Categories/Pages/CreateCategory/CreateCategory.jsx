@@ -23,14 +23,14 @@ import * as Yup from 'yup'
 // react toastify
 import { toast } from 'react-toastify';
 
+// includes
+import CategoriesFormContentView from './Includes/CategoriesFormContentView'
+
 // APIs
 import { getCategories, cancelGetCategoriesApi, addCategory } from 'utlis/Apis/Categories_API'
 
 // actions
 import { setGlobalLoading } from 'redux/actions/actionCommon'
-
-// includes
-import CategoriesFormContentView from './Includes/CategoriesFormContentView'
 
 // app messages
 import {

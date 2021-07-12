@@ -8,7 +8,7 @@ import {
 // fields
 import DetailsFields from './FormCoupons__Details'
 
-export default function CouponsFormView(props) {
+export default function CouponsFormContentView(props) {
     const { formik, parentProps, handleDateChange } = props
 
     return (

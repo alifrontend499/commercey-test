@@ -271,13 +271,12 @@ function EditProduct(props) {
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
+                // disabling the global loading
+                props.setGlobalLoading(false)
+
                 // showing the error message
                 toast.error(UNKNOWN_ERROR_OCCURED, {
-                    autoClose: 2500,
-                    onClose: () => {
-                        // disabling the global loading
-                        props.setGlobalLoading(false)
-                    }
+                    autoClose: 2500
                 })
             })
 

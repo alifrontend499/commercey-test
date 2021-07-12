@@ -28,8 +28,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import EmailDetails from './Includes/FormEmails__Details'
-import EmailDescription from './Includes/FormEmails__Description'
+import EmailsFormContentView from './Includes/EmailsFormContentView'
 
 // APIs
 import { getEmailDetails, cancelGetEmailDetailsApi, getEmailEvents, cancelGetEmailEventsApi, editEmailTemplate } from 'utlis/Apis/Emails_API'
@@ -167,13 +166,12 @@ function EditEmail(props) {
                 // dismissing all the previous toasts first
                 toast.dismiss();
 
+                // disabling the global loading
+                props.setGlobalLoading(false)
+
                 // showing the error message
                 toast.error(UNKNOWN_ERROR_OCCURED, {
-                    autoClose: 2500,
-                    onClose: () => {
-                        // disabling the global loading
-                        props.setGlobalLoading(false)
-                    }
+                    autoClose: 2500
                 })
             })
 
@@ -344,39 +342,13 @@ function EditEmail(props) {
                         noValidate
                         autoComplete="off">
                         <div className="app-content-container">
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">Email Details</p>
-                                </div>
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20-LR pad-20-T">
-                                    <Col xs={12} md={9} lg={6} className="px-0">
-                                        <EmailDetails
-                                            formik={formik}
-                                            emailEvents={emailEvents}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
+                            <EmailsFormContentView
+                                formik={formik}
 
-                            {/* app card */}
-                            <div className="app-card mb-3 mb-lg-4">
-                                {/* card heading */}
-                                <div className="app-header-wrapper heading-sm mb-1">
-                                    {/* heading */}
-                                    <p className="app-heading text-capitalize">Email Content</p>
-                                </div>
-                                <div className="app-card-content bg-white border st-border-light st-default-rounded-block pad-20">
-                                    <Col xs={12} md={9} lg={10} className="px-0">
-                                        <EmailDescription
-                                            formik={formik}
-                                            getResult={getHTML_editorResult}
-                                        />
-                                    </Col>
-                                </div>
-                            </div>
+                                emailEvents={emailEvents}
+
+                                getHTML_editorResult={getHTML_editorResult}
+                            />
 
                             {/* app card : bottom-bar */}
                             <div className={`app-card action-btns ${props.sideBarVisibility ? "" : "sidebar-expanded"}`}>

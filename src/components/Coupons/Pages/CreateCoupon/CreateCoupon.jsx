@@ -24,7 +24,7 @@ import * as Yup from 'yup'
 import { toast } from 'react-toastify';
 
 // includes
-import CouponsFormView from './Includes/CouponsFormView'
+import CouponsFormContentView from './Includes/CouponsFormContentView'
 
 // APIs
 import { addCoupon } from 'utlis/Apis/Coupons_API'
@@ -231,7 +231,7 @@ function CreateCoupon(props) {
                         noValidate
                         autoComplete="off">
                         <div className="app-content-container">
-                            <CouponsFormView
+                            <CouponsFormContentView
                                 formik={formik}
                                 parentProps={props}
                                 handleDateChange={handleDateChange}
